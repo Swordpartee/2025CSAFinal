@@ -356,7 +356,7 @@ class Sidebar:
         self.clickedColorPicker = False
 
 if __name__ == "__main__":
-    size = 240
+    size = 12
     scale = 480 // size
     grid = PixelGrid(size, size)
     screen = DisplayScreen(size * scale, size * scale)
