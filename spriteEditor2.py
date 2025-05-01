@@ -1,6 +1,7 @@
 import pygame as py
 from tkinter import Tk, filedialog
 from tkinter import Tk, filedialog
+import os
 
 py.init()
 py.font.init()
@@ -26,7 +27,10 @@ class PixelGrid:
     def save_sprite(self):
         root = Tk()
         root.withdraw()
+        # Set default directory to the current working directory or a specific path
+        default_dir = os.path.join(os.path.dirname(__file__), "sprites")  # Uses the directory of the current script
         file_path = filedialog.asksaveasfilename(
+            initialdir=default_dir,
             defaultextension=".spr",
             filetypes=[("Sprite files", "*.spr"), ("All files", "*.*")]
         )
@@ -47,7 +51,7 @@ class PixelGrid:
                             # RGB format
                             r, g, b = pixel
                             row_data.append(f"({r},{g},{b})")
-                    file.write(":".join(row_data) + "\n")
+                        file.write(":".join(row_data) + "\n")
                 
     def load_sprite(self):
         root = Tk()
@@ -108,7 +112,7 @@ class DisplayScreen:
         for i in range(grid.height + 1):
             py.draw.line(self.screen, (70, 70, 70), (0, i * scale), (grid.width * scale, i * scale))
  
-        Sidebar.draw(self.screen, 480, 0)
+        Sidebar.draw(self.screen, self.width, 0)
 
         py.display.update()
 
@@ -352,7 +356,8 @@ class Sidebar:
         self.clickedColorPicker = False
 
 if __name__ == "__main__":
-    size, scale = 12, 40
+    size = 240
+    scale = 480 // size
     grid = PixelGrid(size, size)
     screen = DisplayScreen(size * scale, size * scale)
     Sidebar = Sidebar(100, 600)
