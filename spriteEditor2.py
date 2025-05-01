@@ -123,11 +123,18 @@ class DisplayScreen:
                     if mouse_x < self.width and mouse_y < self.height:
                         grid_x = mouse_x // scale
                         grid_y = mouse_y // scale
-                        if Sidebar.eraser:
-                            color = None
+                        if Sidebar.clickedColorPicker:
+                            # Handle color picking from the grid
+                            pixel_color = grid.getPixel(grid_x, grid_y)
+                            if pixel_color is not None:
+                                Sidebar.setCurrentColor(pixel_color)
+                                Sidebar.clickedColorPicker = False
                         else:
-                            color = Sidebar.getCurrentColor()
-                        grid.setPixel(grid_x, grid_y, color)
+                            if Sidebar.eraser:
+                                color = None
+                            else:
+                                color = Sidebar.getCurrentColor()
+                            grid.setPixel(grid_x, grid_y, color)
 
             # Handle mouse drag (mouse motion while button is pressed)
             elif event.type == py.MOUSEMOTION:
@@ -141,7 +148,7 @@ class DisplayScreen:
                         else:
                             color = Sidebar.getCurrentColor()
                         grid.setPixel(grid_x, grid_y, color)
-                
+            
             if event.type == py.QUIT:
                 return False
 
@@ -158,7 +165,7 @@ class Sidebar:
         self.width = width
         self.height = height
         self.eraser = False
-        self.clickedEraser = False
+        self.clickedColorPicker = False
         self.current_color = (255, 0, 0)
         self.color_obj = py.Color(*self.current_color) 
 
@@ -196,7 +203,10 @@ class Sidebar:
         screen.blit(rgb_label, (x + self.padding, current_y))
         screen.blit(hsv_label, (x + self.padding, current_y + self.text_height + self.text_padding))
         current_y += self.text_height * 2 + self.text_padding * 2 + self.padding
-        
+
+        # Add color picker button
+        current_y = self._draw_button(screen, x, current_y, "Color Picker", (255, 255, 255) if self.clickedColorPicker else (220, 220, 220), self.pick_color)
+        print("Clicked Color Picker:", self.clickedColorPicker)
         current_y = self._draw_button(screen, x, current_y, "Clear", (220, 220, 220), grid.clear)
 
         # Draw eraser button
@@ -245,6 +255,11 @@ class Sidebar:
     def _toggle_eraser(self):
         """Toggle eraser state"""
         self.eraser = not self.eraser
+        self.clickedColorPicker = False
+    
+    def pick_color(self):
+        self.clickedColorPicker = not self.clickedColorPicker
+        self.eraser = False
 
     def _draw_color_grid(self, screen, x, y):
         # Get current HSV values
@@ -282,6 +297,8 @@ class Sidebar:
                 color.hsva = (current_hue, sat, val, 100)
                 self.current_color = (color.r, color.g, color.b)
                 self.eraser = False
+                self.clickedColorPicker = False
+
         
         return y + self.grid_size
 
@@ -312,6 +329,7 @@ class Sidebar:
                 color.hsva = (hue, current_sat, current_val, 100)
                 self.current_color = (color.r, color.g, color.b)
                 self.eraser = False
+                self.clickedColorPicker = False
         
         return y + self.slider_height
 
@@ -328,8 +346,13 @@ class Sidebar:
     def getCurrentColor(self):
         return self.current_color
 
+    def setCurrentColor(self, color):
+        self.current_color = color
+        self.eraser = False
+        self.clickedColorPicker = False
+
 if __name__ == "__main__":
-    size, scale = 8, 60
+    size, scale = 12, 40
     grid = PixelGrid(size, size)
     screen = DisplayScreen(size * scale, size * scale)
     Sidebar = Sidebar(100, 600)
