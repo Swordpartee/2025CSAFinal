@@ -51,7 +51,7 @@ class PixelGrid:
                             # RGB format
                             r, g, b = pixel
                             row_data.append(f"({r},{g},{b})")
-                        file.write(":".join(row_data) + "\n")
+                    file.write(":".join(row_data) + "\n")
                 
     def load_sprite(self):
         root = Tk()
@@ -66,6 +66,11 @@ class PixelGrid:
                 # Read dimensions
                 dimensions = file.readline().strip().split(',')
                 width, height = int(dimensions[0]), int(dimensions[1])
+                
+                # Initialize a new grid with the loaded dimensions
+                self.width = width
+                self.height = height
+                self.grid = [[None for _ in range(width)] for _ in range(height)]
                             
                 # Read pixel data
                 for y in range(height):
