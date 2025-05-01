@@ -206,7 +206,7 @@ class Sidebar:
 
         # Add color picker button
         current_y = self._draw_button(screen, x, current_y, "Color Picker", (255, 255, 255) if self.clickedColorPicker else (220, 220, 220), self.pick_color)
-        print("Clicked Color Picker:", self.clickedColorPicker)
+
         current_y = self._draw_button(screen, x, current_y, "Clear", (220, 220, 220), grid.clear)
 
         # Draw eraser button
