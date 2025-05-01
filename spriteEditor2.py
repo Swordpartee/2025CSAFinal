@@ -28,7 +28,7 @@ class PixelGrid:
         root = Tk()
         root.withdraw()
         # Set default directory to the current working directory or a specific path
-        default_dir = os.path.join(os.path.dirname(__file__), "sprites")  # Uses the directory of the current script
+        default_dir = os.path.join(os.path.dirname(__file__), "src/sprites")  # Uses the directory of the current script
         file_path = filedialog.asksaveasfilename(
             initialdir=default_dir,
             defaultextension=".spr",
