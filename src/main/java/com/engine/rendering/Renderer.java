@@ -17,6 +17,10 @@ public class Renderer extends Frame {
 
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
+    /**
+     * Creates a new Renderer instance.
+     * Combines a Frame which handles the window and a Canvas which handles drawing.
+     */
     public Renderer() {
         canvas = new Canvas();
         canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
@@ -39,15 +43,24 @@ public class Renderer extends Frame {
         });
     }
 
+    /**
+     * Starts the rendering loop.
+     * Redraws the screen every 16 milliseconds.
+     */
     public void start() {
         itterator.scheduleAtFixedRate(() -> {
             redraw();
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
     
-    private void redraw() {
+    /**
+     * Redraws the screen.
+     * Define your drawing logic here.
+     */
+    private void redraw() { 
         BufferStrategy bs = canvas.getBufferStrategy();
         Graphics g = bs.getDrawGraphics();
+
         // Clear the screen
         g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
