@@ -45,12 +45,7 @@ public class Renderer extends Frame {
         canvas.createBufferStrategy(2);
 
         drawables = new ArrayList<Drawable>();
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                System.exit(0);
-            }
+        
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
             System.exit(0);
             System.out.println("Window closed");
