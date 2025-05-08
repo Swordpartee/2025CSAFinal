@@ -78,10 +78,12 @@ public class Renderer extends Frame {
 
     /**
      * Adds a drawable element to be drawn
-     * @param d drawable to add
+     * @param ds drawables to add
      */
-    public void addDrawable(Drawable d) {
-        drawables.add(d);
+    public void addDrawable(Drawable... ds) {
+        for (Drawable d : ds) {
+            drawables.add(d);
+        }
     }
     
     /**
