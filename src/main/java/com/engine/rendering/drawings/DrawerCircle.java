@@ -11,7 +11,7 @@ public class DrawerCircle extends DrawerOval {
      * @param filled whether to fill the circle or not
      */
     public DrawerCircle(int x, int y, int radius, boolean filled) {
-        super(x, y, radius, radius, filled);
+        super(x, y, radius * 2, radius * 2, filled);
     }
 
     /**

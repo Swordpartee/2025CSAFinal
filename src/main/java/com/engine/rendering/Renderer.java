@@ -2,6 +2,7 @@ package com.engine.rendering;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
@@ -13,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import com.engine.rendering.drawings.Drawable;
-
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 
@@ -51,6 +51,22 @@ public class Renderer extends Frame {
             System.exit(0);
             System.out.println("Window closed");
         });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.W, () -> {
+            // System.out.println("W Pressed");
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.A, () -> {
+            // System.out.println("A Pressed");
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.S, () -> {
+            // System.out.println("S Pressed");
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.D, () -> {
+            // System.out.println("D Pressed");
+        });
         
         addListener(listener);
     }
@@ -67,16 +83,6 @@ public class Renderer extends Frame {
     }
 
     /**
-     * Starts the rendering loop.
-     * Redraws the screen every 16 milliseconds.
-     */
-    public void start() {
-        itterator.scheduleAtFixedRate(() -> {
-            redraw();
-        }, 0, 16, TimeUnit.MILLISECONDS);
-    }
-
-    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
@@ -84,6 +90,16 @@ public class Renderer extends Frame {
         for (Drawable d : ds) {
             drawables.add(d);
         }
+    }
+
+    /**
+     * Starts the rendering loop.
+     * Redraws the screen every 16 milliseconds.
+     */
+    public void start() {
+        itterator.scheduleAtFixedRate(() -> {
+            redraw();
+        }, 0, 16, TimeUnit.MILLISECONDS);
     }
     
     /**
