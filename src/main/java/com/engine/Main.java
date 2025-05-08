@@ -9,10 +9,10 @@ public class Main {
         RenderListener listener = new RenderListener();
         Renderer renderer = new Renderer(listener);
 
-        renderer.start();
-
         DrawerRect rect = new DrawerRect(0, 0, 100, 100, true);
 
         renderer.addDrawable(rect);
+
+        renderer.start();
     }
 }

@@ -27,7 +27,8 @@ public class Renderer extends Frame {
 
     /**
      * Creates a new Renderer instance.
-     * Combines a Frame which handles the window and a Canvas which handles drawing.
+     * Combines window elements, canvas drawing, and user inputs
+     * @param listener takes in inputs from the user
      */
     public Renderer(RenderListener listener) {
         canvas = new Canvas();
@@ -45,7 +46,7 @@ public class Renderer extends Frame {
         canvas.createBufferStrategy(2);
 
         drawables = new ArrayList<Drawable>();
-        
+
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
             System.exit(0);
             System.out.println("Window closed");
@@ -94,9 +95,8 @@ public class Renderer extends Frame {
         // Clear the screen by creating a clear rectangle that's the size of the screen
         graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        for(Drawable d : drawables) {
-            d.draw(graphic);
-        }
+        // draws all the created drawable objects
+        for(Drawable d : drawables) d.draw(graphic);
 
         graphic.dispose();
         buffer.show();
