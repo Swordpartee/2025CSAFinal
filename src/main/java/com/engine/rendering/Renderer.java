@@ -6,14 +6,16 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import com.engine.rendering.drawings.Drawable;
 
 public class Renderer extends Frame {
     private final Canvas canvas;
 
-    private int ha = 0;
+    private ArrayList<Drawable> drawables;
 
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
@@ -35,6 +37,8 @@ public class Renderer extends Frame {
 
         canvas.createBufferStrategy(2);
 
+        drawables = new ArrayList<Drawable>();
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -52,25 +56,31 @@ public class Renderer extends Frame {
             redraw();
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
+
+    /**
+     * Adds a drawable element to be drawn
+     * @param d drawable to add
+     */
+    public void addDrawable(Drawable d) {
+        drawables.add(d);
+    }
     
     /**
      * Redraws the screen.
      * Define your drawing logic here.
      */
     private void redraw() { 
-        BufferStrategy bs = canvas.getBufferStrategy();
-        Graphics g = bs.getDrawGraphics();
+        BufferStrategy buffer = canvas.getBufferStrategy();
+        Graphics graphic = buffer.getDrawGraphics();
 
-        // Clear the screen
-        g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        // Clear the screen by creating a clear rectangle that's the size of the screen
+        graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        // For example, draw a simple rectangle
-        ha += 3;
-        ha %= canvas.getHeight();
-        g.fillRect(50, ha, 100, 100);
-        g.fillRect(50, ha - canvas.getHeight(), 100, 100);
+        for(Drawable d : drawables) {
+            d.draw(graphic);
+        }
 
-        g.dispose();
-        bs.show();
+        graphic.dispose();
+        buffer.show();
     }
 }
