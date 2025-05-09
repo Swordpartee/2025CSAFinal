@@ -18,21 +18,19 @@ public class Main {
 
         renderer.addDrawable(circle);
 
-        /* BUTTON BINDINGS HERE */
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.W, () -> {
-            circle.setYPos(circle.getYPos() - 5);
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.A, () -> {
-            circle.setXPos(circle.getXPos() - 5);
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.S, () -> {
-            circle.setYPos(circle.getYPos() + 5);
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.D, () -> {
-            circle.setXPos(circle.getXPos() + 5);
+        renderer.addProcess(() -> {
+            if (listener.isKeyPressed(EventCode.W)) {
+                circle.moveY(-2);
+            }
+            if (listener.isKeyPressed(EventCode.S)) {
+                circle.moveY(2);
+            }
+            if (listener.isKeyPressed(EventCode.A)) {
+                circle.moveX(-2);
+            }
+            if (listener.isKeyPressed(EventCode.D)) {
+                circle.moveX(2);
+            }
         });
 
         renderer.start();
