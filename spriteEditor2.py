@@ -113,9 +113,9 @@ class DisplayScreen:
 
         # Draw grid lines
         for i in range(grid.width + 1):
-            py.draw.line(self.screen, (70, 70, 70), (i * scale, 0), (i * scale, grid.height * scale))
+            py.draw.line(self.screen, (0, 0, 0), (i * scale, 0), (i * scale, grid.height * scale))
         for i in range(grid.height + 1):
-            py.draw.line(self.screen, (70, 70, 70), (0, i * scale), (grid.width * scale, i * scale))
+            py.draw.line(self.screen, (0, 0, 0), (0, i * scale), (grid.width * scale, i * scale))
  
         Sidebar.draw(self.screen, self.width, 0)
 
