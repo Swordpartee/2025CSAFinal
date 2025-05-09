@@ -5,6 +5,7 @@ import com.engine.rendering.drawings.DrawerSquare;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.rendering.drawings.DrawerOval;
 import com.engine.rendering.drawings.DrawerRect;
+import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 
 public class Main {
@@ -13,9 +14,26 @@ public class Main {
         Renderer renderer = new Renderer(listener);
 
         /* ADD DRAWABLES HERE */
-        DrawerCircle circle = new DrawerCircle(200, 50, 50, false);
+        DrawerCircle circle = new DrawerCircle(200, 150, 50, false);
 
         renderer.addDrawable(circle);
+
+        /* BUTTON BINDINGS HERE */
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.W, () -> {
+            circle.setYPos(circle.getYPos() - 5);
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.A, () -> {
+            circle.setXPos(circle.getXPos() - 5);
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.S, () -> {
+            circle.setYPos(circle.getYPos() + 5);
+        });
+
+        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.D, () -> {
+            circle.setXPos(circle.getXPos() + 5);
+        });
 
         renderer.start();
     }

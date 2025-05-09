@@ -10,7 +10,7 @@ public class DrawerCircle extends DrawerOval {
      * @param radius of the circle
      * @param filled whether to fill the circle or not
      */
-    public DrawerCircle(int x, int y, int radius, boolean filled) {
+    public DrawerCircle(double x, double y, double radius, boolean filled) {
         super(x, y, radius * 2, radius * 2, filled);
     }
 
@@ -18,16 +18,18 @@ public class DrawerCircle extends DrawerOval {
      * gets the radius of the circle
      * @return radius
      */
-    public int getRadius() {
+    public double getRadius() {
         return getWidth() / 2;
     }
 
     @Override
     public void draw(Graphics graphic) {
         if(isFilled()) {
-            graphic.fillOval(getXPos(), getYPos(), getWidth(), getHeight());
+            graphic.fillOval((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         } else {
-            graphic.drawOval(getXPos(), getYPos(), getWidth(), getHeight());
+            graphic.drawOval((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         }
     }
 

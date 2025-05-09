@@ -10,16 +10,18 @@ public class DrawerSquare extends DrawerRect {
      * @param size of the square
      * @param filled whether to fill the square or not
      */
-    public DrawerSquare(int x, int y, int size, boolean filled) {
+    public DrawerSquare(double x, double y, double size, boolean filled) {
         super(x, y, size, size, filled);
     }
 
     @Override
     public void draw(Graphics graphic) {
         if (isFilled()) {
-            graphic.fillRect(getXPos(), getYPos(), getWidth(), getHeight());
+            graphic.fillRect((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         } else {
-            graphic.drawRect(getXPos(), getYPos(), getWidth(), getHeight());
+            graphic.drawRect((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         }
     }
 }

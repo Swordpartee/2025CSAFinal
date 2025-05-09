@@ -3,11 +3,11 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 public class DrawerOval implements Drawable{
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
     private boolean filled;
 
@@ -19,7 +19,7 @@ public class DrawerOval implements Drawable{
      * @param height of the oval
      * @param filled whether to fill the oval or not
      */
-    public DrawerOval(int x, int y, int width, int height, boolean filled) {
+    public DrawerOval(double x, double y, double width, double height, boolean filled) {
         this.x = x;
         this.y = y;
 
@@ -33,7 +33,7 @@ public class DrawerOval implements Drawable{
      * gets the x position of the oval
      * @return x position
      */
-    public int getXPos() {
+    public double getXPos() {
         return x;
     }
 
@@ -41,7 +41,7 @@ public class DrawerOval implements Drawable{
      * gets the y position of the oval
      * @return y position
      */
-    public int getYPos() {
+    public double getYPos() {
         return y;
     }
 
@@ -49,7 +49,7 @@ public class DrawerOval implements Drawable{
      * gets the width of the oval
      * @return width
      */
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
@@ -57,7 +57,7 @@ public class DrawerOval implements Drawable{
      * gets the height of the oval
      * @return height
      */
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
@@ -73,7 +73,7 @@ public class DrawerOval implements Drawable{
      * sets a new x position to the oval
      * @param newX the new x position
      */
-    public void setXPos(int newX) {
+    public void setXPos(double newX) {
         x = newX;
     }
 
@@ -81,7 +81,7 @@ public class DrawerOval implements Drawable{
      * sets a new y position to the oval
      * @param newY the new y position
      */
-    public void setYPos(int newY) {
+    public void setYPos(double newY) {
         y = newY;
     }
 
@@ -89,7 +89,7 @@ public class DrawerOval implements Drawable{
      * sets a new width to the oval
      * @param newWidth the new width
      */
-    public void setWidth(int newWidth) {
+    public void setWidth(double newWidth) {
         width = newWidth;
     }
 
@@ -97,7 +97,7 @@ public class DrawerOval implements Drawable{
      * sets a new height to the oval
      * @param newHeight the new height
      */
-    public void setHeight(int newHeight) {
+    public void setHeight(double newHeight) {
         height = newHeight;
     }
 
@@ -112,9 +112,9 @@ public class DrawerOval implements Drawable{
     @Override
     public void draw(Graphics graphic) {
         if(filled) {
-            graphic.fillOval(x, y, width, height);
+            graphic.fillOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         } else {
-            graphic.drawOval(x, y, width, height);
+            graphic.drawOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         }
     }
 }

@@ -23,14 +23,17 @@ public class Renderer extends Frame {
 
     private ArrayList<Drawable> drawables;
 
+    private ArrayList<Runnable> processes;
+
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
     /**
      * Creates a new Renderer instance.
      * Combines window elements, canvas drawing, and user inputs
      * @param listener takes in inputs from the user
+     * @param ps processes you want to run iteratively
      */
-    public Renderer(RenderListener listener) {
+    public Renderer(RenderListener listener, Runnable... ps) {
         canvas = new Canvas();
         this.listener = listener;
         canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
@@ -47,27 +50,14 @@ public class Renderer extends Frame {
 
         drawables = new ArrayList<Drawable>();
 
+        processes = new ArrayList<Runnable>();
+
+        // basic binding of the window closing
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
             System.exit(0);
             System.out.println("Window closed");
         });
 
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.W, () -> {
-            // System.out.println("W Pressed");
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.A, () -> {
-            // System.out.println("A Pressed");
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.S, () -> {
-            // System.out.println("S Pressed");
-        });
-
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.D, () -> {
-            // System.out.println("D Pressed");
-        });
-        
         addListener(listener);
     }
     
@@ -115,6 +105,9 @@ public class Renderer extends Frame {
 
         // draws all the created drawable objects
         for(Drawable d : drawables) d.draw(graphic);
+
+        // runs all created processes
+        for(Runnable p : processes) p.run();
 
         graphic.dispose();
         buffer.show();

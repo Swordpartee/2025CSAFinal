@@ -3,11 +3,11 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 public class DrawerRect implements Drawable {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
     private boolean filled;
 
@@ -19,7 +19,7 @@ public class DrawerRect implements Drawable {
      * @param height of the rectangle
      * @param filled whether to fill the rectangle or not
      */
-    public DrawerRect(int x, int y, int width, int height, boolean filled) {
+    public DrawerRect(double x, double y, double width, double height, boolean filled) {
         this.x = x;
         this.y = y;
 
@@ -33,7 +33,7 @@ public class DrawerRect implements Drawable {
      * gets the x position of the rectangle
      * @return x position
      */
-    public int getXPos() {
+    public double getXPos() {
         return x;
     }
 
@@ -41,7 +41,7 @@ public class DrawerRect implements Drawable {
      * gets the y position of the rectangle
      * @return y position
      */
-    public int getYPos() {
+    public double getYPos() {
         return y;
     }
 
@@ -49,7 +49,7 @@ public class DrawerRect implements Drawable {
      * gets the width of the rectangle
      * @return width
      */
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
@@ -57,7 +57,7 @@ public class DrawerRect implements Drawable {
      * gets the height of the rectangle
      * @return height
      */
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
@@ -73,7 +73,7 @@ public class DrawerRect implements Drawable {
      * sets a new x position to the rectangle
      * @param newX the new x position
      */
-    public void setXPos(int newX) {
+    public void setXPos(double newX) {
         x = newX;
     }
 
@@ -81,7 +81,7 @@ public class DrawerRect implements Drawable {
      * sets a new y position to the rectangle
      * @param newY the new y position
      */
-    public void setYPos(int newY) {
+    public void setYPos(double newY) {
         y = newY;
     }
 
@@ -89,7 +89,7 @@ public class DrawerRect implements Drawable {
      * sets a new width to the rectangle
      * @param newWidth the new width
      */
-    public void setWidth(int newWidth) {
+    public void setWidth(double newWidth) {
         width = newWidth;
     }
 
@@ -97,7 +97,7 @@ public class DrawerRect implements Drawable {
      * sets a new height to the rectangle
      * @param newHeight the new height
      */
-    public void setHeight(int newHeight) {
+    public void setHeight(double newHeight) {
         height = newHeight;
     }
 
@@ -112,9 +112,9 @@ public class DrawerRect implements Drawable {
     @Override
     public void draw(Graphics graphic) {
         if(filled) {
-            graphic.fillRect(x, y, width, height);
+            graphic.fillRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         } else {
-            graphic.drawRect(x, y, width, height);
+            graphic.drawRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         }
     }
 }
