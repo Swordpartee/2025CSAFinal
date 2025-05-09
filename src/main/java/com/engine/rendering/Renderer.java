@@ -5,9 +5,12 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.engine.rendering.drawings.Drawable;
 
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
@@ -15,10 +18,15 @@ import com.engine.rendering.io.RenderListener;
 public class Renderer extends Frame {
     private final Canvas canvas;
 
-    private int ha = 0;
+    private final ArrayList<Drawable> drawables;
 
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
+    /**
+     * Creates a new Renderer instance.
+     * Combines window elements, canvas drawing, and user inputs
+     * @param listener takes in inputs from the user
+     */
     public Renderer(RenderListener listener) {
         canvas = new Canvas();
         canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
@@ -32,6 +40,8 @@ public class Renderer extends Frame {
         setVisible(true);
 
         canvas.createBufferStrategy(2);
+
+        drawables = new ArrayList<>();
 
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
             System.exit(0);
@@ -52,25 +62,39 @@ public class Renderer extends Frame {
         canvas.addMouseMotionListener(listener.getMouseListener());
     }
 
+    /**
+     * Starts the rendering loop.
+     * Redraws the screen every 16 milliseconds.
+     */
     public void start() {
         itterator.scheduleAtFixedRate(() -> {
             redraw();
         }, 0, 16, TimeUnit.MILLISECONDS);
     }
+
+    /**
+     * Adds a drawable element to be drawn
+     * @param d drawable to add
+     */
+    public void addDrawable(Drawable d) {
+        drawables.add(d);
+    }
     
-    private void redraw() {
-        BufferStrategy bs = canvas.getBufferStrategy();
-        Graphics g = bs.getDrawGraphics();
-        // Clear the screen
-        g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    /**
+     * Redraws the screen.
+     * Define your drawing logic here.
+     */
+    private void redraw() { 
+        BufferStrategy buffer = canvas.getBufferStrategy();
+        Graphics graphic = buffer.getDrawGraphics();
 
-        // For example, draw a simple rectangle
-        ha += 3;
-        ha %= canvas.getHeight();
-        g.fillRect(50, ha, 100, 100);
-        g.fillRect(50, ha - canvas.getHeight(), 100, 100);
+        // Clear the screen by creating a clear rectangle that's the size of the screen
+        graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        g.dispose();
-        bs.show();
+        // draws all the created drawable objects
+        for(Drawable d : drawables) d.draw(graphic);
+
+        graphic.dispose();
+        buffer.show();
     }
 }
