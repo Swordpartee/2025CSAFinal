@@ -2,7 +2,7 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-public class DrawerRect implements Drawable {
+public class DrawerOval implements Drawable{
     private double x;
     private double y;
 
@@ -12,14 +12,14 @@ public class DrawerRect implements Drawable {
     private boolean filled;
 
     /**
-     * Creates a new drawable rectangle
-     * @param x position of the top left corner of the rectangle
-     * @param y position of the top left corner of the rectangle
-     * @param width of the rectangle
-     * @param height of the rectangle
-     * @param filled whether to fill the rectangle or not
+     * Creates a new drawable oval
+     * @param x position of the middle of the oval
+     * @param y position of the middle of the oval
+     * @param width of the oval
+     * @param height of the oval
+     * @param filled whether to fill the oval or not
      */
-    public DrawerRect(double x, double y, double width, double height, boolean filled) {
+    public DrawerOval(double x, double y, double width, double height, boolean filled) {
         this.x = x;
         this.y = y;
 
@@ -30,7 +30,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * gets the x position of the rectangle
+     * gets the x position of the oval
      * @return x position
      */
     public double getXPos() {
@@ -38,7 +38,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * gets the y position of the rectangle
+     * gets the y position of the oval
      * @return y position
      */
     public double getYPos() {
@@ -46,7 +46,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * gets the width of the rectangle
+     * gets the width of the oval
      * @return width
      */
     public double getWidth() {
@@ -54,7 +54,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * gets the height of the rectangle
+     * gets the height of the oval
      * @return height
      */
     public double getHeight() {
@@ -62,15 +62,15 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * gets whether the rectangle is filled or not
-     * @return true if filled, false if not
+     * gets whether the oval is filled or not
+     * @return true if filled, false otherwise
      */
     public boolean isFilled() {
         return filled;
     }
 
     /**
-     * sets a new x position to the rectangle
+     * sets a new x position to the oval
      * @param newX the new x position
      */
     public void setXPos(double newX) {
@@ -78,7 +78,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * sets a new y position to the rectangle
+     * sets a new y position to the oval
      * @param newY the new y position
      */
     public void setYPos(double newY) {
@@ -86,7 +86,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * sets a new width to the rectangle
+     * sets a new width to the oval
      * @param newWidth the new width
      */
     public void setWidth(double newWidth) {
@@ -94,7 +94,7 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * sets a new height to the rectangle
+     * sets a new height to the oval
      * @param newHeight the new height
      */
     public void setHeight(double newHeight) {
@@ -102,19 +102,19 @@ public class DrawerRect implements Drawable {
     }
 
     /**
-     * sets whether the rectangle is filled or not
-     * @param filled true if filled, false if not
+     * sets whether the oval is filled or not
+     * @param newFilled true if filled, false otherwise
      */
-    public void setFilled(boolean filled) {
-        this.filled = filled;
+    public void setFilled(boolean newFilled) {
+        filled = newFilled;
     }
 
     @Override
     public void draw(Graphics graphic) {
         if(filled) {
-            graphic.fillRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.fillOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         } else {
-            graphic.drawRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.drawOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
         }
     }
 }
