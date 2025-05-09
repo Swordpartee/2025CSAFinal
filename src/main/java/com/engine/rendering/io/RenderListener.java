@@ -53,7 +53,6 @@ public class RenderListener {
             keyEvents[e.getKeyCode()] = null;
             
             callBinding(EventCode.EventType.KEY_RELEASED, e.getKeyCode());
-
         }
     };
 
