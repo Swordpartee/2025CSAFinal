@@ -4,14 +4,12 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
-import java.net.http.WebSocket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import com.engine.rendering.drawings.Drawable;
 
 import com.engine.rendering.io.EventCode;
@@ -19,9 +17,8 @@ import com.engine.rendering.io.RenderListener;
 
 public class Renderer extends Frame {
     private final Canvas canvas;
-    private final RenderListener listener;
 
-    private ArrayList<Drawable> drawables;
+    private final ArrayList<Drawable> drawables;
 
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
@@ -32,7 +29,6 @@ public class Renderer extends Frame {
      */
     public Renderer(RenderListener listener) {
         canvas = new Canvas();
-        this.listener = listener;
         canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
         canvas.setIgnoreRepaint(true);
         canvas.setFocusable(false);
@@ -45,13 +41,13 @@ public class Renderer extends Frame {
 
         canvas.createBufferStrategy(2);
 
-        drawables = new ArrayList<Drawable>();
+        drawables = new ArrayList<>();
 
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
             System.exit(0);
             System.out.println("Window closed");
         });
-        
+
         addListener(listener);
     }
     

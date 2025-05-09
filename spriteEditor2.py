@@ -99,9 +99,9 @@ class DisplayScreen:
         for y in range(grid.height):
             for x in range(grid.width):
                 if x % 2 != y % 2:
-                    py.draw.rect(self.screen, (40,40,40), (x * scale, y * scale, scale, scale))
+                    py.draw.rect(self.screen, (70,70,70), (x * scale, y * scale, scale, scale))
                 else:
-                    py.draw.rect(self.screen, (30,30,30), (x * scale, y * scale, scale, scale))
+                    py.draw.rect(self.screen, (60,60,60), (x * scale, y * scale, scale, scale))
 
                 color = grid.getPixel(x, y)
                 if color is not None:  # Only draw non-transparent pixels
@@ -361,7 +361,7 @@ class Sidebar:
         self.clickedColorPicker = False
 
 if __name__ == "__main__":
-    size = 12
+    size = 16
     scale = 480 // size
     grid = PixelGrid(size, size)
     screen = DisplayScreen(size * scale, size * scale)
