@@ -10,16 +10,19 @@ public class SessionInfo {
   private String name;
   private boolean hasName = false;
   public String getName() { return name; }
+  public boolean hasName() { return hasName; }
   public void setName(String name) { this.name = name; this.hasName = true; }
 
   private String room;
   private boolean isInRoom = false;
   public String getRoom() { return room; }
+  public boolean isInRoom() { return isInRoom; }
   public void setRoom(String room) { this.room = room; this.isInRoom = true; }
 
   private SecretKey aesKey;
   public boolean isInAESSession = false;
   public SecretKey getAESKey() { return aesKey; }
+  public boolean isInAESSession() { return isInAESSession; }
   public void setAESKey(SecretKey aesKey) { this.aesKey = aesKey; this.isInAESSession = true; }
 
   private InetAddress address;

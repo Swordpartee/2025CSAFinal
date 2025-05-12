@@ -27,6 +27,7 @@ public class ServerPacketData {
 		// Store the actual packet just in case.
 		this.pkt = pkt;
 		this.address = pkt.getSocketAddress();
+		this.sessionInfo = sessionInfo;
 		
 		// If the user is in an AES Session with the server
 		if (sessionInfo.isInAESSession) {

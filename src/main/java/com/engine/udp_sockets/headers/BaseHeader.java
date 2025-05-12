@@ -9,9 +9,16 @@ public enum BaseHeader {
 	AuthSignup((byte[]) new byte[] { 0, 2 }),
 	AuthLogin((byte[]) new byte[] { 0, 3 }),
 	AuthSignout((byte[]) new byte[] { 0, 4 }),
+  AuthError((byte[]) new byte[] { 0, 5 }),
 	
-	BackForthMsg((byte[]) new byte[] { 0, 5 }),
-	MsgFailed((byte[]) new byte[] { 0, 6 });
+  JoinRoom((byte[]) new byte[] { 0, 6 }),
+  CreateRoom((byte[]) new byte[] { 0, 7 }),
+  LeaveRoom((byte[]) new byte[] { 0, 8 }),
+  AskRoomList((byte[]) new byte[] { 0, 9 }),
+  RoomError((byte[]) new byte[] { 0, 10 }),
+
+	BackForthMsg((byte[]) new byte[] { 0, 11 }),
+	MsgFailed((byte[]) new byte[] { 0, 12 });
 
 	private final byte[] value;
 
@@ -29,9 +36,9 @@ public enum BaseHeader {
   
   public static BaseHeader from(byte[] value) {
     for (BaseHeader byteEnum : BaseHeader.values()) {
-        if (byteEnum.compare(value)) {
-            return byteEnum;
-        }
+      if (byteEnum.compare(value)) {
+        return byteEnum;
+      }
     }
     
     throw new IllegalArgumentException("No enum constant with byte[] value " + value);

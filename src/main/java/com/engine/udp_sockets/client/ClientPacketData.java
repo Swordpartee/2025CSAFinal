@@ -1,4 +1,4 @@
-package client;
+package com.engine.udp_sockets.client;
 
 import java.net.DatagramPacket;
 import java.net.SocketAddress;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import javax.crypto.SecretKey;
 
-import encryption.Encryption;
+import com.engine.udp_sockets.encryption.Encryption;
 
 public class ClientPacketData {
 	public byte[] rawPktData;

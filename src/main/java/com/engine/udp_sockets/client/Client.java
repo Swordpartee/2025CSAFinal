@@ -30,11 +30,16 @@ public class Client {
   private DatagramPacket recvPacket;
   
   private boolean aesSessionStarted = false;
-  private volatile boolean connected;
+	private volatile boolean connected;
+	private volatile boolean nameSet = false;
+	private volatile boolean roomSet = false;
+	public boolean nameSet() { return nameSet; }
+	public boolean roomSet() { return roomSet; }
   
   private RecvFunc recv;
-  
-  private Scanner scan;
+
+	private volatile boolean recievedWaitForHeader = false;
+	private volatile byte[][] waitForHeaders;
   
   private void requestPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
   	System.out.println("Asking For Public Key...");
@@ -114,7 +119,6 @@ public class Client {
   public Client(RecvFunc recv, Scanner scan) throws Exception {
   	// Setup server
     this.recv = recv;
-    this.scan = scan;
   }
   
   public void connect(String address, int port) throws Exception {
@@ -134,50 +138,97 @@ public class Client {
     // Start the client's receiving thread
     new ClientRecvThread().start();
 
-    tryGetUser(scan);
+    // tryGetUser(scan);
     
-    // Wait until connected
-    while (!connected) {
+    // // Wait until connected
+    // while (!connected) {
     	
-    }
+    // }
   }
+
+	private void sendPacket(byte[] buffer, InetAddress address, int port) throws Exception {  		
+		sendBuffer = buffer;
+		sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, port);
+		socket.send(sendPacket);
+	}
+
+	public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
+		sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg), aesKey);
+		DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, this.address, this.port);
+		socket.send(sendPacket);
+	}
+	
+	public void sendSessionPacketAndWait(byte[] header, byte[] msg, byte[][] waitForHeaders) throws Exception {
+		sendSessionPacket(header, msg);
+		recievedWaitForHeader = false;
+		this.waitForHeaders = waitForHeaders;
+
+		while (!recievedWaitForHeader) { Thread.sleep(100); }
+	}
+	
+	private void processPacketData(ClientPacketData data) throws Exception {
+		if (waitForHeaders != null) {
+			for (byte[] header : waitForHeaders) {
+				if (Arrays.equals(header, data.header)) {
+					recievedWaitForHeader = true;
+					waitForHeaders = null;
+					break;
+				}
+			}
+		}
+
+		if (Arrays.equals(BaseHeader.BackForthMsg.value(), data.header)) {
+			System.out.println("Back Forth Msg: " + data.msgStr);
+		}
+		
+		// if (Arrays.equals(BaseHeader.AuthLogin.value(), data.header)) {
+		// 	System.out.println("Login Msg: " + data.msgStr);
+		// 	// Ask again for the user when something goes wrong
+		// 	if (data.msgStr.equals("Something went wrong logging in :(")) {
+		// 		tryGetUser(threadScan);
+		// 		return;
+		// 	}
+		// 	connected = true;
+		// }
+		
+		// if (Arrays.equals(BaseHeader.AuthSignup.value(), data.header)) {
+		// 	System.out.println("Signup Msg: " + data.msgStr);
+		// 	// Ask again for the user when something goes wrong
+		// 	if (data.msgStr.equals("Something went wrong making your account :(")) {
+		// 		tryGetUser(threadScan);
+		// 		return;
+		// 	}
+		// 	connected = true;
+		// }
+
+		if (BaseHeader.AuthLogin.compare(data.header)) {
+			System.out.println(data.msgStr);
+			nameSet = true;
+		}
+
+		if (BaseHeader.AuthError.compare(data.header)) {
+			System.out.println("Auth Error: " + data.msgStr);
+		}
+
+		if (BaseHeader.CreateRoom.compare(data.header)) {
+			System.out.println(data.msgStr);
+			roomSet = true;
+		}
+
+		if (BaseHeader.JoinRoom.compare(data.header)) {
+			System.out.println(data.msgStr);
+			roomSet = true;
+		}
+
+		if (BaseHeader.RoomError.compare(data.header)) {
+			System.out.println("Room Error: " + data.msgStr);
+		}
+		
+		recv.run(data);
+	}
   
   class ClientRecvThread extends Thread {
   	private Scanner threadScan = new Scanner(System.in);
-  	
-  	public void sendPacket(byte[] buffer, InetAddress address, int port) throws Exception {  		
-  		sendBuffer = buffer;
-  		sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, port);
-  		socket.send(sendPacket);
-  	}
-  	
-  	public void processPacketData(ClientPacketData data) throws Exception {
-  		if (Arrays.equals(BaseHeader.BackForthMsg.value(), data.header)) {
-  			System.out.println("Back Forth Msg: " + data.msgStr);
-  		}
-  		
-  		if (Arrays.equals(BaseHeader.AuthLogin.value(), data.header)) {
-  			System.out.println("Login Msg: " + data.msgStr);
-  			// Ask again for the user when something goes wrong
-  			if (data.msgStr.equals("Something went wrong logging in :(")) {
-  				tryGetUser(threadScan);
-  				return;
-  			}
-  			connected = true;
-  		}
-  		
-  		if (Arrays.equals(BaseHeader.AuthSignup.value(), data.header)) {
-  			System.out.println("Signup Msg: " + data.msgStr);
-  			// Ask again for the user when something goes wrong
-				if (data.msgStr.equals("Something went wrong making your account :(")) {
-  				tryGetUser(threadScan);
-  				return;
-  			}
-				connected = true;
-  		}
-  		
-  		recv.run(data);
-  	}
   	
   	public void run() {
   		try {
@@ -214,11 +265,11 @@ public class Client {
   	}
   }
 
-  public void sendPacket(byte[] header, String msg) throws Exception {
+  private void sendPacket(byte[] header, String msg) throws Exception {
   	sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg.getBytes()), aesKey);
 //  	System.out.println("Decrypt: " + Arrays.toString(Encryption.decryptAES(sendBuffer, aesKey)));
 //  	System.out.println("MSG: " + Arrays.toString(sendBuffer) + " LEN: " + sendBuffer.length);
-  	DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
+  	DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, this.address, this.port);
     socket.send(sendPacket);
   }
 
