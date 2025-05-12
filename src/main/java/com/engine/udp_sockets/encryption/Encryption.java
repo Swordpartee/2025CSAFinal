@@ -107,7 +107,7 @@ public class Encryption {
   }
   
   // Hashing
-  public static String hashPassword(String password) {
+  public static String hashString(String password) {
     // Create an Argon2 instance
     Argon2 argon2 = Argon2Factory.create();
 
@@ -116,11 +116,11 @@ public class Encryption {
     try {
         // Hash the password with Argon2
         hash = argon2.hash(2, 65536, 1, password.getBytes());
-        System.out.println("Hashed password: " + hash);
+        // System.out.println("Hashed password: " + hash);
 
         // Verify the password
         boolean isMatch = argon2.verify(hash, password.getBytes());
-        System.out.println("Password verification: " + isMatch);
+        // System.out.println("Password verification: " + isMatch);
     } finally {
         // Ensure memory is wiped for security
         argon2.wipeArray(password.toCharArray());

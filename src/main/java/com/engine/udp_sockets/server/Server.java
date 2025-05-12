@@ -47,7 +47,7 @@ public class Server {
   
   private RecvFunc recv;
   
-	private ArrayList<String> rooms = new ArrayList<String>();
+	private HashMap<String, String> rooms = new HashMap<String, String>();
 	private HashMap<SocketAddress, SessionInfo> sessions = new HashMap<SocketAddress, SessionInfo>();
 
   public Server(RecvFunc recv) throws Exception {
@@ -163,8 +163,8 @@ public class Server {
 		if (BaseHeader.AuthLogin.compare(data.header)) {
 			String username = data.msgStr;
 			
-			if (!username.matches("^[a-z]+$")) {
-				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid username. Must be all lowercase letters with no special characters or spaces.".getBytes(), data.sessionInfo);
+			if (!username.matches("^[a-z0-9_]+$")) {
+				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid username. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
 				return;
 			}
 
@@ -178,19 +178,26 @@ public class Server {
 		}
 
 		if (BaseHeader.CreateRoom.compare(data.header)) {
-			String roomName = data.msgStr;
+			String[] roomData = data.msgStr.split(":", 2);
+			String roomName = roomData[0];
+			String password = roomData.length > 1 ? roomData[1] : null;
 			
-			if (!roomName.matches("^[a-z]+$")) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room name. Must be all lowercase letters with no special characters or spaces.".getBytes(), data.sessionInfo);
+			if (password != null && password.indexOf(" ") != -1) {
+				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room password. Must not contain spaces.".getBytes(), data.sessionInfo);
+				return;
+			}
+
+			if (!roomName.matches("^[a-z0-9_]+$")) {
+				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room name. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
 				return;
 			}
 			
-			if (rooms.contains(roomName)) {
+			if (rooms.keySet().contains(roomName)) {
 				sendSessionPacket(BaseHeader.RoomError.value(), "Room already exists!".getBytes(), data.sessionInfo);
 				return;
 			}
 			
-			rooms.add(roomName);
+			rooms.put(roomName, password == null ? password : Encryption.hashString(password));
 
 			sessions.get(data.address).setRoom(roomName);
 			sendSessionPacket(BaseHeader.CreateRoom.value(), ("You created the room \"" + roomName + "\"!").getBytes(), data.sessionInfo);
@@ -198,10 +205,19 @@ public class Server {
 		}
 
 		if (BaseHeader.JoinRoom.compare(data.header)) {
-			String roomName = data.msgStr;
-			
-			if (!rooms.contains(roomName)) {
+			String[] roomData = data.msgStr.split(":");
+			String roomName = roomData[0];
+			String password = roomData.length > 1 ? roomData[1] : "";
+
+			if (!rooms.keySet().contains(roomName)) {
 				sendSessionPacket(BaseHeader.RoomError.value(), "Room doesn't exist!".getBytes(), data.sessionInfo);
+				return;
+			}
+
+			Argon2 argon2 = Argon2Factory.create();
+
+			if (rooms.get(roomName) != null && !argon2.verify(rooms.get(roomName), password.getBytes())) {
+				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid Room password!".getBytes(), data.sessionInfo);
 				return;
 			}
 			
@@ -210,10 +226,9 @@ public class Server {
 			return;
 		}
 
-		if (rooms.contains(data.sessionInfo.getRoom())) {
+		if (!data.sessionInfo.isInRoom()) {
 			return;
 		}
-
 		
 //  		// Check if the user that sent the packet is authenticated.
 //  		// (For now, I am just going to assume that the client is who it says it is.)

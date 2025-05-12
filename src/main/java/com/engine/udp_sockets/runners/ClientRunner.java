@@ -31,6 +31,7 @@ public class ClientRunner {
 		client = new Client(ClientRunner::processRecv, scan);
 		client.connect("localhost", 4445);
 
+
 		while (!client.nameSet()) {
 			System.out.println("Enter your username:");
 			client.sendSessionPacketAndWait(BaseHeader.AuthLogin.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthError.value()});
@@ -40,11 +41,11 @@ public class ClientRunner {
 			System.out.println("Do you want to create or join room? (c/j)");
 			String choice = scan.nextLine();
 			if (choice.equals("c")) {
-				System.out.println("Enter the room you want to create:");
+				System.out.println("Enter the room you want to create: (room name:room password)");
 				client.sendSessionPacketAndWait(BaseHeader.CreateRoom.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.CreateRoom.value(), BaseHeader.RoomError.value()});
 				continue;
 			} else if (choice.equals("j")) {
-				System.out.println("Enter the room you want to join:");
+				System.out.println("Enter the room you want to join: (room name:room password)");
 				client.sendSessionPacketAndWait(BaseHeader.JoinRoom.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.JoinRoom.value(), BaseHeader.RoomError.value()});
 				continue;
 			} else {
@@ -56,7 +57,7 @@ public class ClientRunner {
 		boolean connected = true;
 		while (connected) {
   		try {
-				client.sendSessionPacket(BaseHeader.BackForthMsg.value(), scan.nextLine().getBytes());
+				client.sendSessionPacket(BaseHeader.BackForthMsg.value(), scan.nextLine());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

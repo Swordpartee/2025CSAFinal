@@ -100,7 +100,7 @@ public class Client {
 	   			String username = scan.nextLine();
 	   			System.out.println("Please Enter Your Password: ");
 	   			String password = scan.nextLine();
-	   			this.sendPacket(BaseHeader.AuthLogin.value(), username + " " + password);
+	   			this.sendSessionPacket(BaseHeader.AuthLogin.value(), username + " " + password);
 	   			break;
 	   	}
 	   	else if (choice.equals("signup")) {
@@ -108,7 +108,7 @@ public class Client {
 	   			String username = scan.nextLine();
 	   			System.out.println("Please Enter Your Password: ");
 	   			String password = scan.nextLine();
-	   			this.sendPacket(BaseHeader.AuthSignup.value(), username + " " + password);
+	   			this.sendSessionPacket(BaseHeader.AuthSignup.value(), username + " " + password);
 	   			break;
 	   	} else {
 	   		System.out.println("Not a valid choice, try again: (login, signup)");
@@ -154,7 +154,7 @@ public class Client {
 
 	public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
 		sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg), aesKey);
-		DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, this.address, this.port);
+		DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
 		socket.send(sendPacket);
 	}
 	
@@ -265,11 +265,11 @@ public class Client {
   	}
   }
 
-  private void sendPacket(byte[] header, String msg) throws Exception {
+  public void sendSessionPacket(byte[] header, String msg) throws Exception {
   	sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg.getBytes()), aesKey);
 //  	System.out.println("Decrypt: " + Arrays.toString(Encryption.decryptAES(sendBuffer, aesKey)));
 //  	System.out.println("MSG: " + Arrays.toString(sendBuffer) + " LEN: " + sendBuffer.length);
-  	DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, this.address, this.port);
+  	DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
     socket.send(sendPacket);
   }
 
