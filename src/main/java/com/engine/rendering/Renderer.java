@@ -50,8 +50,8 @@ public class Renderer extends Frame {
 
         // basic binding of the window closing
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
-            System.exit(0);
             System.out.println("Window closed");
+            System.exit(0);
         });
 
         addListener(listener);
@@ -72,7 +72,7 @@ public class Renderer extends Frame {
      * Adds a process to be run
      * @param ps processes to add
      */
-    public void addProcess(Runnable... ps) {
+    public void addProcesses(Runnable... ps) {
         processes.addAll(Arrays.asList(ps));
     }
 
@@ -80,7 +80,7 @@ public class Renderer extends Frame {
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
-    public void addDrawable(Drawable... ds) {
+    public void addDrawables(Drawable... ds) {
         drawables.addAll(Arrays.asList(ds));
     }
 

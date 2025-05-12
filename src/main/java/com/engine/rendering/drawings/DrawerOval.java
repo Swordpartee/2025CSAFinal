@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 import com.engine.util.Point;
 
-public class DrawerOval extends Point implements Drawable{
+public class DrawerOval extends Point implements Drawable {
 
     private double width;
     private double height;
