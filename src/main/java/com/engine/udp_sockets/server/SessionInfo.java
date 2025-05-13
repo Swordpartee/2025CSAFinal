@@ -7,11 +7,20 @@ import javax.crypto.SecretKey;
 
 public class SessionInfo {
 
-  private String name;
-  private boolean hasName = false;
-  public String getName() { return name; }
-  public boolean hasName() { return hasName; }
-  public void setName(String name) { this.name = name; this.hasName = true; }
+  private String username;
+  private boolean hasUsername = false;
+  public String getUsername() { return username; }
+  public boolean hasUsername() { return hasUsername; }
+  public void setUsername(String username) { this.username = username; this.hasUsername = true; }
+
+  private String sessionKey;
+  private boolean hasSessionKey = false;
+  public String getSessionKey() { return sessionKey; }
+  public boolean hasSessionKey() { return hasSessionKey; }
+  public void setSessionKey(String sessionKey) { this.sessionKey = sessionKey; this.hasSessionKey = true; this.loggedIn = true; }
+
+  private boolean loggedIn = false;
+  public boolean isLoggedIn() { return loggedIn; }
 
   private String room;
   private boolean isInRoom = false;

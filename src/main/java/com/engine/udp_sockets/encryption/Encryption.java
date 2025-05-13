@@ -33,11 +33,9 @@ public class Encryption {
 		return Arrays.copyOfRange(pkt.getData(), 0, pkt.getLength());
 	}
 	
-	public static byte[] concatBytes(byte[] a, byte[] b) {
-		byte[] allBytes = new byte[a.length + b.length];
-		ByteBuffer byteBuf = ByteBuffer.wrap(allBytes);
-		byteBuf.put(a);
-		byteBuf.put(b);
+	public static byte[] concatBytes(byte[]... b) {
+        ByteBuffer byteBuf = ByteBuffer.allocate(Arrays.stream(b).mapToInt(arr -> arr.length).sum());
+        Arrays.stream(b).forEach(byteBuf::put);
 		return byteBuf.array();
 	}
 	

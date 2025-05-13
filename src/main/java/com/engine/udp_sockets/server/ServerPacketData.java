@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 
+import com.engine.udp_sockets.encryption.Convert;
 import com.engine.udp_sockets.encryption.Encryption;
 
 public class ServerPacketData {
@@ -20,6 +21,9 @@ public class ServerPacketData {
 	
 	public DatagramPacket pkt;
 	public SocketAddress address;
+
+	public String clientHMAC;
+	public long clientTime;
 
 	public SessionInfo sessionInfo;
 	
@@ -45,5 +49,26 @@ public class ServerPacketData {
 		header = Arrays.copyOfRange(rawPktData, 0, 2);
 		msg = Arrays.copyOfRange(rawPktData, 2, rawPktData.length);
 		msgStr = new String(msg, 0, msg.length);
+
+		if (sessionInfo.isLoggedIn()) {
+			int index = 0;
+
+			// Extract the first message segment
+			int firstMsgLength = msg[index];
+			clientTime = Convert.btol(Arrays.copyOfRange(msg, index + 1, index + 1 + firstMsgLength));
+			index += 1 + firstMsgLength;
+
+			// Extract the second message segment
+			int secondMsgLength = msg[index];
+			clientHMAC = Convert.btos(Arrays.copyOfRange(msg, index + 1, index + 1 + secondMsgLength));
+			index += 1 + secondMsgLength;
+
+			// Extract the remaining message as the final segment
+			msgStr = Convert.btos(Arrays.copyOfRange(msg, index, msg.length));
+
+			// System.out.println("Client Time: " + clientTime);
+			// System.out.println("Client HMAC: " + clientHMAC);
+			// System.out.println("Client Msg: " + msgStr);
+		}
 	}
 }

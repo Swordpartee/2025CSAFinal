@@ -32,8 +32,8 @@ public class ClientRunner {
 		client.connect("localhost", 4445);
 
 
-		while (!client.nameSet()) {
-			System.out.println("Enter your username:");
+		while (!client.loggedIn()) {
+			System.out.println("Enter your username and password: (username:password)");
 			client.sendSessionPacketAndWait(BaseHeader.AuthLogin.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthError.value()});
 		}
 

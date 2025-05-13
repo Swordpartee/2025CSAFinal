@@ -29,6 +29,7 @@ import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
 import com.engine.udp_sockets.encryption.Encryption;
+import com.engine.udp_sockets.encryption.HMACAuthenticator;
 import com.engine.udp_sockets.headers.BaseHeader;
 
 
@@ -58,7 +59,7 @@ public class Server {
       this.publicKey = keyPair.getPublic();
       this.privateKey = keyPair.getPrivate();
       
-      System.out.println(Arrays.toString(getUsers("9*A#awjd893E*jf37ug$h", false).toArray()));
+      System.out.println(Arrays.toString(getUsers("9*A#awjd893E*jf37ug$h", "", false).toArray()));
   }
 
   public void start() {
@@ -138,44 +139,52 @@ public class Server {
 			return;
 		}
 		
-		// if (BaseHeader.AuthLogin.compare(data.header)) {
-		// 	String username = data.msgStr.split(" ")[0];
-		// 	String password = data.msgStr.split(" ")[1];
-		// 	if (authenticateUser(username, password)) {
-		// 		sendPacket(BaseHeader.AuthLogin.value(), "Success! You \"logged\" in!".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-		// 	} else {
-		// 		sendPacket(BaseHeader.AuthLogin.value(), "Something went wrong logging in :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-		// 	}
-		// 	return;
-		// }
-		
-		// if (BaseHeader.AuthSignup.compare(data.header)) {
-		// 	String username = data.msgStr.split(" ")[0];
-		// 	String password = data.msgStr.split(" ")[1];
-		// 	if (addUser(username, password)) {
-		// 		sendPacket(BaseHeader.AuthSignup.value(), "Success! Your account has been made".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-		// 	} else {
-		// 		sendPacket(BaseHeader.AuthSignup.value(), "Something went wrong making your account :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-		// 	}
-		// 	return;
-		// }
-
 		if (BaseHeader.AuthLogin.compare(data.header)) {
-			String username = data.msgStr;
-			
+			String username = data.msgStr.split(":", 2)[0];
+			String password = data.msgStr.split(":", 2)[1];
+			if (authenticateUser(username, password, data.sessionInfo.getSessionKey())) {
+				sessions.get(data.address).setUsername(username);
+				sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
+				// System.out.println("User " + username + " logged in!");
+				sendPacket(BaseHeader.AuthLogin.value(), (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! You \"logged\" in!").getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+			} else {
+				sendPacket(BaseHeader.AuthError.value(), "Something went wrong logging in :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+			}
+			return;
+		}
+		
+		if (BaseHeader.AuthSignup.compare(data.header)) {
+			String username = data.msgStr.split(":", 2)[0];
+			String password = data.msgStr.split(":", 2)[1];
+
 			if (!username.matches("^[a-z0-9_]+$")) {
 				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid username. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
 				return;
 			}
 
-			sessions.get(data.address).setName(username);
-			sendSessionPacket(BaseHeader.AuthLogin.value(), ("You logged in as \"" + username + "\"!").getBytes(), data.sessionInfo);
+			if (password.length() < 6 || password.indexOf(" ") != -1) {
+				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid password. Must not contain spaces.".getBytes(), data.sessionInfo);
+				return;
+			}
+
+			if (addUser(username, password)) {
+				sessions.get(data.address).setUsername(username);
+				sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
+				sendPacket(BaseHeader.AuthSignup.value(), (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! Your account has been made").getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+			} else {
+				sendPacket(BaseHeader.AuthError.value(), "Something went wrong making your account :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+			}
 			return;
 		}
 
-		if (!data.sessionInfo.hasName()) {
+		if (!data.sessionInfo.hasUsername()) {
 			return;
 		}
+
+		if (!HMACAuthenticator.validateHMACToken(data.sessionInfo.getSessionKey(), data.sessionInfo.getUsername(), data.clientTime, data.clientHMAC, 300)) {
+			return;
+		}
+
 
 		if (BaseHeader.CreateRoom.compare(data.header)) {
 			String[] roomData = data.msgStr.split(":", 2);
@@ -239,7 +248,7 @@ public class Server {
 //  		
 		
 		if (BaseHeader.BackForthMsg.compare(data.header)) {
-			sendPacket(BaseHeader.BackForthMsg.value(), data.msg, data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+			sendPacket(BaseHeader.BackForthMsg.value(), data.msgStr.getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
 		}
 		
 		recv.run(data);
@@ -281,8 +290,8 @@ public class Server {
   private final String CONFIG_PATH = System.getenv("APPDATA") + "\\Java Server\\config.json";
   private final SecretKey CONFIG_KEY = new SecretKeySpec(Base64.getDecoder().decode(System.getenv("AES_ECLIPSE_SECRET_KEY")), "AES");
   
-  private ArrayList<String> getUsers(String password, boolean sorted) throws Exception {
-  	if (authenticateUser("admin", password)) {
+  private ArrayList<String> getUsers(String adminPassword, String adminSessionKey, boolean sorted) throws Exception {
+  	if (authenticateUser("admin", adminPassword, adminSessionKey)) {
 	  	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
 	  	JSONObject json = new JSONObject(content);
 	  	JSONObject users = json.getJSONObject("users");
@@ -301,12 +310,12 @@ public class Server {
   	return new ArrayList<String>();
   }
   
-  private boolean deleteUser(String username, String password) throws Exception {
+  private boolean deleteUser(String username, String password, String sessionKey) throws Exception {
   	if (username.equals("admin")) {
   		System.out.println("You cannot delete this user!");
   	}
   	
-  	if (authenticateUser("admin", password) || authenticateUser(username, password)) {
+  	if (authenticateUser("admin", password, sessionKey) || authenticateUser(username, password, sessionKey)) {
 	  	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
 	  	JSONObject json = new JSONObject(content);
 	  	JSONObject users = json.getJSONObject("users");
@@ -322,7 +331,7 @@ public class Server {
   }
   
   /** @description Auth users */
-  private boolean authenticateUser(String username, String password) throws Exception {
+  private boolean authenticateUser(String username, String password, String sessionKey) throws Exception {
   	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
   	JSONObject json = new JSONObject(content);
   	JSONObject users = json.getJSONObject("users");

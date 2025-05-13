@@ -9,7 +9,9 @@ import java.util.Base64;
 import java.util.Scanner;
 import javax.crypto.SecretKey;
 
+import com.engine.udp_sockets.encryption.Convert;
 import com.engine.udp_sockets.encryption.Encryption;
+import com.engine.udp_sockets.encryption.HMACAuthenticator;
 import com.engine.udp_sockets.headers.BaseHeader;
 
 import java.io.*;
@@ -31,12 +33,15 @@ public class Client {
   
   private boolean aesSessionStarted = false;
 	private volatile boolean connected;
-	private volatile boolean nameSet = false;
+	private volatile boolean loggedIn = false;
 	private volatile boolean roomSet = false;
-	public boolean nameSet() { return nameSet; }
+	public boolean loggedIn() { return loggedIn; }
 	public boolean roomSet() { return roomSet; }
   
   private RecvFunc recv;
+
+	private String sessionKey;
+	private String username;
 
 	private volatile boolean recievedWaitForHeader = false;
 	private volatile byte[][] waitForHeaders;
@@ -90,32 +95,6 @@ public class Client {
     return false;
   }
   
-  private void tryGetUser(Scanner scan) throws Exception {
-  	System.out.println("Do you wish to login or signup?");
-  	
-   	while (true) {  		
-	   	String choice = scan.nextLine();
-	   	if (choice.equals("login")) {
-	   			System.out.println("Please Enter Your Username: ");
-	   			String username = scan.nextLine();
-	   			System.out.println("Please Enter Your Password: ");
-	   			String password = scan.nextLine();
-	   			this.sendSessionPacket(BaseHeader.AuthLogin.value(), username + " " + password);
-	   			break;
-	   	}
-	   	else if (choice.equals("signup")) {
-	   			System.out.println("Please Enter Your Username: ");
-	   			String username = scan.nextLine();
-	   			System.out.println("Please Enter Your Password: ");
-	   			String password = scan.nextLine();
-	   			this.sendSessionPacket(BaseHeader.AuthSignup.value(), username + " " + password);
-	   			break;
-	   	} else {
-	   		System.out.println("Not a valid choice, try again: (login, signup)");
-	   	}
-   	}
-  }
-  
   public Client(RecvFunc recv, Scanner scan) throws Exception {
   	// Setup server
     this.recv = recv;
@@ -152,7 +131,19 @@ public class Client {
 		socket.send(sendPacket);
 	}
 
+	public void sendSessionPacket(byte[] header, String msg) throws Exception {
+		sendSessionPacket(header, msg.getBytes());
+  }
+
 	public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
+		if (loggedIn && sessionKey != null) {
+			long time = System.currentTimeMillis() / 1000;
+			String hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
+			// System.out.println("HMAC MSG: " + hmac + " Time: " + time + " Session Key: " + sessionKey + " Username: " + username);
+			byte[] timeBytes = Convert.ltob(time);
+			msg = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes, new byte[] { (byte) hmac.getBytes().length }, hmac.getBytes(), msg);
+		}
+
 		sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg), aesKey);
 		DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
 		socket.send(sendPacket);
@@ -167,61 +158,42 @@ public class Client {
 	}
 	
 	private void processPacketData(ClientPacketData data) throws Exception {
-		if (waitForHeaders != null) {
-			for (byte[] header : waitForHeaders) {
-				if (Arrays.equals(header, data.header)) {
-					recievedWaitForHeader = true;
-					waitForHeaders = null;
-					break;
-				}
-			}
-		}
 
 		if (Arrays.equals(BaseHeader.BackForthMsg.value(), data.header)) {
 			System.out.println("Back Forth Msg: " + data.msgStr);
+			return;
 		}
-		
-		// if (Arrays.equals(BaseHeader.AuthLogin.value(), data.header)) {
-		// 	System.out.println("Login Msg: " + data.msgStr);
-		// 	// Ask again for the user when something goes wrong
-		// 	if (data.msgStr.equals("Something went wrong logging in :(")) {
-		// 		tryGetUser(threadScan);
-		// 		return;
-		// 	}
-		// 	connected = true;
-		// }
-		
-		// if (Arrays.equals(BaseHeader.AuthSignup.value(), data.header)) {
-		// 	System.out.println("Signup Msg: " + data.msgStr);
-		// 	// Ask again for the user when something goes wrong
-		// 	if (data.msgStr.equals("Something went wrong making your account :(")) {
-		// 		tryGetUser(threadScan);
-		// 		return;
-		// 	}
-		// 	connected = true;
-		// }
 
 		if (BaseHeader.AuthLogin.compare(data.header)) {
-			System.out.println(data.msgStr);
-			nameSet = true;
+			String[] msgData = data.msgStr.split(":");
+			System.out.println(msgData[2]);
+			sessionKey = msgData[0];
+			username = msgData[1];
+			// System.out.println("Session Key: " + sessionKey);
+			loggedIn = true;
+			return;
 		}
 
 		if (BaseHeader.AuthError.compare(data.header)) {
 			System.out.println("Auth Error: " + data.msgStr);
+			return;
 		}
 
 		if (BaseHeader.CreateRoom.compare(data.header)) {
 			System.out.println(data.msgStr);
 			roomSet = true;
+			return;
 		}
 
 		if (BaseHeader.JoinRoom.compare(data.header)) {
 			System.out.println(data.msgStr);
 			roomSet = true;
+			return;
 		}
 
 		if (BaseHeader.RoomError.compare(data.header)) {
 			System.out.println("Room Error: " + data.msgStr);
+			return;
 		}
 		
 		recv.run(data);
@@ -243,17 +215,19 @@ public class Client {
 		      socket.receive(recvPacket);
 		      
 		      ClientPacketData data = new ClientPacketData(recvPacket, aesSessionStarted, aesKey);
-//  		      System.out.println("Bytes: " + Arrays.toString(data.msg));
-		      
-//		      for (Field f : Headers.class.getFields()) {
-//		      	byte[] fieldBytes = new byte[2];
-//		      	if (Arrays.equals((byte[]) f.get(fieldBytes), data.header)) {
-//		      		System.out.println("Header: " + f.getName());
-//		      	}
-//		      }
-//		      System.out.println("Msg: " + data.msgStr);
-		      
-		      processPacketData(data);
+
+					processPacketData(data);
+
+					// If the header a request was wait for is received, set the flag to true
+					if (waitForHeaders != null) {
+						for (byte[] header : waitForHeaders) {
+							if (Arrays.equals(header, data.header)) {
+								recievedWaitForHeader = true;
+								waitForHeaders = null;
+								break;
+							}
+						}
+					}
         }
         socket.close();
         
@@ -263,14 +237,6 @@ public class Client {
     	}
   		threadScan.close();
   	}
-  }
-
-  public void sendSessionPacket(byte[] header, String msg) throws Exception {
-  	sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, msg.getBytes()), aesKey);
-//  	System.out.println("Decrypt: " + Arrays.toString(Encryption.decryptAES(sendBuffer, aesKey)));
-//  	System.out.println("MSG: " + Arrays.toString(sendBuffer) + " LEN: " + sendBuffer.length);
-  	DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
-    socket.send(sendPacket);
   }
 
   public void close() {
