@@ -1,11 +1,7 @@
 package com.engine.udp_sockets.runners;
 
-import java.util.Arrays;
-
-import com.engine.udp_sockets.client.ClientPacketData;
 import com.engine.udp_sockets.server.Server;
 import com.engine.udp_sockets.server.ServerPacketData;
-import com.engine.udp_sockets.headers.BaseHeader;
 import com.engine.udp_sockets.headers.Header;
 
 public class ServerRunner {
@@ -14,6 +10,8 @@ public class ServerRunner {
 	
 	public static Server server;
 	
+	// This method is called when a packet is received from the client
+	// It processes the packet and sends a response back to the client
 	public static void processRecv(ServerPacketData data) {
 		if (Header.IncreaseCookies.compare(data.header)) {
 			cookieCount++;
@@ -26,7 +24,6 @@ public class ServerRunner {
 	}
 	
 	public static void main(String[] args) throws Exception {
-//		System.out.println(BaseHeader.AskPublicKey.compare(new byte[] {0, 0}));
 		server = new Server(ServerRunner::processRecv);
 		server.start();
 	}

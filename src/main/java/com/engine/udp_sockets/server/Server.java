@@ -1,30 +1,16 @@
 package com.engine.udp_sockets.server;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.json.JSONObject;
-
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
@@ -32,349 +18,324 @@ import com.engine.udp_sockets.encryption.Encryption;
 import com.engine.udp_sockets.encryption.HMACAuthenticator;
 import com.engine.udp_sockets.headers.BaseHeader;
 
-
 public class Server {
 
-  private DatagramSocket socket;
-  
-  private PublicKey publicKey;
-  private PrivateKey privateKey;
-  
-  private byte[] sendBuffer;
-  private byte[] recvBuffer;
-  
-  private DatagramPacket sendPacket;
-  private DatagramPacket recvPacket;
-  
-  private RecvFunc recv;
-  
-	private HashMap<String, String> rooms = new HashMap<String, String>();
-	private HashMap<SocketAddress, SessionInfo> sessions = new HashMap<SocketAddress, SessionInfo>();
+    private DatagramSocket socket;
 
-  public Server(RecvFunc recv) throws Exception {
-  		this.recv = recv;
-  	
-      socket = new DatagramSocket(4445);
-      KeyPair keyPair = Encryption.generateRSAOAEPKeyPair();
-      this.publicKey = keyPair.getPublic();
-      this.privateKey = keyPair.getPrivate();
-      
-      System.out.println(Arrays.toString(getUsers("9*A#awjd893E*jf37ug$h", "", false).toArray()));
-  }
+    private UserManager userManager = new UserManager();
 
-  public void start() {
-  	new ServerRecvThread().start();
-  }
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
 
-	private void sendPacket(byte[] buffer, InetAddress address, int port) throws Exception {
-		sendBuffer = buffer;
-		sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, port);
-		socket.send(sendPacket);
-	}
-	
-	private void sendPacket(byte[] buffer, InetAddress address, int port, SecretKey aesKey) throws Exception {
-		sendPacket(Encryption.encryptAES(buffer, aesKey), address, port);
-	}
-	
-	private void sendPacket(byte[] header, byte[] buffer, InetAddress address, int port, SecretKey aesKey) throws Exception {
-		sendPacket(Encryption.encryptAES(Encryption.concatBytes(header, buffer), aesKey), address, port);
-	}
-	
-	private void sendPacket(byte[] header, byte[] buffer, InetAddress address, int port) throws Exception {
-		sendPacket(Encryption.concatBytes(header, buffer), address, port);
-	}
-	
-	private void sendPacketToAll(byte[] buffer) throws Exception {
-		sendBuffer = buffer;
-		
-		for (SessionInfo info : sessions.values()) {
-			sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, info.getAddress(), info.getPort());
-			socket.send(sendPacket);
-		}
-	}
+    private byte[] sendBuffer;
+    private byte[] recvBuffer;
 
-	public void sendSessionPacketToRoom(byte[] header, byte[] buffer, String room) throws Exception {
-		ArrayList<SessionInfo> sessionInfos = getSessionsInRoom(room);
-		for (SessionInfo info : sessionInfos) {
-			sendPacket(header, buffer, info.getAddress(), info.getPort(), info.getAESKey());
-		}
-	}
+    private RecvFunc recv;
 
-	public void sendSessionPacket(byte[] header, byte[] buffer, SessionInfo sessionInfo) throws Exception {
-		sendPacket(header, buffer, sessionInfo.getAddress(), sessionInfo.getPort(), sessionInfo.getAESKey());
-	}
+    private HashMap<String, String> rooms = new HashMap<String, String>();
+    private HashMap<SocketAddress, SessionInfo> sessions = new HashMap<SocketAddress, SessionInfo>();
 
-	private ArrayList<SessionInfo> getSessionsInRoom(String room) {
-		ArrayList<SessionInfo> sessionInfos = new ArrayList<SessionInfo>();
-		
-		for (SessionInfo info : sessions.values()) {
-			if (info.getRoom().equals(room)) {
-				sessionInfos.add(info);
-			}
-		}
-		
-		return sessionInfos;
-	}
-	
-	private void processPacketData(ServerPacketData data) throws Exception {
-		// PUBLIC KEY REQUEST
-		if (BaseHeader.AskPublicKey.compare(data.header)) {
-			System.out.println("Received request. Sending public key... " + recvPacket.getSocketAddress());
-			
-			String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-			sendPacket(publicKeyBase64.getBytes(), data.pkt.getAddress(), data.pkt.getPort());
-			return;
-		}
-		
-		// AES KEY CONFIRMATION
-		if (BaseHeader.GiveAESKey.compare(data.header)) {
-			SecretKey aesKey = Encryption.bytesToAESKey(data.msg);
-			
-			// Store our AES Session with that client
-			sessions.get(data.address).setAESKey(aesKey);
-			
-			// Send a confirmation with our AES Key
-			System.out.println("Got AES Key For " + data.address + ". Sending Confirmation");
-			sendPacket("AES Confirmed".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), aesKey);
-			return;
-		}
-		
-		if (BaseHeader.AuthLogin.compare(data.header)) {
-			String username = data.msgStr.split(":", 2)[0];
-			String password = data.msgStr.split(":", 2)[1];
-			if (authenticateUser(username, password, data.sessionInfo.getSessionKey())) {
-				sessions.get(data.address).setUsername(username);
-				sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
-				// System.out.println("User " + username + " logged in!");
-				sendPacket(BaseHeader.AuthLogin.value(), (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! You \"logged\" in!").getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-			} else {
-				sendPacket(BaseHeader.AuthError.value(), "Something went wrong logging in :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-			}
-			return;
-		}
-		
-		if (BaseHeader.AuthSignup.compare(data.header)) {
-			String username = data.msgStr.split(":", 2)[0];
-			String password = data.msgStr.split(":", 2)[1];
+    /**
+     * Creates a new server instance, and starts listening for incoming packets.
+     * @param recv
+     * @throws Exception
+     */
+    public Server(RecvFunc recv) throws Exception {
+        this.recv = recv;
 
-			if (!username.matches("^[a-z0-9_]+$")) {
-				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid username. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
-				return;
-			}
+        socket = new DatagramSocket(4445);
+        KeyPair keyPair = Encryption.generateRSAOAEPKeyPair();
+        this.publicKey = keyPair.getPublic();
+        this.privateKey = keyPair.getPrivate();
 
-			if (password.length() < 6 || password.indexOf(" ") != -1) {
-				sendSessionPacket(BaseHeader.AuthError.value(), "Invalid password. Must not contain spaces.".getBytes(), data.sessionInfo);
-				return;
-			}
+        System.out.println(Arrays.toString(userManager.getUsers("9*A#awjd893E*jf37ug$h", false)));
+    }
 
-			if (addUser(username, password)) {
-				sessions.get(data.address).setUsername(username);
-				sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
-				sendPacket(BaseHeader.AuthSignup.value(), (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! Your account has been made").getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-			} else {
-				sendPacket(BaseHeader.AuthError.value(), "Something went wrong making your account :(".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-			}
-			return;
-		}
+    private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
-		if (!data.sessionInfo.hasUsername()) {
-			return;
-		}
+    /**
+     * Starts a new thread to handle the incoming packets.
+     * @param localPacket
+     */
+    private void startRecvThread(DatagramPacket localPacket) {
+        executor.submit(() -> {
+            // Find or create the user's session
+            SessionInfo sessionInfo = sessions.get(localPacket.getSocketAddress());
+            if (sessionInfo == null) {
+                sessionInfo = new SessionInfo(localPacket.getAddress(), localPacket.getPort());
+                sessions.put(localPacket.getSocketAddress(), sessionInfo);
+            }
 
-		if (!HMACAuthenticator.validateHMACToken(data.sessionInfo.getSessionKey(), data.sessionInfo.getUsername(), data.clientTime, data.clientHMAC, 300)) {
-			return;
-		}
+            ServerPacketData data;
+            
+            try {
+                data = new ServerPacketData(localPacket, sessionInfo, privateKey);
+                processPacketData(data);
+                recv.run(data);
+            } catch (Exception e) { }
+        });
+    } 
 
+    /**
+     * Starts the server and begins listening for incoming packets.
+     * @throws Exception
+     */
+    public void start() throws Exception {
+        while (true) {
+            recvBuffer = new byte[1024];
+            DatagramPacket localPacket = new DatagramPacket(recvBuffer, recvBuffer.length);
+            socket.receive(localPacket);
 
-		if (BaseHeader.CreateRoom.compare(data.header)) {
-			String[] roomData = data.msgStr.split(":", 2);
-			String roomName = roomData[0];
-			String password = roomData.length > 1 ? roomData[1] : null;
-			
-			if (password != null && password.indexOf(" ") != -1) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room password. Must not contain spaces.".getBytes(), data.sessionInfo);
-				return;
-			}
-
-			if (!roomName.matches("^[a-z0-9_]+$")) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room name. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
-				return;
-			}
-			
-			if (rooms.keySet().contains(roomName)) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Room already exists!".getBytes(), data.sessionInfo);
-				return;
-			}
-			
-			rooms.put(roomName, password == null ? password : Encryption.hashString(password));
-
-			sessions.get(data.address).setRoom(roomName);
-			sendSessionPacket(BaseHeader.CreateRoom.value(), ("You created the room \"" + roomName + "\"!").getBytes(), data.sessionInfo);
-			return;
-		}
-
-		if (BaseHeader.JoinRoom.compare(data.header)) {
-			String[] roomData = data.msgStr.split(":");
-			String roomName = roomData[0];
-			String password = roomData.length > 1 ? roomData[1] : "";
-
-			if (!rooms.keySet().contains(roomName)) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Room doesn't exist!".getBytes(), data.sessionInfo);
-				return;
-			}
-
-			Argon2 argon2 = Argon2Factory.create();
-
-			if (rooms.get(roomName) != null && !argon2.verify(rooms.get(roomName), password.getBytes())) {
-				sendSessionPacket(BaseHeader.RoomError.value(), "Invalid Room password!".getBytes(), data.sessionInfo);
-				return;
-			}
-			
-			sessions.get(data.address).setRoom(roomName);
-			sendSessionPacket(BaseHeader.JoinRoom.value(), ("You joined the room \"" + roomName + "\"!").getBytes(), data.sessionInfo);
-			return;
-		}
-
-		if (!data.sessionInfo.isInRoom()) {
-			return;
-		}
-		
-//  		// Check if the user that sent the packet is authenticated.
-//  		// (For now, I am just going to assume that the client is who it says it is.)
-//  		// (Until I figure out how to do initial certificates)
-//  		if (user not in auth users...) {
-//  			sendPacket(Headers.MsgFailed, "Not Authorized Yet!".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.aesKeyUsed);
-//  		}
-//  		
-		
-		if (BaseHeader.BackForthMsg.compare(data.header)) {
-			sendPacket(BaseHeader.BackForthMsg.value(), data.msgStr.getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
-		}
-		
-		recv.run(data);
-	}
-  
-  class ServerRecvThread extends Thread {
-  	public void run() {
-  		try {
-    		
-        boolean running = true;
-
-        while (running) {
-		    	recvBuffer = new byte[1024];
-		      recvPacket = new DatagramPacket(recvBuffer, recvBuffer.length);
-		      socket.receive(recvPacket);
-
-					// Find or create the user's session
-					SessionInfo sessionInfo = sessions.get(recvPacket.getSocketAddress());
-					if (sessionInfo == null) {
-						sessionInfo = new SessionInfo(recvPacket.getAddress(), recvPacket.getPort());
-						sessions.put(recvPacket.getSocketAddress(), sessionInfo);
-					}
-
-		      ServerPacketData data = new ServerPacketData(recvPacket, sessionInfo, privateKey);
-
-		      processPacketData(data);
+            startRecvThread(localPacket);
         }
+    }
+
+    /**
+     * Sends a packet to the specified address and port.
+     * @param buffer
+     * @param address
+     * @param port
+     * @throws Exception
+     */
+    private void sendPacket(byte[] buffer, InetAddress address, int port) throws Exception {
+        sendBuffer = buffer;
+        DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, port);
+        socket.send(sendPacket);
+    }
+
+    /**
+     * Sends a packet to the specified address and port, encrypted with AES.
+     * @param buffer
+     * @param address
+     * @param port
+     * @param aesKey
+     * @throws Exception
+     */
+    private void sendPacket(byte[] buffer, InetAddress address, int port, SecretKey aesKey) throws Exception {
+        sendPacket(Encryption.encryptAES(buffer, aesKey), address, port);
+    }
+
+    /**
+     * Sends a packet to the specified address and port, with a header, encrypted with AES.
+     * @param header
+     * @param buffer
+     * @param address
+     * @param port
+     * @param aesKey
+     * @throws Exception
+     */
+    private void sendPacket(byte[] header, byte[] buffer, InetAddress address, int port, SecretKey aesKey)
+            throws Exception {
+        sendPacket(Encryption.encryptAES(Encryption.concatBytes(header, buffer), aesKey), address, port);
+    }
+
+    /**
+     * Sends the packet with the header to each session in the room, encrypted with AES.
+     * @param header
+     * @param buffer
+     * @param address
+     * @param port
+     * @throws Exception
+     */
+    public void sendSessionPacketToRoom(byte[] header, byte[] buffer, String room) throws Exception {
+        ArrayList<SessionInfo> sessionInfos = getSessionsInRoom(room);
+        for (SessionInfo info : sessionInfos) {
+            sendPacket(header, buffer, info.getAddress(), info.getPort(), info.getAESKey());
+        }
+    }
+
+    /**
+     * Sends the packet with the header to the session, encrypted with AES.
+     * @param header
+     * @param buffer
+     * @param sessionInfo
+     * @throws Exception
+     */
+    public void sendSessionPacket(byte[] header, byte[] buffer, SessionInfo sessionInfo) throws Exception {
+        sendPacket(header, buffer, sessionInfo.getAddress(), sessionInfo.getPort(), sessionInfo.getAESKey());
+    }
+
+    /**
+     * Get all of the sessions in a room.
+     * @param room
+     * @return a list of session info objects
+     */
+    private ArrayList<SessionInfo> getSessionsInRoom(String room) {
+        ArrayList<SessionInfo> sessionInfos = new ArrayList<SessionInfo>();
+
+        for (SessionInfo info : sessions.values()) {
+            if (info.getRoom().equals(room)) {
+                sessionInfos.add(info);
+            }
+        }
+
+        return sessionInfos;
+    }
+
+    /**
+     * Process the incoming packet data, allowing for a recv thread made by the maker of this class to also be used.
+     * @param data
+     * @throws Exception
+     */
+    private void processPacketData(ServerPacketData data) throws Exception {
+        // PUBLIC KEY REQUEST
+        if (BaseHeader.AskPublicKey.compare(data.header)) {
+            System.out.println("Received request. Sending public key... " + data.address);
+            
+
+            String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+
+
+            sendPacket(publicKeyBase64.getBytes(), data.pkt.getAddress(), data.pkt.getPort());
+            return;
+        }
+
+        // AES KEY CONFIRMATION
+        if (BaseHeader.GiveAESKey.compare(data.header)) {
+            SecretKey aesKey = Encryption.bytesToAESKey(data.msg);
+
+            // Store our AES Session with that client
+            sessions.get(data.address).setAESKey(aesKey);
+
+            // Send a confirmation with our AES Key
+            System.out.println("Got AES Key For " + data.address + ". Sending Confirmation");
+            sendPacket("AES Confirmed".getBytes(), data.pkt.getAddress(), data.pkt.getPort(), aesKey);
+            return;
+        }
+
+        if (BaseHeader.AuthLogin.compare(data.header)) {
+            String username = data.msgStr.split(":", 2)[0];
+            String password = data.msgStr.split(":", 2)[1];
+            if (userManager.authenticateUser(username, password)) {
+                sessions.get(data.address).setUsername(username);
+                sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
+                // System.out.println("User " + username + " logged in!");
+                sendPacket(BaseHeader.AuthLogin.value(),
+                        (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! You \"logged\" in!").getBytes(),
+                        data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+            } else {
+                sendPacket(BaseHeader.AuthError.value(), "Something went wrong logging in :(".getBytes(),
+                        data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+            }
+            return;
+        }
+
+        if (BaseHeader.AuthSignup.compare(data.header)) {
+            String username = data.msgStr.split(":", 2)[0];
+            String password = data.msgStr.split(":", 2)[1];
+
+            if (!username.matches("^[a-z0-9_]+$")) {
+                sendSessionPacket(BaseHeader.AuthError.value(),
+                        "Invalid username. Must contain only lowercase letters, numbers, or underscores.".getBytes(),
+                        data.sessionInfo);
+                return;
+            }
+
+            if (password.length() < 6 || password.indexOf(" ") != -1) {
+                sendSessionPacket(BaseHeader.AuthError.value(), "Invalid password. Must not contain spaces.".getBytes(),
+                        data.sessionInfo);
+                return;
+            }
+
+            if (userManager.addUser(username, password)) {
+                sessions.get(data.address).setUsername(username);
+                sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());
+                sendPacket(BaseHeader.AuthSignup.value(),
+                        (sessions.get(data.address).getSessionKey() + ":" + username + ":Success! Your account has been made").getBytes(),
+                        data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+            } else {
+                sendPacket(BaseHeader.AuthError.value(), "Something went wrong making your account :(".getBytes(),
+                        data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+            }
+            return;
+        }
+
+        if (!data.sessionInfo.hasUsername()) {
+            return;
+        }
+
+        if (!HMACAuthenticator.validateHMACToken(data.sessionInfo.getSessionKey(), data.sessionInfo.getUsername(),
+                data.clientTime, data.clientHMAC, 300)) {
+            return;
+        }
+
+        if (BaseHeader.CreateRoom.compare(data.header)) {
+            String[] roomData = data.msgStr.split(":", 2);
+            String roomName = roomData[0];
+            String password = roomData.length > 1 ? roomData[1] : null;
+
+            if (password != null && password.indexOf(" ") != -1) {
+                sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room password. Must not contain spaces.".getBytes(), data.sessionInfo);
+                return;
+            }
+
+            if (!roomName.matches("^[a-z0-9_]+$")) {
+                sendSessionPacket(BaseHeader.RoomError.value(), "Invalid room name. Must contain only lowercase letters, numbers, or underscores.".getBytes(), data.sessionInfo);
+                return;
+            }
+
+            if (rooms.keySet().contains(roomName)) {
+                sendSessionPacket(BaseHeader.RoomError.value(), "Room already exists!".getBytes(), data.sessionInfo);
+                return;
+            }
+
+            rooms.put(roomName, password == null ? password : Encryption.hashString(password));
+
+            sessions.get(data.address).setRoom(roomName);
+            sendSessionPacket(BaseHeader.CreateRoom.value(), ("You created the room \"" + roomName + "\"!").getBytes(),
+                    data.sessionInfo);
+            return;
+        }
+
+        if (BaseHeader.JoinRoom.compare(data.header)) {
+            String[] roomData = data.msgStr.split(":");
+            String roomName = roomData[0];
+            String password = roomData.length > 1 ? roomData[1] : "";
+
+            if (!rooms.keySet().contains(roomName)) {
+                sendSessionPacket(BaseHeader.RoomError.value(), "Room doesn't exist!".getBytes(), data.sessionInfo);
+                return;
+            }
+
+            Argon2 argon2 = Argon2Factory.create();
+
+            if (rooms.get(roomName) != null && !argon2.verify(rooms.get(roomName), password.getBytes())) {
+                sendSessionPacket(BaseHeader.RoomError.value(), "Invalid Room password!".getBytes(), data.sessionInfo);
+                return;
+            }
+
+            sessions.get(data.address).setRoom(roomName);
+            sendSessionPacket(BaseHeader.JoinRoom.value(), ("You joined the room \"" + roomName + "\"!").getBytes(),
+                    data.sessionInfo);
+            return;
+        }
+
+        if (!data.sessionInfo.isInRoom()) {
+            return;
+        }
+
+        // // Check if the user that sent the packet is authenticated.
+        // // (For now, I am just going to assume that the client is who it says it is.)
+        // // (Until I figure out how to do initial certificates)
+        // if (user not in auth users...) {
+        // sendPacket(Headers.MsgFailed, "Not Authorized Yet!".getBytes(),
+        // data.pkt.getAddress(), data.pkt.getPort(), data.aesKeyUsed);
+        // }
+        //
+
+        if (BaseHeader.BackForthMsg.compare(data.header)) {
+            sendPacket(BaseHeader.BackForthMsg.value(), data.msgStr.getBytes(), data.pkt.getAddress(), data.pkt.getPort(), data.sessionInfo.getAESKey());
+        }
+    }
+
+    /**
+     * Closes the server and shuts down the socket and executor.
+     */
+    public void close() {
         socket.close();
-    	} catch (IOException e) {
-    		System.out.println("Server crash. :(");
-    		socket.close();
-    	} catch (Exception e) {
-  			e.printStackTrace();
-  			socket.close();
-  		}
-  	}
-  }
-  
-  private final String CONFIG_PATH = System.getenv("APPDATA") + "\\Java Server\\config.json";
-  private final SecretKey CONFIG_KEY = new SecretKeySpec(Base64.getDecoder().decode(System.getenv("AES_ECLIPSE_SECRET_KEY")), "AES");
-  
-  private ArrayList<String> getUsers(String adminPassword, String adminSessionKey, boolean sorted) throws Exception {
-  	if (authenticateUser("admin", adminPassword, adminSessionKey)) {
-	  	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
-	  	JSONObject json = new JSONObject(content);
-	  	JSONObject users = json.getJSONObject("users");
-	  	
-	  	@SuppressWarnings("unchecked")
-			Iterator<String> keys = sorted ? users.sortedKeys() : users.keys();
-	  	
-	  	ArrayList<String> userList = new ArrayList<String>();
-	  	while (keys.hasNext()) {
-        userList.add(keys.next());
-	  	}
-	  	
-	  	return userList;
-  	}
-  	System.out.println("Not Authorized!");
-  	return new ArrayList<String>();
-  }
-  
-  private boolean deleteUser(String username, String password, String sessionKey) throws Exception {
-  	if (username.equals("admin")) {
-  		System.out.println("You cannot delete this user!");
-  	}
-  	
-  	if (authenticateUser("admin", password, sessionKey) || authenticateUser(username, password, sessionKey)) {
-	  	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
-	  	JSONObject json = new JSONObject(content);
-	  	JSONObject users = json.getJSONObject("users");
-  	
-  		users.remove(username);
-  		Files.write(Paths.get(CONFIG_PATH), Encryption.encryptAES(json.toString(4).getBytes(), CONFIG_KEY), StandardOpenOption.TRUNCATE_EXISTING);
-  		System.out.println("User deleted!");
-  		return true;
-  	}
-  	
-  	System.out.println("You aren't authorized to do that!");
-  	return false;
-  }
-  
-  /** @description Auth users */
-  private boolean authenticateUser(String username, String password, String sessionKey) throws Exception {
-  	String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
-  	JSONObject json = new JSONObject(content);
-  	JSONObject users = json.getJSONObject("users");
-  	
-  	if (!users.has(username)) {
-  		System.out.println("User doesn't exist!");
-  		return false;
-  	}
-  	
-  	String storedHash = users.getString(username);
-  	Argon2 argon2 = Argon2Factory.create();
-  	
-  	if (argon2.verify(storedHash, password.getBytes())) {
-  		return true;
-  	}
-  	
-  	return false;
-  }
-  
-  private boolean addUser(String username, String password) throws Exception {
-  	try {
-  		String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
-	  	JSONObject json = new JSONObject(content);
-	  	JSONObject users = json.getJSONObject("users");
-	  	
-	  	// Hash the password
-	  	Argon2 argon2 = Argon2Factory.create();
-	    String hashedPassword = argon2.hash(2, 65536, 1, password.getBytes());
-	  	
-	    if (!users.has(username)) {
-	    	users.put(username, hashedPassword);
-	    	
-	    	Files.write(Paths.get(CONFIG_PATH), Encryption.encryptAES(json.toString(4).getBytes(), CONFIG_KEY), StandardOpenOption.TRUNCATE_EXISTING);
-	    	
-	    	System.out.println("User " + username + " added!");
-	    	return true;
-	    }
-	    System.out.println("User already exists!");
-	    return false;
-  	} catch (Exception e) {
-  		e.printStackTrace();
-  		System.out.println("Something went wrong trying to add a user!");
-  		return false;
-  	}
-  }
+
+        if (executor != null) {
+            executor.shutdown();
+        }
+    }
 }

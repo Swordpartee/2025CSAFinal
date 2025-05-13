@@ -19,6 +19,13 @@ public class ClientPacketData {
 	public DatagramPacket pkt;
 	public SocketAddress address;
 	
+	/**
+	 * Sets up all of the data for the packet, and what may or may not be needed in the processing of the packet.
+	 * @param pkt
+	 * @param aesSessionStarted
+	 * @param aesKey
+	 * @throws Exception
+	 */
 	public ClientPacketData(DatagramPacket pkt, boolean aesSessionStarted, SecretKey aesKey) throws Exception {
 		// Store the actual packet just in case.
 		this.pkt = pkt;

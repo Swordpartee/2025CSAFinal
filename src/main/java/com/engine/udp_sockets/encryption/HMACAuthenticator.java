@@ -40,6 +40,15 @@ public class HMACAuthenticator {
     return Base64.getEncoder().encodeToString(hmacBytes);
   }
 
+  /**
+   * Validate the HMAC token, by regenerating it with the values given and comparing it with the client's sent token
+   * @param sessionKey
+   * @param username
+   * @param timestamp
+   * @param clientHMAC
+   * @param maxTimeDriftSeconds
+   * @return
+   */
   public static boolean validateHMACToken(String sessionKey, String username, long timestamp, String clientHMAC, long maxTimeDriftSeconds) {
     try {
       // Check timestamp validity

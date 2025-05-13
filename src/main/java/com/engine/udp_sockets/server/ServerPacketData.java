@@ -4,10 +4,6 @@ import java.net.DatagramPacket;
 import java.net.SocketAddress;
 import java.security.PrivateKey;
 import java.util.Arrays;
-import java.util.HashMap;
-
-import javax.crypto.SecretKey;
-
 import com.engine.udp_sockets.encryption.Convert;
 import com.engine.udp_sockets.encryption.Encryption;
 
@@ -27,6 +23,13 @@ public class ServerPacketData {
 
 	public SessionInfo sessionInfo;
 	
+	/**
+	 * Sets up all of the data for the packet, and what may or may not be needed in the processing of the packet.
+	 * @param pkt
+	 * @param sessionInfo
+	 * @param privateKey
+	 * @throws Exception
+	 */
 	public ServerPacketData(DatagramPacket pkt, SessionInfo sessionInfo, PrivateKey privateKey) throws Exception {
 		// Store the actual packet just in case.
 		this.pkt = pkt;

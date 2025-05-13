@@ -1,8 +1,6 @@
 package com.engine.udp_sockets.server;
 
 import java.net.InetAddress;
-import java.net.SocketAddress;
-
 import javax.crypto.SecretKey;
 
 public class SessionInfo {
