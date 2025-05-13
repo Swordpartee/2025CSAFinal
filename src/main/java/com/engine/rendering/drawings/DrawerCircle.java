@@ -25,10 +25,10 @@ public class DrawerCircle extends DrawerOval {
     @Override
     public void draw(Graphics graphic) {
         if(isFilled()) {
-            graphic.fillOval((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+            graphic.fillOval((int) Math.round(this.getX()), (int) Math.round(this.getY()),
                 (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         } else {
-            graphic.drawOval((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+            graphic.drawOval((int) Math.round(this.getX()), (int) Math.round(this.getY()),
                 (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         }
     }
