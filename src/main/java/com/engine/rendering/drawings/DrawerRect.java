@@ -2,10 +2,9 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-public class DrawerRect implements Drawable {
-    private double x;
-    private double y;
+import com.engine.util.Point;
 
+public class DrawerRect extends Point implements Drawable {
     private double width;
     private double height;
 
@@ -20,29 +19,12 @@ public class DrawerRect implements Drawable {
      * @param filled whether to fill the rectangle or not
      */
     public DrawerRect(double x, double y, double width, double height, boolean filled) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
 
         this.width = width;
         this.height = height;
 
         this.filled = filled;
-    }
-
-    /**
-     * gets the x position of the rectangle
-     * @return x position
-     */
-    public double getXPos() {
-        return x;
-    }
-
-    /**
-     * gets the y position of the rectangle
-     * @return y position
-     */
-    public double getYPos() {
-        return y;
     }
 
     /**
@@ -67,22 +49,6 @@ public class DrawerRect implements Drawable {
      */
     public boolean isFilled() {
         return filled;
-    }
-
-    /**
-     * sets a new x position to the rectangle
-     * @param newX the new x position
-     */
-    public void setXPos(double newX) {
-        x = newX;
-    }
-
-    /**
-     * sets a new y position to the rectangle
-     * @param newY the new y position
-     */
-    public void setYPos(double newY) {
-        y = newY;
     }
 
     /**
@@ -112,9 +78,9 @@ public class DrawerRect implements Drawable {
     @Override
     public void draw(Graphics graphic) {
         if(filled) {
-            graphic.fillRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.fillRect((int) Math.round(this.getX()), (int) Math.round(this.getY()), (int) Math.round(width), (int) Math.round(height));
         } else {
-            graphic.drawRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.drawRect((int) Math.round(this.getX()), (int) Math.round(this.getY()), (int) Math.round(width), (int) Math.round(height));
         }
     }
 }
