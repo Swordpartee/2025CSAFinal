@@ -17,10 +17,10 @@ public class DrawerSquare extends DrawerRect {
     @Override
     public void draw(Graphics graphic) {
         if (isFilled()) {
-            graphic.fillRect((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+            graphic.fillRect((int) Math.round(getX()), (int) Math.round(getY()),
                 (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         } else {
-            graphic.drawRect((int) Math.round(getXPos()), (int) Math.round(getYPos()),
+            graphic.drawRect((int) Math.round(getX()), (int) Math.round(getY()),
                 (int) Math.round(getWidth()), (int) Math.round(getHeight()));
         }
     }
