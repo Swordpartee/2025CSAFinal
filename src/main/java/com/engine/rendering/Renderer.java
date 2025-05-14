@@ -15,12 +15,15 @@ import java.util.concurrent.TimeUnit;
 
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.RenderListener;
+import com.engine.util.Updateable;
 
 public class Renderer {
     private static final Frame frame = new Frame();
     private static final Canvas canvas = new Canvas();
 
     private static final ArrayList<Drawable> drawables = new ArrayList<>();
+
+    private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
     private static final ArrayList<Runnable> processes = new ArrayList<>();
 
@@ -92,6 +95,14 @@ public class Renderer {
     }
 
     /**
+     * Adds an updateable object to be updated
+     * @param us updateables to add
+     */
+    public static void addUpdateables(Updateable... us) {
+        updateables.addAll(Arrays.asList(us));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
@@ -111,10 +122,16 @@ public class Renderer {
         graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // draws all the created drawable objects
-        for(Drawable d : drawables) d.draw(graphic);
+        for (Drawable d : drawables)
+            d.draw(graphic);
+
+        // updates all created updateable objects
+        for (Updateable u : updateables)
+            u.update();
 
         // runs all created processes
-        for(Runnable p : processes) p.run();
+        for (Runnable p : processes)
+            p.run();
 
         graphic.dispose();
         buffer.show();
