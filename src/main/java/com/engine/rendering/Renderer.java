@@ -4,6 +4,8 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,67 +14,80 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.engine.rendering.drawings.Drawable;
-import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 
-public class Renderer extends Frame {
-    private final Canvas canvas;
+public class Renderer {
+    private static final Frame frame = new Frame();
+    private static final Canvas canvas = new Canvas();
 
-    private final ArrayList<Drawable> drawables;
+    private static final ArrayList<Drawable> drawables = new ArrayList<>();
 
-    private final ArrayList<Runnable> processes;
+    private static final ArrayList<Runnable> processes = new ArrayList<>();
 
-    private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
+    private static int width = 320;
+    private static int height = 320;
 
-    /**
-     * Creates a new Renderer instance.
-     * Combines window elements, canvas drawing, and user inputs
-     * @param listener takes in inputs from the user
-     * @param ps processes you want to run iteratively
-     */
-    public Renderer(int width, int height, RenderListener listener) {
-        canvas = new Canvas();
-        canvas.setPreferredSize(new Dimension(width, height)); // Increased dimensions
+    private static final ScheduledExecutorService iterator = Executors.newScheduledThreadPool(4);
+
+    private static void init() {
+        canvas.setPreferredSize(new Dimension(width, height));
         canvas.setIgnoreRepaint(true);
-        canvas.setFocusable(false);
-        add(canvas);
-        pack(); // Adjust the frame size to fit the canvas
+        canvas.setFocusable(true);
+        frame.add(canvas);
+        frame.pack(); // Adjust the frame size to fit the canvas
 
-        setTitle("Game Engine Renderer");
-        setResizable(false);
-        setVisible(true);
+        frame.setTitle("Game Engine Renderer");
+        frame.setResizable(false);
+        frame.setVisible(true);
 
         canvas.createBufferStrategy(2);
 
-        drawables = new ArrayList<>();
+        addListener();
 
-        processes = new ArrayList<>();
-
-        // basic binding of the window closing
-        listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
-            System.out.println("Window closed");
-            System.exit(0);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                iterator.shutdown();
+                System.exit(0);
+            }
         });
+    }
 
-        addListener(listener);
+    /**
+     * Starts the rendering loop.
+     * Redraws the screen every 16 milliseconds.
+     */
+    public static void start() {
+        init();
+
+        iterator.scheduleAtFixedRate(() -> {
+            redraw();
+        }, 0, 16, TimeUnit.MILLISECONDS);
     }
     
-    private void addListener(RenderListener listener) {
-        addKeyListener(listener.getKeyListener());
-        addMouseListener(listener.getMouseListener());
-        addMouseMotionListener(listener.getMouseListener());
-        addWindowListener(listener.getWindowListener());
+    public static void setSize(int newWidth, int newHeight) {
+        width = newWidth;
+        height = newHeight;
+        canvas.setPreferredSize(new Dimension(width, height));
+        frame.pack();
+    }
 
-        canvas.addKeyListener(listener.getKeyListener());
-        canvas.addMouseListener(listener.getMouseListener());
-        canvas.addMouseMotionListener(listener.getMouseListener());
+    public static void addListener() {
+        frame.addKeyListener(RenderListener.getKeyListener());
+        frame.addMouseListener(RenderListener.getMouseListener());
+        frame.addMouseMotionListener(RenderListener.getMouseListener());
+        frame.addWindowListener(RenderListener.getWindowListener());
+
+        canvas.addKeyListener(RenderListener.getKeyListener());
+        canvas.addMouseListener(RenderListener.getMouseListener());
+        canvas.addMouseMotionListener(RenderListener.getMouseListener());
     }
 
     /**
      * Adds a process to be run
      * @param ps processes to add
      */
-    public void addProcesses(Runnable... ps) {
+    public static void addProcesses(Runnable... ps) {
         processes.addAll(Arrays.asList(ps));
     }
 
@@ -80,25 +95,15 @@ public class Renderer extends Frame {
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
-    public void addDrawables(Drawable... ds) {
+    public static void addDrawables(Drawable... ds) {
         drawables.addAll(Arrays.asList(ds));
-    }
-
-    /**
-     * Starts the rendering loop.
-     * Redraws the screen every 16 milliseconds.
-     */
-    public void start() {
-        itterator.scheduleAtFixedRate(() -> {
-            redraw();
-        }, 0, 16, TimeUnit.MILLISECONDS);
     }
     
     /**
      * Redraws the screen.
      * Define your drawing logic here.
      */
-    private void redraw() { 
+    private static void redraw() { 
         BufferStrategy buffer = canvas.getBufferStrategy();
         Graphics graphic = buffer.getDrawGraphics();
 

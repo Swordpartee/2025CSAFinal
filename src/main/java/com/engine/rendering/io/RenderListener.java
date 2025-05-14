@@ -12,7 +12,7 @@ import java.util.List;
 import com.engine.util.Vector;
 
 public class RenderListener {
-    private final MouseAdapter mouseListener = new MouseAdapter() {
+    private static final MouseAdapter mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
             if (mouseEvents[e.getButton()] == null) {  
@@ -38,7 +38,7 @@ public class RenderListener {
         }
     };
 
-    private final KeyAdapter keyListener = new KeyAdapter() {
+    private static final KeyAdapter keyListener = new KeyAdapter() {
         @Override
         public void keyPressed(KeyEvent e) {
             if (keyEvents[e.getKeyCode()] == null) {
@@ -56,7 +56,7 @@ public class RenderListener {
         }
     };
 
-    private final WindowAdapter windowListener = new WindowAdapter() {
+    private static final WindowAdapter windowListener = new WindowAdapter() {
         @Override
         public void windowClosed(WindowEvent e) {
             callBinding(EventCode.EventType.WINDOW_CLOSED);
@@ -74,54 +74,54 @@ public class RenderListener {
         }
     };
     
-    public MouseAdapter getMouseListener() {
+    public static MouseAdapter getMouseListener() {
         return mouseListener;
     }
 
-    public KeyAdapter getKeyListener() {
+    public static KeyAdapter getKeyListener() {
         return keyListener;
     }
 
-    public WindowAdapter getWindowListener() {
+    public static WindowAdapter getWindowListener() {
         return windowListener;
     }
 
-    private final List<Binding> bindings = new ArrayList<>();
+    private static final List<Binding> bindings = new ArrayList<>();
 
-    private final MouseEvent[] mouseEvents = new MouseEvent[3];
-    private final KeyEvent[] keyEvents = new KeyEvent[256];
+    private static final MouseEvent[] mouseEvents = new MouseEvent[3];
+    private static final KeyEvent[] keyEvents = new KeyEvent[256];
 
-    private final Vector mousePos = new Vector();
+    private static final Vector mousePos = new Vector();
 
-    public Vector getMousePos() {
+    public static Vector getMousePos() {
         return mousePos;
     }
 
-    public boolean isKeyPressed(int keyCode) {
+    public static boolean isKeyPressed(int keyCode) {
         return keyEvents[keyCode] != null;
     }
 
-    public boolean isKeyPressed(EventCode code) {
+    public static boolean isKeyPressed(EventCode code) {
         return isKeyPressed(code.getValue());
     }
 
-    public boolean isMousePressed(int button) {
+    public static boolean isMousePressed(int button) {
         return mouseEvents[button] != null;
     }
 
-    public boolean isMousePressed(EventCode code) {
+    public static boolean isMousePressed(EventCode code) {
         return isMousePressed(code.getValue());
     }
 
-    public void addBinding(EventCode.EventType eventType, EventCode code, Runnable action) {
+    public static void addBinding(EventCode.EventType eventType, EventCode code, Runnable action) {
         bindings.add(new Binding(eventType, code, action));
     }
 
-    public void addBinding(Binding binding) {
+    public static void addBinding(Binding binding) {
         bindings.add(binding);
     }
 
-    private void callBinding(EventCode.EventType eventType, int code) {
+    private static void callBinding(EventCode.EventType eventType, int code) {
         for (Binding binding : bindings) {
             if (binding.getEventType() == eventType && binding.getCode().getValue() == code) {
                 binding.run();
@@ -129,7 +129,7 @@ public class RenderListener {
         }
     }
 
-    private void callBinding(EventCode.EventType eventType) {
+    private static void callBinding(EventCode.EventType eventType) {
         for (Binding binding : bindings) {
             if (binding.getEventType() == eventType) {
                 binding.run();
