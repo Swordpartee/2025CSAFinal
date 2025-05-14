@@ -14,7 +14,7 @@ import com.engine.rendering.io.RenderListener;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer.setSize(640, 480);
+        Renderer.setSize(640, 480);    
 
         /* ADD DRAWABLES HERE */
         DrawerCircle circle = new DrawerCircle(200, 150, 50, false);
