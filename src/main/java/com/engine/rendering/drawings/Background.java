@@ -3,7 +3,7 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 public class Background implements Drawable {
-    private Drawable[][] tiles;
+    private final Drawable[][] tiles;
 
     public Background(int width, int height, int scale, String tilePaths) {
         this.tiles = new Drawable[width][height];
@@ -17,9 +17,9 @@ public class Background implements Drawable {
 
     @Override
     public void draw(Graphics graphic) {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                tiles[i][j].draw(graphic);
+        for (Drawable[] tile : tiles) {
+            for (Drawable tile1 : tile) {
+                tile1.draw(graphic);
             }
         }
     }

@@ -7,22 +7,22 @@ import java.io.IOException;
 
 import com.engine.util.Color;
 import com.engine.util.Point;
+import com.engine.util.Rect;
 
 public class Sprite implements Drawable {
-    private Point center;
+    private Rect rect;
     private final int width, height;
     private int scale = 1;
 
     private final Color[][] pixels;
 
     public Sprite(String path) {
-        this.center = new Point(0,0);
-
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String[] dimensions = reader.readLine().split(",");
             this.width = Integer.parseInt(dimensions[0]);
             this.height = Integer.parseInt(dimensions[1]);
             this.pixels = new Color[width][height];
+            this.rect = new Rect(0, 0, width * scale, height * scale);
 
             for (int i = 0; i < height; i++) {
                 String line = reader.readLine();
@@ -51,19 +51,22 @@ public class Sprite implements Drawable {
 
     public Sprite(double x, double y, String path, int scale) {
         this(path);
-
-        this.center.setX(x);
-        this.center.setY(y);
-
         this.scale = scale;
+        updateRect(x, y);
     }
     
     public Sprite(Point center, String path, int scale) {
         this(path);
-
-        this.center = center;
-
         this.scale = scale;
+        updateRect(center.getX(), center.getY());
+    }
+    
+    private void updateRect(double centerX, double centerY) {
+        double scaledWidth = width * scale;
+        double scaledHeight = height * scale;
+        double x = centerX - scaledWidth / 2;
+        double y = centerY - scaledHeight / 2;
+        this.rect = new Rect(x, y, scaledWidth, scaledHeight);
     }
     
     @Override
@@ -73,9 +76,22 @@ public class Sprite implements Drawable {
                 Color color = pixels[j][i];
                 if (color != null) {
                     graphic.setColor(new java.awt.Color(color.r(), color.g(), color.b()));
-                    graphic.fillRect((int) center.getX() + j * scale, (int) center.getY() + i * scale, scale, scale);
+                    graphic.fillRect(
+                        (int) (rect.getX() + j * scale), 
+                        (int) (rect.getY() + i * scale), 
+                        scale, 
+                        scale
+                    );
                 }
             }
         }
+    }
+    
+    public Rect getRect() {
+        return rect;
+    }
+    
+    public void setPosition(double centerX, double centerY) {
+        updateRect(centerX, centerY);
     }
 }
