@@ -2,11 +2,11 @@ package com.engine.rendering;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ public class Renderer extends Frame {
 
     private final ArrayList<Drawable> drawables;
 
-    private ArrayList<Runnable> processes;
+    private final ArrayList<Runnable> processes;
 
     private final ScheduledExecutorService itterator = Executors.newScheduledThreadPool(4);
 
@@ -30,9 +30,9 @@ public class Renderer extends Frame {
      * @param listener takes in inputs from the user
      * @param ps processes you want to run iteratively
      */
-    public Renderer(RenderListener listener, Runnable... ps) {
+    public Renderer(int width, int height, RenderListener listener) {
         canvas = new Canvas();
-        canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
+        canvas.setPreferredSize(new Dimension(width, height)); // Increased dimensions
         canvas.setIgnoreRepaint(true);
         canvas.setFocusable(false);
         add(canvas);
@@ -46,12 +46,12 @@ public class Renderer extends Frame {
 
         drawables = new ArrayList<>();
 
-        processes = new ArrayList<Runnable>();
+        processes = new ArrayList<>();
 
         // basic binding of the window closing
         listener.addBinding(EventCode.EventType.WINDOW_CLOSING, EventCode.ESC, () -> {
-            System.exit(0);
             System.out.println("Window closed");
+            System.exit(0);
         });
 
         addListener(listener);
@@ -69,13 +69,19 @@ public class Renderer extends Frame {
     }
 
     /**
+     * Adds a process to be run
+     * @param ps processes to add
+     */
+    public void addProcesses(Runnable... ps) {
+        processes.addAll(Arrays.asList(ps));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
-    public void addDrawable(Drawable... ds) {
-        for (Drawable d : ds) {
-            drawables.add(d);
-        }
+    public void addDrawables(Drawable... ds) {
+        drawables.addAll(Arrays.asList(ds));
     }
 
     /**

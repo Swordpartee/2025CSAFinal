@@ -2,9 +2,9 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-public class DrawerOval implements Drawable{
-    private double x;
-    private double y;
+import com.engine.util.Point;
+
+public class DrawerOval extends Point implements Drawable {
 
     private double width;
     private double height;
@@ -20,29 +20,12 @@ public class DrawerOval implements Drawable{
      * @param filled whether to fill the oval or not
      */
     public DrawerOval(double x, double y, double width, double height, boolean filled) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
 
         this.width = width;
         this.height = height;
 
         this.filled = filled;
-    }
-
-    /**
-     * gets the x position of the oval
-     * @return x position
-     */
-    public double getXPos() {
-        return x;
-    }
-
-    /**
-     * gets the y position of the oval
-     * @return y position
-     */
-    public double getYPos() {
-        return y;
     }
 
     /**
@@ -67,22 +50,6 @@ public class DrawerOval implements Drawable{
      */
     public boolean isFilled() {
         return filled;
-    }
-
-    /**
-     * sets a new x position to the oval
-     * @param newX the new x position
-     */
-    public void setXPos(double newX) {
-        x = newX;
-    }
-
-    /**
-     * sets a new y position to the oval
-     * @param newY the new y position
-     */
-    public void setYPos(double newY) {
-        y = newY;
     }
 
     /**
@@ -112,9 +79,9 @@ public class DrawerOval implements Drawable{
     @Override
     public void draw(Graphics graphic) {
         if(filled) {
-            graphic.fillOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.fillOval((int) Math.round(this.getX()), (int) Math.round(this.getY()), (int) Math.round(width), (int) Math.round(height));
         } else {
-            graphic.drawOval((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+            graphic.drawOval((int) Math.round(this.getX()), (int) Math.round(this.getY()), (int) Math.round(width), (int) Math.round(height));
         }
     }
 }
