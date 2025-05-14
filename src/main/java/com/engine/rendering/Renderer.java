@@ -42,6 +42,8 @@ public class Renderer {
 
         canvas.createBufferStrategy(2);
 
+        addListener();
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -70,15 +72,15 @@ public class Renderer {
         frame.pack();
     }
 
-    public static void addListener(RenderListener listener) {
-        frame.addKeyListener(listener.getKeyListener());
-        frame.addMouseListener(listener.getMouseListener());
-        frame.addMouseMotionListener(listener.getMouseListener());
-        frame.addWindowListener(listener.getWindowListener());
+    public static void addListener() {
+        frame.addKeyListener(RenderListener.getKeyListener());
+        frame.addMouseListener(RenderListener.getMouseListener());
+        frame.addMouseMotionListener(RenderListener.getMouseListener());
+        frame.addWindowListener(RenderListener.getWindowListener());
 
-        canvas.addKeyListener(listener.getKeyListener());
-        canvas.addMouseListener(listener.getMouseListener());
-        canvas.addMouseMotionListener(listener.getMouseListener());
+        canvas.addKeyListener(RenderListener.getKeyListener());
+        canvas.addMouseListener(RenderListener.getMouseListener());
+        canvas.addMouseMotionListener(RenderListener.getMouseListener());
     }
 
     /**
