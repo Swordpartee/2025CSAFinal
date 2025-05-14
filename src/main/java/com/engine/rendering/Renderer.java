@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.engine.game.collision.Collidable;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Updateable;
@@ -22,6 +23,8 @@ public class Renderer {
     private static final Canvas canvas = new Canvas();
 
     private static final ArrayList<Drawable> drawables = new ArrayList<>();
+
+    private static final ArrayList<Collidable> collidables = new ArrayList<>();
 
     private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
@@ -103,11 +106,23 @@ public class Renderer {
     }
 
     /**
+     * Adds a collidable object to be checked for collisions
+     * @param cs collidables to add
+     */
+    public static void addCollidables(Collidable... cs) {
+        collidables.addAll(Arrays.asList(cs));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
     public static void addDrawables(Drawable... ds) {
         drawables.addAll(Arrays.asList(ds));
+    }
+
+    public static Collidable[] getCollidables() {
+        return collidables.toArray(Collidable[]::new);
     }
     
     /**

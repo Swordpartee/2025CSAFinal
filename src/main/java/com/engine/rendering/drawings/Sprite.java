@@ -8,14 +8,15 @@ import java.io.IOException;
 import com.engine.util.Color;
 import com.engine.util.Point;
 
-public class Sprite extends Point implements Drawable {
+public class Sprite implements Drawable {
+    private Point center;
     private final int width, height;
     private int scale = 1;
 
     private final Color[][] pixels;
 
-    public Sprite(double x, double y, String path) {
-        super(x, y);
+    public Sprite(String path) {
+        this.center = new Point(0,0);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String[] dimensions = reader.readLine().split(",");
@@ -49,7 +50,18 @@ public class Sprite extends Point implements Drawable {
     }
 
     public Sprite(double x, double y, String path, int scale) {
-        this(x, y, path);
+        this(path);
+
+        this.center.setX(x);
+        this.center.setY(y);
+
+        this.scale = scale;
+    }
+    
+    public Sprite(Point center, String path, int scale) {
+        this(path);
+
+        this.center = center;
 
         this.scale = scale;
     }
@@ -61,7 +73,7 @@ public class Sprite extends Point implements Drawable {
                 Color color = pixels[j][i];
                 if (color != null) {
                     graphic.setColor(new java.awt.Color(color.r(), color.g(), color.b()));
-                    graphic.fillRect((int) getX() + j * scale, (int) getY() + i * scale, scale, scale);
+                    graphic.fillRect((int) center.getX() + j * scale, (int) center.getY() + i * scale, scale, scale);
                 }
             }
         }

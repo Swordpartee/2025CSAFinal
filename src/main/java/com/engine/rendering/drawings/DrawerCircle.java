@@ -2,35 +2,47 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-public class DrawerCircle extends DrawerOval {
+import com.engine.util.Circle;
+
+public class DrawerCircle extends Circle implements Drawable {
+    private boolean filled;
+
     /**
      * Creates a new drawable circle
-     * @param x position of the middle of the circle
-     * @param y position of the middle of the circle
+     * @param x position of the center of the circle
+     * @param y position of the center of the circle
      * @param radius of the circle
      * @param filled whether to fill the circle or not
      */
     public DrawerCircle(double x, double y, double radius, boolean filled) {
-        super(x, y, radius * 2, radius * 2, filled);
+            super(x, y, radius);
+            this.filled = filled;
     }
 
     /**
-     * gets the radius of the circle
-     * @return radius
+     * gets whether the circle is filled or not
+     * @return true if filled, false if not
      */
-    public double getRadius() {
-        return getWidth() / 2;
+    public boolean isFilled() {
+        return filled;
+    }
+
+    /**
+     * sets whether the circle is filled or not
+     * @param filled true if filled, false if not
+     */
+    public void setFilled(boolean filled) {
+        this.filled = filled;
     }
 
     @Override
     public void draw(Graphics graphic) {
-        if(isFilled()) {
-            graphic.fillOval((int) Math.round(this.getX()), (int) Math.round(this.getY()),
-                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
+        if(filled) {
+            graphic.fillOval((int) Math.round(this.getX() - this.getRadius()), (int) Math.round(this.getY() - this.getRadius()), 
+                            (int) Math.round(this.getRadius() * 2), (int) Math.round(this.getRadius() * 2));
         } else {
-            graphic.drawOval((int) Math.round(this.getX()), (int) Math.round(this.getY()),
-                (int) Math.round(getWidth()), (int) Math.round(getHeight()));
+            graphic.drawOval((int) Math.round(this.getX() - this.getRadius()), (int) Math.round(this.getY() - this.getRadius()), 
+                            (int) Math.round(this.getRadius() * 2), (int) Math.round(this.getRadius() * 2));
         }
     }
-
 }

@@ -1,5 +1,7 @@
 package com.engine.util;
 
+import com.engine.game.collision.Collidable;
+
 public class Functions {
     public static double clamp(double value, double min, double max) {
         return value < min ? min : value > max ? max : value;
@@ -101,5 +103,14 @@ public class Functions {
 
     public static double toRadians(double d) {
         return java.lang.Math.toRadians(d);
+    }
+
+    public static boolean collidingWithAny(Collidable collidable, Collidable... others) {
+        for (Collidable other : others) {
+            if (collidable.colliding(other)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
