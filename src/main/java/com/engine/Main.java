@@ -15,13 +15,11 @@ public class Main {
 
         /* ADD DRAWABLES HERE */
         DrawerCircle circle = new DrawerCircle(200, 150, 50, false);
+        
+        renderer.addDrawables(new Background(5, 5, 4, "src/main/resources/boo.spr"));
 
         renderer.addDrawable(circle);
 
-        /* BUTTON BINDINGS HERE */
-        listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.W, () -> {
-            circle.setYPos(circle.getYPos() - 5);
-        });
 
         listener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.A, () -> {
             circle.setXPos(circle.getXPos() - 5);
