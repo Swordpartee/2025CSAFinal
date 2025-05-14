@@ -19,18 +19,14 @@ public class Main {
 
         /* ADD DRAWABLES HERE */
         DrawerCircle circle = new DrawerCircle(200, 150, 50, false);
-        
-        renderer.addDrawables(new Background(5, 5, 4, "src/main/resources/boo.spr"));
 
         renderer.addDrawables(circle);
 
-        renderer.addDrawables(new Background(5, 5, 4, "src/main/resources/cutiepiept2.spr"));
-
-        // renderer.addDrawables(new Sprite(100, 100, "src/main/resources/cutiepiept2.spr", 7));
+        renderer.addDrawables(new Sprite(100, 100, "src/main/resources/cutiepiept2.spr", 7));
         
-        // renderer.addDrawables(new Sprite(200, 100, "src/main/resources/left1.spr", 7));
+        renderer.addDrawables(new Sprite(200, 100, "src/main/resources/left1.spr", 7));
         
-        // renderer.addDrawables(new Sprite(300,100,"src/main/resources/right1.spr", 7));
+        renderer.addDrawables(new Sprite(300,100,"src/main/resources/right1.spr", 7));
 
         /* ADD BINDINGS HERE */
         renderer.addProcesses(() -> {

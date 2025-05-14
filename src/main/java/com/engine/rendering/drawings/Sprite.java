@@ -6,17 +6,16 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.engine.util.Color;
+import com.engine.util.Point;
 
-public class Sprite implements Drawable {
-    private double x, y;
+public class Sprite extends Point implements Drawable {
     private final int width, height;
     private int scale = 1;
 
     private final Color[][] pixels;
 
     public Sprite(double x, double y, String path) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String[] dimensions = reader.readLine().split(",");
@@ -57,13 +56,12 @@ public class Sprite implements Drawable {
     
     @Override
     public void draw(Graphics graphic) {
-        System.out.println("drawoing thing");
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Color color = pixels[j][i];
                 if (color != null) {
                     graphic.setColor(new java.awt.Color(color.r(), color.g(), color.b()));
-                    graphic.fillRect((int) x + j * scale, (int) y + i * scale, scale, scale);
+                    graphic.fillRect((int) getX() + j * scale, (int) getY() + i * scale, scale, scale);
                 }
             }
         }
