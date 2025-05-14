@@ -30,9 +30,9 @@ public class Renderer extends Frame {
      * @param listener takes in inputs from the user
      * @param ps processes you want to run iteratively
      */
-    public Renderer(RenderListener listener) {
+    public Renderer(int width, int height, RenderListener listener) {
         canvas = new Canvas();
-        canvas.setPreferredSize(new Dimension(400, 300)); // Increased dimensions
+        canvas.setPreferredSize(new Dimension(width, height)); // Increased dimensions
         canvas.setIgnoreRepaint(true);
         canvas.setFocusable(false);
         add(canvas);

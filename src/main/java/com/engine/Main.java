@@ -1,6 +1,9 @@
 package com.engine;
 
 import com.engine.rendering.Renderer;
+import com.engine.rendering.drawings.DrawerSquare;
+import com.engine.rendering.drawings.Background;
+import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.rendering.drawings.DrawerOval;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.rendering.drawings.DrawerRect;
@@ -12,7 +15,7 @@ import com.engine.rendering.io.RenderListener;
 public class Main {
     public static void main(String[] args) {
         RenderListener listener = new RenderListener();
-        Renderer renderer = new Renderer(listener);
+        Renderer renderer = new Renderer(320, 320, listener);
 
         /* ADD DRAWABLES HERE */
         DrawerCircle circle = new DrawerCircle(200, 150, 50, false);
