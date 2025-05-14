@@ -38,10 +38,21 @@ public class RectCollider extends Rect implements Collidable {
         switch (otherType) {
             case RECT -> {
                 RectCollider rect = (RectCollider) other;
-                return this.getX() < rect.getX() + rect.getWidth() &&
-                       this.getX() + this.getWidth() > rect.getX() &&
-                       this.getY() < rect.getY() + rect.getHeight() &&
-                       this.getY() + this.getHeight() > rect.getY();
+                // Convert from center-based to edge-based calculation
+                double thisLeft = this.getX() - this.getWidth()/2;
+                double thisRight = this.getX() + this.getWidth()/2;
+                double thisTop = this.getY() - this.getHeight()/2;
+                double thisBottom = this.getY() + this.getHeight()/2;
+                
+                double otherLeft = rect.getX() - rect.getWidth()/2;
+                double otherRight = rect.getX() + rect.getWidth()/2;
+                double otherTop = rect.getY() - rect.getHeight()/2;
+                double otherBottom = rect.getY() + rect.getHeight()/2;
+                
+                return thisLeft < otherRight && 
+                       thisRight > otherLeft && 
+                       thisTop < otherBottom && 
+                       thisBottom > otherTop;
             }
             case CIRCLE -> {
                 CircleCollider circle = (CircleCollider) other;

@@ -38,12 +38,16 @@ public class DrawerRect extends Rect implements Drawable {
 
     @Override
     public void draw(Graphics graphic) {
+        // Convert center coordinates to top-left for drawing
+        int x = (int) Math.round(this.getX() - this.getWidth()/2);
+        int y = (int) Math.round(this.getY() - this.getHeight()/2);
+        int width = (int) Math.round(this.getWidth());
+        int height = (int) Math.round(this.getHeight());
+        
         if(filled) {
-            graphic.fillRect((int) Math.round(this.getX()), (int) Math.round(this.getY()), 
-                            (int) Math.round(this.getWidth()), (int) Math.round(this.getHeight()));
+            graphic.fillRect(x, y, width, height);
         } else {
-            graphic.drawRect((int) Math.round(this.getX()), (int) Math.round(this.getY()), 
-                            (int) Math.round(this.getWidth()), (int) Math.round(this.getHeight()));
+            graphic.drawRect(x, y, width, height);
         }
     }
 }
