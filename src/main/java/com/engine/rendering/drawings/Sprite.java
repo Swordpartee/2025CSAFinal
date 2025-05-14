@@ -7,17 +7,15 @@ import java.io.IOException;
 
 import com.engine.util.Color;
 import com.engine.util.Point;
+import com.engine.util.Rect;
 
 public class Sprite implements Drawable {
-    private Point center;
-    private final int width, height;
+    private Rect rect;
     private int scale = 1;
 
     private final Color[][] pixels;
 
     public Sprite(String path) {
-        this.center = new Point(0,0);
-
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String dimensionLine = reader.readLine();
             if (dimensionLine == null) {
@@ -29,8 +27,9 @@ public class Sprite implements Drawable {
                 throw new IOException("Invalid dimensions format in sprite file");
             }
             
-            this.width = Integer.parseInt(dimensions[0]);
-            this.height = Integer.parseInt(dimensions[1]);
+            int width = Integer.parseInt(dimensions[0]);
+            int height = Integer.parseInt(dimensions[1]);
+            this.rect = new Rect(0, 0, width, height);
             this.pixels = new Color[width][height];
 
             for (int i = 0; i < height; i++) {
@@ -70,25 +69,25 @@ public class Sprite implements Drawable {
 
     public Sprite(double x, double y, String path, int scale) {
         this(path);
-        this.center.setX(x);
-        this.center.setY(y);
+        this.rect.setX(x);
+        this.rect.setY(y);
         this.scale = scale;
     }
     
     public Sprite(Point center, String path, int scale) {
         this(path);
-        this.center = center;
+        this.rect = new Rect(center, rect.getWidth(), rect.getHeight());
         this.scale = scale;
     }
     
     @Override
     public void draw(Graphics graphic) {
         // Calculate top-left position from center
-        double topLeftX = center.getX() - (width * scale)/2;
-        double topLeftY = center.getY() - (height * scale)/2;
+        double topLeftX = rect.getX() - (rect.getWidth() * scale)/2;
+        double topLeftY = rect.getY() - (rect.getHeight() * scale)/2;
         
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < rect.getHeight(); i++) {
+            for (int j = 0; j < rect.getWidth(); j++) {
                 Color color = pixels[j][i];
                 if (color != null) {
                     graphic.setColor(new java.awt.Color(color.r(), color.g(), color.b()));
