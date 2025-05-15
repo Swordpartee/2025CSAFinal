@@ -2,6 +2,7 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
+import com.engine.util.Point;
 import com.engine.util.Rect;
 
 public class DrawerRect extends Rect implements Drawable {
@@ -17,6 +18,11 @@ public class DrawerRect extends Rect implements Drawable {
      */
     public DrawerRect(double x, double y, double width, double height, boolean filled) {
         super(x, y, width, height);
+        this.filled = filled;
+    }
+
+    public DrawerRect(Point position, double width, double height, boolean filled) {
+        super(position, width, height);
         this.filled = filled;
     }
 

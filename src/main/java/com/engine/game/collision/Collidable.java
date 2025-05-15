@@ -10,5 +10,7 @@ public interface Collidable {
     enum ColliderType {
         CIRCLE,
         RECT,
+        OTHER, 
+        NONE
     }
 }

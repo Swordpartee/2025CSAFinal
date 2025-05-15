@@ -24,6 +24,9 @@ public class CircleCollider extends Circle implements Collidable {
 
     @Override
     public boolean colliding(Collidable other) {
+        if (this == other) {
+            return false;
+        }
         ColliderType otherType = other.getType();
         switch (otherType) {
             case RECT -> {
@@ -35,9 +38,13 @@ public class CircleCollider extends Circle implements Collidable {
             }
             case CIRCLE -> {
                 CircleCollider circle = (CircleCollider) other;
-                double distanceSquared = Math.pow(this.getX() - circle.getX(), 2) + Math.pow(this.getY() - circle.getY(), 2);
+                double distanceSquared = Math.pow(this.getX() - circle.getX(), 2)
+                        + Math.pow(this.getY() - circle.getY(), 2);
                 double radiusSum = this.getRadius() + circle.getRadius();
                 return distanceSquared <= Math.pow(radiusSum, 2);
+            }
+            case OTHER -> {
+                return other.colliding(this);
             }
             default -> {
                 return false;

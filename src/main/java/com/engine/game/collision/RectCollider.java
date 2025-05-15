@@ -34,6 +34,9 @@ public class RectCollider extends Rect implements Collidable {
 
     @Override
     public boolean colliding(Collidable other) {
+        if (this == other) {
+            return false;
+        }
         ColliderType otherType = other.getType();
         switch (otherType) {
             case RECT -> {
@@ -60,6 +63,9 @@ public class RectCollider extends Rect implements Collidable {
                 double closestY = Math.max(this.getY(), Math.min(circle.getY(), this.getY() + this.getHeight()));
                 double distanceSquared = Math.pow(circle.getX() - closestX, 2) + Math.pow(circle.getY() - closestY, 2);
                 return distanceSquared <= Math.pow(circle.getRadius(), 2);
+            }
+            case OTHER -> {
+                return other.colliding(this);
             }
             default -> {
                 return false;
