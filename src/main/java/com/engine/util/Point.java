@@ -99,4 +99,15 @@ public class Point {
     public Point copy() {
         return new Point(this.x, this.y);
     }
+
+    /**
+     * Returns a string representation of the point.
+     * @return a string in the format "(x, y)"
+     */
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
