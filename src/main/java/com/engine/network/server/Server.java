@@ -136,8 +136,8 @@ public class Server {
      * @param port
      * @throws Exception
      */
-    public void sendSessionPacketToRoom(byte[] header, byte[] buffer, String room) throws Exception {
-        ArrayList<SessionInfo> sessionInfos = getSessionsInRoom(room);
+    public void sendSessionPacketToRoom(byte[] header, byte[] buffer, String room, SocketAddress... excludeUsers) throws Exception {
+        ArrayList<SessionInfo> sessionInfos = getSessionsInRoom(room, excludeUsers);
         for (SessionInfo info : sessionInfos) {
             sendPacket(header, buffer, info.getAddress(), info.getPort(), info.getAESKey());
         }
@@ -159,14 +159,22 @@ public class Server {
      * @param room
      * @return a list of session info objects
      */
-    private ArrayList<SessionInfo> getSessionsInRoom(String room) {
+    private ArrayList<SessionInfo> getSessionsInRoom(String room, SocketAddress... exclude) {
         ArrayList<SessionInfo> sessionInfos = new ArrayList<SessionInfo>();
+        ArrayList<SocketAddress> excludeList = new ArrayList<SocketAddress>(Arrays.asList(exclude));
 
-        for (SessionInfo info : sessions.values()) {
-            if (info.getRoom().equals(room)) {
+        for (SocketAddress addr : sessions.keySet()) {
+            SessionInfo info = sessions.get(addr);
+            if (!info.isInRoom()) { continue; }
+
+            // System.out.println("Session " + info.getAddress() + " is in room " + info.getRoom());
+
+            if (info.getRoom().equals(room) && !excludeList.contains(addr)) {
                 sessionInfos.add(info);
             }
         }
+
+        // System.out.println("Sessions in room " + room + ": " + sessionInfos.size());
 
         return sessionInfos;
     }
@@ -204,6 +212,7 @@ public class Server {
         if (BaseHeader.AuthLogin.compare(data.header)) {
             String username = data.msgStr.split(":", 2)[0];
             String password = data.msgStr.split(":", 2)[1];
+
             if (userManager.authenticateUser(username, password)) {
                 sessions.get(data.address).setUsername(username);
                 sessions.get(data.address).setSessionKey(HMACAuthenticator.generateSessionKey());

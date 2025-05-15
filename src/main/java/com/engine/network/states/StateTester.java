@@ -1,9 +1,5 @@
 package com.engine.network.states;
 
-import java.util.Arrays;
-
-import com.engine.util.Point;
-
 public class StateTester {
   public static void main(String[] args) {
     // // Create a new StateManager
