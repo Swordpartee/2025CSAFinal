@@ -53,7 +53,10 @@ public class DrawerRect extends Rect implements Drawable {
         if(filled) {
             graphic.fillRect(x, y, width, height);
         } else {
-            graphic.drawRect(x, y, width, height);
+            // Draw a rectangle with a border thickness of 3
+            for (int i = 0; i < 3; i++) {
+                graphic.drawRect(x + i, y + i, width - i * 2, height - i * 2);
+            }
         }
     }
 }
