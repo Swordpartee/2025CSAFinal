@@ -1,5 +1,7 @@
 package com.engine;
 
+import com.engine.util.Image;
+
 public class Constants {
     public static class PlayerConstants {
         public static final int PLAYER_PIXEL_SIZE = 16;
@@ -7,10 +9,10 @@ public class Constants {
         public static final int PLAYER_WIDTH = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         public static final int PLAYER_HEIGHT = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
 
-        public static final String PLAYER_FRONT_SPRITE = "src/main/resources/front1.spr";
-        public static final String PLAYER_BACK_SPRITE = "src/main/resources/back1.spr";
-        public static final String PLAYER_LEFT_SPRITE = "src/main/resources/left1.spr";
-        public static final String PLAYER_RIGHT_SPRITE = "src/main/resources/right1.spr";
+        public static final Image PLAYER_FRONT_SPRITE = new Image("src/main/resources/front1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_BACK_SPRITE = new Image("src/main/resources/back1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_LEFT_SPRITE = new Image("src/main/resources/left1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_RIGHT_SPRITE = new Image("src/main/resources/right1.spr", PLAYER_SPRITE_SCALE);
 
         public static final double PLAYER_ACCELERATION = 0.5;
         public static final double PLAYER_MAX_SPEED = 3;
