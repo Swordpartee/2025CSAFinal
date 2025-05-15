@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.engine.Constants;
+import com.engine.game.collision.Collidable;
+import com.engine.game.objects.GameObject;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Updateable;
@@ -23,17 +26,19 @@ public class Renderer {
 
     private static final ArrayList<Drawable> drawables = new ArrayList<>();
 
+    private static final ArrayList<Collidable> collidables = new ArrayList<>();
+
     private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
     private static final ArrayList<Runnable> processes = new ArrayList<>();
 
-    private static int width = 320;
-    private static int height = 320;
+    private static int width = Constants.GameConstants.GAME_WIDTH;
+    private static int height = Constants.GameConstants.GAME_HEIGHT;
 
-    private static final ScheduledExecutorService iterator = Executors.newScheduledThreadPool(4);
+    private static final ScheduledExecutorService iterator = Executors.newScheduledThreadPool(Constants.RendererConstants.THREADS);
 
     private static void init() {
-        canvas.setPreferredSize(new Dimension(width, height));
+        canvas.setPreferredSize(new Dimension(Constants.GameConstants.GAME_WIDTH, Constants.GameConstants.GAME_HEIGHT));
         canvas.setIgnoreRepaint(true);
         canvas.setFocusable(true);
         frame.add(canvas);
@@ -43,7 +48,7 @@ public class Renderer {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        canvas.createBufferStrategy(2);
+        canvas.createBufferStrategy(Constants.RendererConstants.BUFFERS);
 
         addListener();
 
@@ -60,12 +65,17 @@ public class Renderer {
      * Starts the rendering loop.
      * Redraws the screen every 16 milliseconds.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void start() {
         init();
 
         iterator.scheduleAtFixedRate(() -> {
-            redraw();
-        }, 0, 16, TimeUnit.MILLISECONDS);
+            try {
+                redraw();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, Constants.RendererConstants.FRAME_DELAY, TimeUnit.MILLISECONDS);
     }
     
     public static void setSize(int newWidth, int newHeight) {
@@ -73,6 +83,14 @@ public class Renderer {
         height = newHeight;
         canvas.setPreferredSize(new Dimension(width, height));
         frame.pack();
+    }
+
+    public static int getWidth() {
+        return width;
+    }
+
+    public static int getHeight() {
+        return height;
     }
 
     public static void addListener() {
@@ -103,11 +121,31 @@ public class Renderer {
     }
 
     /**
+     * Adds a collidable object to be checked for collisions
+     * @param cs collidables to add
+     */
+    public static void addCollidables(Collidable... cs) {
+        collidables.addAll(Arrays.asList(cs));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
     public static void addDrawables(Drawable... ds) {
         drawables.addAll(Arrays.asList(ds));
+    }
+
+    public static void addGameObjects(GameObject... gs) {
+        for (GameObject g : gs) {
+            addDrawables(g);
+            addUpdateables(g);
+            addCollidables(g);
+        }
+    }
+
+    public static Collidable[] getCollidables() {
+        return collidables.toArray(Collidable[]::new);
     }
     
     /**
