@@ -1,7 +1,6 @@
 package com.engine.network.states;
 
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 
 public interface INetObject {

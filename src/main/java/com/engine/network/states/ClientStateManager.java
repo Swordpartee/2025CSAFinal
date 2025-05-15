@@ -1,17 +1,13 @@
 package com.engine.network.states;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import com.engine.network.client.Client;
 import com.engine.network.client.ClientPacketData;
-import com.engine.network.encryption.Convert;
 import com.engine.network.headers.Header;
 
 public class ClientStateManager {
@@ -20,9 +16,15 @@ public class ClientStateManager {
   private final HashMap<String, INetState<?>> stateIDMap = new HashMap<>(); // Allow for getting states by ID
   private final Client client;
 
-  private INetState<?>[] getAllStatesWithHeader(Header lookupHeader) {
+  private INetState<?>[] getStatesOfHeader(Header lookupHeader) {
     INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
       .filter(state -> state.getHeader().compare(lookupHeader)).toArray(INetState<?>[]::new);
+    return states;
+  }
+
+  public INetState<?>[] getStatesOfType(Class<?> clazz) {
+    INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
+      .filter(state -> ((INetState<?>) state).getValue().getClass().equals(clazz)).toArray(INetState<?>[]::new);
     return states;
   }
 
@@ -94,7 +96,7 @@ public class ClientStateManager {
   }
 
   public <T> void sendStatesWithHeader(Header header) throws Exception {
-    INetState<?>[] states = getAllStatesWithHeader(header);
+    INetState<?>[] states = getStatesOfHeader(header);
     if (states.length == 0) { return; }
 
     byte[][] msgs = new byte[states.length][];
