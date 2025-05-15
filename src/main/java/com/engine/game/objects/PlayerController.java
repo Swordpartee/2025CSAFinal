@@ -25,14 +25,10 @@ public class PlayerController implements GameObject {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE,
-                Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
-        this.backSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE,
-                Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
-        this.leftSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE,
-                Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
-        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE,
-                Constants.PlayerConstants.PLAYER_SPRITE_SCALE);    
+        this.frontSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
+        this.backSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
+        this.leftSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
+        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);    
 
         this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
     }
@@ -56,20 +52,16 @@ public class PlayerController implements GameObject {
         velocity.setX(Functions.clamp(velocity.getX() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
         velocity.setY(Functions.clamp(velocity.getY() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
 
-        if (velocity.getX() != 0) {
-            position.moveX(velocity.getX());
-            if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-                position.moveX(-velocity.getX());
-                velocity.setX(0);
-            }
+        position.moveX(velocity.getX());
+        if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
+            position.moveX(-velocity.getX());
+            velocity.setX(0);
         }
         
-        if (velocity.getY() != 0) {
-            position.moveY(velocity.getY());
-            if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-                position.moveY(-velocity.getY());
-                velocity.setY(0);
-            }
+        position.moveY(velocity.getY());
+        if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
+            position.moveY(-velocity.getY());
+            velocity.setY(0);
         }
 
         // Ensure player stays within screen bounds (considering position is the center)
