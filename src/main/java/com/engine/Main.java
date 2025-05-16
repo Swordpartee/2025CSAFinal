@@ -8,7 +8,7 @@ import com.engine.rendering.drawings.Background;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer.addDrawables(new Background(7, 5, 7, Constants.GameConstants.ROCK_SPRITE));
+        Renderer.addDrawables(new Background(Constants.GameConstants.ROCK_SPRITE));
         
         Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false));
 
