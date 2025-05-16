@@ -69,6 +69,14 @@ public class Image {
             throw new RuntimeException("Failed to load sprite: " + path, e);
         }
     }
+
+    public double getWidth() {
+        return width * scale;
+    }
+
+    public double getHeight() {
+        return height * scale;
+    }
     
     public void draw(Graphics graphic, double x, double y) {
         // Calculate top-left position from center
