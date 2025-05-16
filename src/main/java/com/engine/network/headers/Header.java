@@ -6,7 +6,9 @@ public enum Header {
   InitialStateBundle((byte[]) new byte[] { 1, 1 }, HeaderType.StateAdd),
   StateChangeBundle((byte[]) new byte[] { 1, 1 }, HeaderType.StateChange),
   IncreaseCookies((byte[]) new byte[] { 1, 2 }, HeaderType.Other),
-  GameObjectState((byte[]) new byte[] { 1, 3 }, HeaderType.StateChange);
+  GameObjectState((byte[]) new byte[] { 1, 3 }, HeaderType.StateChange),
+  PlayerState((byte[]) new byte[] { 1, 4 }, HeaderType.StateChange),
+  DeleteState((byte[]) new byte[] { 1, 5 }, HeaderType.StateDelete);
 
   private final byte[] value;
   private final HeaderType type;

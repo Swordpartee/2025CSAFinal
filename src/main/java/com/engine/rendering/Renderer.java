@@ -36,6 +36,8 @@ public class Renderer {
     private static int height = Constants.GameConstants.GAME_HEIGHT;
 
     private static final ScheduledExecutorService iterator = Executors.newScheduledThreadPool(Constants.RendererConstants.THREADS);
+    
+    private static Runnable onGameClose = () -> {};
 
     private static void init() {
         canvas.setPreferredSize(new Dimension(Constants.GameConstants.GAME_WIDTH, Constants.GameConstants.GAME_HEIGHT));
@@ -55,6 +57,7 @@ public class Renderer {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                onGameClose.run();
                 iterator.shutdown();
                 System.exit(0);
             }
@@ -91,6 +94,10 @@ public class Renderer {
 
     public static int getHeight() {
         return height;
+    }
+
+    public static void setOnGameClose(Runnable onGameClose) {
+        Renderer.onGameClose = onGameClose;
     }
 
     public static void addListener() {
@@ -134,6 +141,14 @@ public class Renderer {
      */
     public static void addDrawables(Drawable... ds) {
         drawables.addAll(Arrays.asList(ds));
+    }
+
+    /**
+     * Removes drawables from the renderer
+     * @param ds : drawables to remove
+     */
+    public static void removeDrawables(Drawable... ds) {
+        drawables.removeAll(Arrays.asList(ds));
     }
 
     public static void addGameObjects(GameObject... gs) {

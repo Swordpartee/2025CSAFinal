@@ -8,15 +8,17 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.engine.util.Functions;
+
 public class HMACAuthenticator {
   // HMAC algorithm to use (HMAC-SHA256)
   private static final String HMAC_ALGORITHM = "HmacSHA256";
 
   /**
    * Generate an HMAC token for authentication
-   * @param sessionKey The secret key for the user's session
-   * @param username The username to include in the token
-   * @param timestamp Current timestamp
+   * @param sessionKey : The secret key for the user's session
+   * @param username : The username to include in the token
+   * @param timestamp : Current timestamp
    * @return Base64 encoded HMAC token
    */
   public static String generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -42,17 +44,17 @@ public class HMACAuthenticator {
 
   /**
    * Validate the HMAC token, by regenerating it with the values given and comparing it with the client's sent token
-   * @param sessionKey
-   * @param username
-   * @param timestamp
-   * @param clientHMAC
-   * @param maxTimeDriftSeconds
-   * @return
+   * @param sessionKey : The key for the user's session
+   * @param username : The username to include in the token
+   * @param timestamp : The timestamp to include in the token
+   * @param clientHMAC : The HMAC sent by the client
+   * @param maxTimeDriftSeconds : The maximum time drift allowed in seconds
+   * @return true if the token is valid, false otherwise
    */
   public static boolean validateHMACToken(String sessionKey, String username, long timestamp, String clientHMAC, long maxTimeDriftSeconds) {
     try {
       // Check timestamp validity
-      long currentTime = System.currentTimeMillis() / 1000;
+      long currentTime = (long) (Functions.getTime() / 1000);
       if (Math.abs(currentTime - timestamp) > maxTimeDriftSeconds) {
         return false; // Token expired or time drifted too much
       }

@@ -4,7 +4,6 @@ import java.net.*;
 import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,6 +13,7 @@ import com.engine.network.encryption.Convert;
 import com.engine.network.encryption.Encryption;
 import com.engine.network.encryption.HMACAuthenticator;
 import com.engine.network.headers.BaseHeader;
+import com.engine.util.Functions;
 
 public class Client {
     private DatagramSocket socket;
@@ -36,10 +36,16 @@ public class Client {
 
     private ExecutorService executor;
 
+    /**
+     * @return whether the client is logged in or not
+     */
     public boolean loggedIn() {
         return loggedIn;
     }
 
+    /**
+     * @return whether the client is in a room or not
+     */
     public boolean roomSet() {
         return roomSet;
     }
@@ -58,7 +64,7 @@ public class Client {
      * @param scan
      * @throws Exception
      */
-    public Client(RecvFunc recv, Scanner scan) throws Exception {
+    public Client(RecvFunc recv) throws Exception {
         // Setup client
         this.recv = recv;
     }
@@ -211,7 +217,7 @@ public class Client {
      */
     public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
         if (loggedIn && sessionKey != null) {
-            long time = System.currentTimeMillis() / 1000;
+            long time = (long) (Functions.getTime() / 1000);
             String hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
             byte[] timeBytes = Convert.ltob(time);
             msg = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes,
@@ -229,9 +235,9 @@ public class Client {
      * Sends a session packet to the server and waits for a response.
      * This packet is encrypted with AES, and uses an HMAC token if you have already logged in to ensure the server still knows it's you.
      * This 
-     * @param header
-     * @param msg
-     * @param waitForHeaders
+     * @param header : the header of the packet
+     * @param msg : the message to send
+     * @param waitForHeaders : the headers to wait for
      * @throws Exception
      */
     public void sendSessionPacketAndWait(byte[] header, byte[] msg, byte[][] waitForHeaders) throws Exception {
@@ -244,6 +250,13 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a dense session packet (a packet with multiple msgs for a single header) to the server.
+     * This packet is encrypted with AES, and uses an HMAC token if you have already logged in to ensure the server still knows it's you.
+     * @param header : the header of the packet
+     * @param msgs : the messages to send
+     * @throws Exception
+     */
     public void sendDenseSessionPacket(byte[] header, byte[][] msgs) throws Exception {
         byte[] concatenatedMsgs = new byte[0];
         for (byte[] msg : msgs) {
@@ -252,7 +265,7 @@ public class Client {
         }
 
         if (loggedIn && sessionKey != null) {
-            long time = System.currentTimeMillis() / 1000;
+            long time = (long) (Functions.getTime() / 1000);
             String hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
             byte[] timeBytes = Convert.ltob(time);
             concatenatedMsgs = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes,

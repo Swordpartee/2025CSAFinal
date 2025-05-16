@@ -16,6 +16,14 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
     public T value;
 
+    /**
+     * Creates a new NetState object from serialized data from the server.
+     * @param header : The header of the state
+     * @param data : The serialized data from the server
+     * @param csm : The ClientStateManager to use for this state
+     * @return The deserialized state
+     * @throws Exception
+     */
     public static NetState<?> fromSerializedData(Header header, byte[] data, ClientStateManager csm) throws Exception {
         DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
 
@@ -26,25 +34,50 @@ public class NetState<T extends INetObject> implements INetState<T> {
         INetObject netObject = (INetObject) clazz.getDeclaredConstructor().newInstance();
         netObject.deserialize(dataInputStream);
 
-        NetState<?> netState = new NetState<>(header, csm, netObject);
-        netState.setId(uuid);
+        NetState<?> netState = new NetState<>(header, csm, netObject, uuid);
         
         return netState;
     }
 
+    /**
+     * Creates a new NetState object from serialized data from the server.
+     * @param header : The header of the state
+     * @param data : The serialized data from the server
+     * @param csm : The ClientStateManager to use for this state
+     * @param clazz : The class of the state
+     * @return The deserialized state
+     * @throws Exception
+     */
     public static <T extends INetObject> NetState<T> fromSerializedData(Header header, byte[] data, ClientStateManager csm, Class<T> clazz) throws Exception {
-        NetState<?> rawState = fromSerializedData(header, data, csm);
-        if (!clazz.isInstance(rawState.value)) {
-            throw new ClassCastException("Deserialized object is not of type " + clazz.getName());
+        DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
+
+        String uuid = dataInputStream.readUTF();
+        String className = dataInputStream.readUTF();
+
+        if (!clazz.getName().equals(className)) {
+            throw new ClassCastException("Expected class " + clazz.getName() + " but got " + className);
         }
-        return new NetState<>(header, csm, clazz.cast(rawState.value));
+
+        T netObject = clazz.getDeclaredConstructor().newInstance();
+        netObject.deserialize(dataInputStream);
+
+        return new NetState<>(header, csm, netObject, uuid);
     }
 
-    public NetState(Header stateHeader, ClientStateManager stateManager, T initialValue) {
+    /**
+     * Creates a new NetState object.
+     * @param stateHeader : The header of the state
+     * @param stateManager : The ClientStateManager to use for this state
+     * @param initialValue : The initial value of the state
+     * @param id : The ID of the state
+     */
+    public NetState(Header stateHeader, ClientStateManager stateManager, T initialValue, String id) {
         this.stateHeader = stateHeader;
-        this.uuid = UUID.randomUUID().toString();
+        this.uuid = id;
         this.stateManager = stateManager;
 
+        // System.out.println("State CREATED: " + this.uuid);
+        
         this.value = initialValue;
 
         // Just for convenience.
@@ -53,6 +86,16 @@ public class NetState<T extends INetObject> implements INetState<T> {
         }
     } 
 
+    /**
+     * Creates a new NetState object.
+     * @param stateHeader : The header of the state
+     * @param stateManager : The ClientStateManager to use for this state
+     * @param initialValue : The initial value of the state
+     */
+    public NetState(Header stateHeader, ClientStateManager stateManager, T initialValue) {
+        this(stateHeader, stateManager, initialValue, UUID.randomUUID().toString());
+    }
+    
     public Header getHeader() {
         return stateHeader;
     }
@@ -109,10 +152,14 @@ public class NetState<T extends INetObject> implements INetState<T> {
     @Override
     public void recieveData(DataInputStream data) throws Exception {
         value.deserialize(data);
-        System.out.println("New value: " + this.value);
+        // System.out.println("New value: " + this.value);
     }
 
     public void sendSelf() throws Exception {
         stateManager.sendState(this);
+    }
+
+    public void deleteSelf() throws Exception {
+        stateManager.sendStateDelete(this);
     }
 }
