@@ -79,6 +79,9 @@ public class PlayerController implements GameObject {
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
             backSprite.draw(g);
+        } else 
+        if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
+            frontSprite.draw(g);
         } else {
             frontSprite.draw(g);
         }
