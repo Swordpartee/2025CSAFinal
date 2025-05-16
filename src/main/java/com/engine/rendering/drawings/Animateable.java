@@ -2,7 +2,6 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-import com.engine.util.Functions;
 import com.engine.util.Image;
 import com.engine.util.Point;
 
@@ -12,13 +11,13 @@ public class Animateable implements Drawable {
     private final double speed;
     private final Sprite[] frames;
 
-    private double beginningTime;
+    private double time;
 
     public Animateable(double x, double y, double speed, Image... Frames) {
         this.center = new Point(x, y);
         this.speed = speed;
 
-        beginningTime = Functions.getTime();
+        time = 0;
 
         frames = new Sprite[Frames.length];
         for (int i = 0; i < Frames.length; i++) {
@@ -51,14 +50,13 @@ public class Animateable implements Drawable {
     }
 
     public void reset() {
-        beginningTime = Functions.getTime();
+        time = 0;
     }
 
     @Override
     public void draw(Graphics graphic) {
-        double time = Functions.getTime() - beginningTime;
-        int index = ((int) Math.floor(time / speed)) % frames.length;
-        frames[index].draw(graphic);
+        time ++;
+        frames[(int) (time / speed) % frames.length].draw(graphic);
     }
 
 }

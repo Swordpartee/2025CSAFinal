@@ -14,7 +14,7 @@ public class Main {
 
         Renderer.addGameObjects(new PlayerController());
 
-        Renderer.addDrawables(new Animateable(400, 400, 300, Constants.PlayerConstants.PLAYER_FRONT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_BACK_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_SPRITE));
+        Renderer.addDrawables(new Animateable(400, 400, 12, Constants.PlayerConstants.PLAYER_FRONT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_BACK_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_SPRITE));
 
         Renderer.start();
     }
