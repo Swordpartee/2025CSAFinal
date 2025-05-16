@@ -3,6 +3,9 @@ package com.engine.util;
 import com.engine.game.collision.Collidable;
 
 public class Functions {
+    public static double getTime() {
+        return System.currentTimeMillis();
+    }
     public static double clamp(double value, double min, double max) {
         return value < min ? min : value > max ? max : value;
     }

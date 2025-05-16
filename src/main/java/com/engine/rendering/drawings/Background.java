@@ -2,15 +2,17 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
+import com.engine.util.Image;
+
 public class Background implements Drawable {
     private final Drawable[][] tiles;
 
-    public Background(int width, int height, int scale, String tilePaths) {
+    public Background(int width, int height, int scale, Image tilePaths) {
         this.tiles = new Drawable[width][height];
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                tiles[i][j] = new Sprite(i * 16 * scale, j * 16 * scale, tilePaths, scale);
+                tiles[i][j] = new Sprite(i * 16 * scale, j * 16 * scale, tilePaths);
             }
         }
     }
