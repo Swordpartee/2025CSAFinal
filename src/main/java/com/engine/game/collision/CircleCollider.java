@@ -16,7 +16,8 @@ public class CircleCollider extends Circle implements Collidable {
 
     /**
      * Creates a new circle collider
-     * @param circle the circle to use as the collider
+     * @param center the x y position of the center of the circle
+     * @param radius of the circle
      */
     public CircleCollider(Point center, double radius) {
         super(center, radius);
@@ -55,6 +56,11 @@ public class CircleCollider extends Circle implements Collidable {
     @Override
     public boolean colliding(double x, double y) {
         return Math.pow(x - this.getX(), 2) + Math.pow(y - this.getY(), 2) <= Math.pow(this.getRadius(), 2);
+    }
+
+    @Override
+    public boolean colliding(Point p) {
+        return Math.pow(p.getX() - this.getX(), 2) + Math.pow(p.getY() - this.getY(), 2) <= Math.pow(this.getRadius(), 2);
     }
 
     @Override

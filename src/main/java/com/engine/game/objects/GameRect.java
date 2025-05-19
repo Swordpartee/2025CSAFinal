@@ -45,6 +45,11 @@ public class GameRect implements GameObject {
     }
 
     @Override
+    public boolean colliding(Point p) {
+        return collider.colliding(p);
+    }
+
+    @Override
     public ColliderType getType() {
         return ColliderType.OTHER;
     }

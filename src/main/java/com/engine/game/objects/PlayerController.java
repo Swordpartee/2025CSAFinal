@@ -21,6 +21,9 @@ public class PlayerController implements GameObject {
     private final Point velocity;
     private final RectCollider collider;
 
+    /**
+     * Creates a new PlayerController.
+     */
     public PlayerController() {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
@@ -49,15 +52,18 @@ public class PlayerController implements GameObject {
             velocity.moveX(Constants.PlayerConstants.PLAYER_ACCELERATION);
         }
 
+        // applies friction while setting max and min speeds
         velocity.setX(Functions.clamp(velocity.getX() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
         velocity.setY(Functions.clamp(velocity.getY() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
 
+        // apply velocity to position and stops if colliding
         position.moveX(velocity.getX());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
             position.moveX(-velocity.getX());
             velocity.setX(0);
         }
         
+        // apply velocity to position and stops if colliding
         position.moveY(velocity.getY());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
             position.moveY(-velocity.getY());
@@ -95,6 +101,11 @@ public class PlayerController implements GameObject {
     @Override
     public boolean colliding(double x, double y) {
         return collider.colliding(x, y);
+    }
+
+    @Override
+    public boolean colliding(Point p) {
+        return collider.colliding(p);
     }
 
     @Override

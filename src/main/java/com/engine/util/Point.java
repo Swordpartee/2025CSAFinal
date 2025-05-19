@@ -25,32 +25,32 @@ public class Point {
     }
 
     /**
-     * Gets the x coordinate of the position.
-     * @return x coordinate
+     * Gets the x-coordinate of the position.
+     * @return x-coordinate
      */
     public double getX() {
         return x;
     }
 
     /**
-     * Gets the y coordinate of the position.
-     * @return y coordinate
+     * Gets the y-coordinate of the position.
+     * @return y-coordinate
      */
     public double getY() {
         return y;
     }
 
     /**
-     * Sets a new x coordinate for the position.
-     * @param newX the new x coordinate
+     * Sets a new x-coordinate for the position.
+     * @param newX the new x-coordinate
      */
     public void setX(double newX) {
         x = newX;
     }
 
     /**
-     * Sets a new y coordinate for the position.
-     * @param newY the new y coordinate
+     * Sets a new y-coordinate for the position.
+     * @param newY the new y-coordinate
      */
     public void setY(double newY) {
         y = newY;
@@ -58,8 +58,8 @@ public class Point {
 
     /**
      * Sets a new coordinate for the position.
-     * @param newX the new x coordinate
-     * @param newY the new y coordinate
+     * @param newX the new x-coordinate
+     * @param newY the new y-coordinate
      */
     public void setPos(double newX, double newY) {
         x = newX;
@@ -67,7 +67,7 @@ public class Point {
     }
 
     /**
-     * Moves the x coordinate by a given amount.
+     * Moves the x-coordinate by a given amount.
      * @param dx change in x
      */
     public void moveX(double dx) {
@@ -75,7 +75,7 @@ public class Point {
     }
 
     /**
-     * Moves the y coordinate by a given amount.
+     * Moves the y-coordinate by a given amount.
      * @param dy change in y
      */
     public void moveY(double dy) {

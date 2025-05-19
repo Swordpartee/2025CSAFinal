@@ -8,6 +8,10 @@ import com.engine.util.Image;
 public class Background implements Drawable {
     private final Drawable[][] tiles;
 
+    /**
+     * Creates a new Background Drawable.
+     * @param tileImage the image to set the background to
+     */
     public Background(Image tileImage) {
         int cols = (int) Math.ceil((double) Renderer.getWidth() / tileImage.getWidth()) + 1;
         int rows = (int) Math.ceil((double) Renderer.getHeight() / tileImage.getHeight()) + 1;
@@ -24,9 +28,9 @@ public class Background implements Drawable {
 
     @Override
     public void draw(Graphics graphic) {
-        for (Drawable[] tile : tiles) {
-            for (Drawable tile1 : tile) {
-                tile1.draw(graphic);
+        for (Drawable[] row : tiles) {
+            for (Drawable col : row) {
+                col.draw(graphic);
             }
         }
     }

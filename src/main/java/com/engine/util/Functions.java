@@ -3,13 +3,26 @@ package com.engine.util;
 import com.engine.game.collision.Collidable;
 
 public class Functions {
+    /**
+     * Gets the current time in milliseconds.
+     * @return The current time in milliseconds.
+     */
     public static double getTime() {
         return System.currentTimeMillis();
     }
+
+    /**
+     * Clamps a value between a minimum and maximum value.
+     * @param value the value to clamp
+     * @param min the minimum value to clamp to
+     * @param max the maximum value to clamp to
+     * @return the clamped value
+     */
     public static double clamp(double value, double min, double max) {
         return value < min ? min : value > max ? max : value;
     }
 
+    /
     public static double setMax(double value, double max) {
         return value > max ? max : value;
     }

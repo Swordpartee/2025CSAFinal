@@ -4,14 +4,20 @@ import com.engine.util.Point;
 import com.engine.util.Rect;
 
 public class RectCollider extends Rect implements Collidable {
-
+    /**
+     * Creates a new rectangle collider
+     * x and y position of the top left corner set to (0, 0),
+     * width set to zero,
+     * and height set to zero.
+     */
     public RectCollider() {
         super();
     }
+
     /**
      * Creates a new rectangle collider
-     * @param x position of the top left corner of the rectangle
-     * @param y position of the top left corner of the rectangle
+     * @param x position of the center of the rectangle
+     * @param y position of the center of the rectangle
      * @param width of the rectangle
      * @param height of the rectangle
      */
@@ -27,6 +33,12 @@ public class RectCollider extends Rect implements Collidable {
         super(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
+    /**
+     * Creates a new rectangle collider
+     * @param center the x y position of the center of the rectangle
+     * @param width of the the rectangle
+     * @param height of the rectangle
+     */
     public RectCollider(Point center, double width, double height) {
         super(center, width, height);
     }
@@ -77,6 +89,12 @@ public class RectCollider extends Rect implements Collidable {
     public boolean colliding(double x, double y) {
         return x >= this.getX() && x <= this.getX() + this.getWidth() &&
                y >= this.getY() && y <= this.getY() + this.getHeight();
+    }
+
+    @Override
+    public boolean colliding(Point p) {
+        return p.getX() >= this.getX() && p.getX() <= this.getX() + this.getWidth() &&
+               p.getY() >= this.getY() && p.getY() <= this.getY() + this.getHeight();
     }
 
     @Override
