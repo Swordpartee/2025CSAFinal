@@ -2,7 +2,7 @@ package com.engine.game.objects;
 
 import java.awt.Graphics;
 
-import com.engine.game.collision.Collidable;
+import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
 import com.engine.util.Point;
@@ -35,13 +35,8 @@ public class GameRect implements GameObject {
     }
 
     @Override
-    public boolean colliding(Collidable other) {
+    public boolean colliding(Collider other) {
         return collider.colliding(other);
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
-        return collider.colliding(x, y);
     }
 
     @Override
