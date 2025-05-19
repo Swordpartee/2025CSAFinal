@@ -18,6 +18,8 @@ public class ClientStateManager {
 
 
     public static final String SEGMENT_DELIMITER = "::";
+    public static int MessagesSent = 0;
+    public static int MessagesReceived = 0;
 
     private final HashMap<Class<?>, StateF<?>> addFunctions = new HashMap<>(); // Allow for getting states by class
     private final HashMap<Class<?>, StateF<?>> deleteFunctions = new HashMap<>(); // Allow for getting states by class
@@ -49,7 +51,7 @@ public class ClientStateManager {
      */
     private INetState<?>[] getStatesOfHeader(Header lookupHeader) {
         INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> state.getHeader().compare(lookupHeader)).toArray(INetState<?>[]::new);
+            .filter(state -> state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
         return states;
     }
 
@@ -106,6 +108,7 @@ public class ClientStateManager {
      * @throws Exception
      */
     public <T> void sendState(INetState<T> state) throws Exception {
+        ClientStateManager.MessagesSent++;
         client.sendSessionPacket(state.getHeader().value(), state.getSendData());
     }
 
@@ -194,6 +197,8 @@ public class ClientStateManager {
             return null;
         }).toArray(byte[][]::new);
 
+        // System.out.println("Sending " + states.length + " states with header: " + header);
+
         client.sendDenseSessionPacket(header.value(), msgs);
     }
 
@@ -204,6 +209,23 @@ public class ClientStateManager {
      */
     public <T> void sendStateDelete(INetState<T> state) throws Exception {
         client.sendSessionPacket(Header.DeleteState.value(), state.getId());
+        stateIDMap.remove(state.getId());
+        deleteFunctions.get(state.getValue().getClass()).run(state);
+    }
+
+    /**
+     * Sends a state to the server to be deleted by a value given
+     * @param state : The state to delete.
+     * @throws Exception
+     */
+    public <T> void deleteStateByValue(T value) throws Exception {
+        INetState<?>[] states = getStatesOfType(value.getClass());
+        for (INetState<?> s : states) {
+            if (s.getValue().equals(value)) {
+                sendStateDelete(s);
+                return;
+            }
+        }
     }
 
     /**
@@ -286,6 +308,12 @@ public class ClientStateManager {
     public <T> void tryReceiveStates(ClientPacketData data) throws Exception {
         Header header = Header.from(data.header);
 
+        ClientStateManager.MessagesReceived++;
+
+        if (header == null) {
+            return;
+        }
+
         if (header.type() == Header.HeaderType.StateChange) {
             recvStateChange(header, data);
         }
@@ -307,6 +335,7 @@ public class ClientStateManager {
 
             String id = dis.readUTF();
             dis.readUTF(); // Read the class name, but ignore it
+            dis.read(); // Read the SyncMode, but ignore it
 
             INetState<?> state = stateIDMap.get(id);
 
@@ -319,7 +348,7 @@ public class ClientStateManager {
             if (!state.getHeader().compare(header)) {
                 continue;
             } // Header mismatch
-            if (state.getSyncMode().equals(SyncMode.CLIENT)) {
+            if (state.getControlMode().equals(ControlMode.CLIENT)) {
                 continue;
             } // SyncMode is for CLIENT, not SERVER
 
@@ -334,7 +363,10 @@ public class ClientStateManager {
      */
     private <T> void recvStateDelete(Header header, ClientPacketData data) {
         // System.out.println("Delete State: " + Convert.btos(data.msg));
+
+
         INetState<?> state = stateIDMap.get(Convert.btos(data.msg));
+
         stateIDMap.remove(Convert.btos(data.msg));
 
         if (state != null) {

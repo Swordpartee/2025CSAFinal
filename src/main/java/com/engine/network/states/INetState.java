@@ -21,13 +21,13 @@ public interface INetState<T> {
    * Get the sync mode of the state
    * @return The sync mode of the state
    */
-  SyncMode getSyncMode();
+  ControlMode getControlMode();
 
   /**
    * Set the sync mode of the state
-   * @param syncMode : The sync mode to set
+   * @param controlMode : The sync mode to set
    */
-  void setSyncMode(SyncMode syncMode);
+  void setControlMode(ControlMode controlMode);
 
   /**
    * Get the state header

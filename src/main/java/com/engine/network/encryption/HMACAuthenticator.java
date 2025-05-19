@@ -3,6 +3,7 @@ package com.engine.network.encryption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Mac;
@@ -21,7 +22,7 @@ public class HMACAuthenticator {
    * @param timestamp : Current timestamp
    * @return Base64 encoded HMAC token
    */
-  public static String generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
+  public static byte[] generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
     // Create the message to sign (username + timestamp)
     String message = username + ":" + timestamp;
     
@@ -37,9 +38,10 @@ public class HMACAuthenticator {
     
     // Generate the HMAC
     byte[] hmacBytes = mac.doFinal(message.getBytes());
-    
-    // Base64 encode the HMAC
-    return Base64.getEncoder().encodeToString(hmacBytes);
+
+    byte[] truncated = new byte[10];
+    System.arraycopy(hmacBytes, 0, truncated, 0, 10);
+    return truncated;
   }
 
   /**
@@ -51,7 +53,7 @@ public class HMACAuthenticator {
    * @param maxTimeDriftSeconds : The maximum time drift allowed in seconds
    * @return true if the token is valid, false otherwise
    */
-  public static boolean validateHMACToken(String sessionKey, String username, long timestamp, String clientHMAC, long maxTimeDriftSeconds) {
+  public static boolean validateHMACToken(String sessionKey, String username, long timestamp, byte[] clientHMAC, long maxTimeDriftSeconds) {
     try {
       // Check timestamp validity
       long currentTime = (long) (Functions.getTime() / 1000);
@@ -60,13 +62,13 @@ public class HMACAuthenticator {
       }
       
       // Regenerate the HMAC
-      String regeneratedHMAC = generateHMACToken(sessionKey, username, timestamp);
+      byte[] regeneratedHMAC = generateHMACToken(sessionKey, username, timestamp);
 
       // System.out.println("Session Key: " + sessionKey + " Username: " + username + " Timestamp: " + timestamp);
       // System.out.println("Regenerated HMAC: " + regeneratedHMAC + " Client HMAC: " + clientHMAC);
       
       // Compare the regenerated HMAC with the client's HMAC
-      return regeneratedHMAC.equals(clientHMAC);
+      return Arrays.equals(regeneratedHMAC, clientHMAC);
     } catch (Exception e) {
       return false;
     }

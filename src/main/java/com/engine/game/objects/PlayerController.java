@@ -7,6 +7,9 @@ import java.io.DataOutputStream;
 import com.engine.Constants;
 import com.engine.game.collision.Collidable;
 import com.engine.game.collision.RectCollider;
+import com.engine.network.Network;
+import com.engine.network.headers.Header;
+import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
@@ -58,6 +61,12 @@ public class PlayerController implements GameObject {
     public void update() {
         if (!isSelf) {
             return;
+        }
+
+        if (RenderListener.isKeyPressed(EventCode.SPACE)) {
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(position.getX(), position.getY(), 10, true));
+            Renderer.addGameObjects(projectile.getValue());
+            projectile.getValue().getVelocity().setX(1);
         }
 
         // Set velocity based on input

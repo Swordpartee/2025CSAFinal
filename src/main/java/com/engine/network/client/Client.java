@@ -16,6 +16,10 @@ import com.engine.network.headers.BaseHeader;
 import com.engine.util.Functions;
 
 public class Client {
+    public interface RecvFunc {
+        void run(ClientPacketData data) throws Exception;
+    }
+
     private DatagramSocket socket;
 
     private InetAddress address;
@@ -64,7 +68,7 @@ public class Client {
      * @param scan
      * @throws Exception
      */
-    public Client(RecvFunc recv) throws Exception {
+    public Client(RecvFunc recv) {
         // Setup client
         this.recv = recv;
     }
@@ -111,6 +115,7 @@ public class Client {
         byte[] msg = Encryption.concatBytes(BaseHeader.GiveAESKey.value(), new byte[] { (byte) encodedAESKey.length }, encodedAESKey);
 
         byte[] encryptedAESKey = Encryption.encryptRSA(msg, publicKey);
+
         DatagramPacket packet = new DatagramPacket(encryptedAESKey, encryptedAESKey.length, address, this.port);
         socket.send(packet);
 
@@ -188,11 +193,13 @@ public class Client {
      */
     private void startRecvThread() {
         executor.submit(() -> {
-            try {
-                while (true) { recvPacket(); }
-            } catch (Exception e) {
-                System.err.println("Error in receive thread: " + e.getMessage());
-                e.printStackTrace();
+            while (true) { 
+                try {
+                    recvPacket();
+                } catch (Exception e) {
+                    System.err.println("Error in receive thread: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -218,10 +225,13 @@ public class Client {
     public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
         if (loggedIn && sessionKey != null) {
             long time = (long) (Functions.getTime() / 1000);
-            String hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
+            byte[] hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
             byte[] timeBytes = Convert.ltob(time);
+
+            // System.out.println("Sending HMAC: " + hmac.length + " time: " + timeBytes.length + " msg: " + msg.length);
+
             msg = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes,
-                    new byte[] { (byte) hmac.getBytes().length }, hmac.getBytes(), new byte[] { (byte) msg.length }, msg);
+                    new byte[] { (byte) hmac.length }, hmac, new byte[] { (byte) msg.length }, msg);
         } else {
             msg = Encryption.concatBytes(new byte[] { (byte) msg.length }, msg);
         }
@@ -264,16 +274,27 @@ public class Client {
             concatenatedMsgs = Encryption.concatBytes(concatenatedMsgs, lengthPrefix, msg);
         }
 
+        byte[] hmacInfo = new byte[0];
         if (loggedIn && sessionKey != null) {
             long time = (long) (Functions.getTime() / 1000);
-            String hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
+            byte[] hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
             byte[] timeBytes = Convert.ltob(time);
-            concatenatedMsgs = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes,
-                    new byte[] { (byte) hmac.getBytes().length }, hmac.getBytes(), concatenatedMsgs);
+            hmacInfo = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes, new byte[] { (byte) hmac.length }, hmac);
         }
-        sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, concatenatedMsgs), aesKey);
-        DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, this.port);
-        socket.send(sendPacket);
+
+        // Partition the concatenated messages into smaller segments (at the most 1024 bytes each)
+        int maxPacketSize = 1024 - hmacInfo.length;
+        int totalLength = concatenatedMsgs.length;
+        int offset = 0;
+        while (offset < totalLength) {
+            int length = Math.min(maxPacketSize, totalLength - offset);
+            byte[] segment = Encryption.concatBytes(hmacInfo, Arrays.copyOfRange(concatenatedMsgs, offset, offset + length));
+            byte[] encryptedSegment = Encryption.encryptAES(Encryption.concatBytes(header, segment), aesKey);
+            DatagramPacket sendPacket = new DatagramPacket(encryptedSegment, encryptedSegment.length, address, this.port);
+            socket.send(sendPacket);
+            offset += length;
+        }
+        return;
     }
 
     /**

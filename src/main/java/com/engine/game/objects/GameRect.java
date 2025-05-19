@@ -51,6 +51,18 @@ public class GameRect implements GameObject {
         return ColliderType.OTHER;
     }
 
+    public Point getPosition() {
+        return position;
+    }
+
+    public DrawerRect getDrawable() {
+        return drawable;
+    }
+
+    public RectCollider getCollider() {
+        return collider;
+    }
+
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
         this.position.setX(dataSegments.readInt());

@@ -4,17 +4,43 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.Random;
 
 import com.engine.network.headers.Header;
 
 public class NetState<T extends INetObject> implements INetState<T> {
     private Header stateHeader;
     private String uuid;
-    private SyncMode syncMode = SyncMode.SERVER;
+    private ControlMode controlMode = ControlMode.CLIENT;
     private ClientStateManager stateManager;
 
     public T value;
+
+    public static class NanoId {
+        private static final Random random = new SecureRandom();
+        private static final char[] alphabet = 
+            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        
+        public static String generate(int size) {
+            char[] id = new char[size];
+            for (int i = 0; i < size; i++) {
+                id[i] = alphabet[random.nextInt(alphabet.length)];
+            }
+            return new String(id);
+        }
+    }
+
+    private static String generateTimeBasedId() {
+        // Current time millis in custom base
+        long now = System.currentTimeMillis();
+        String timeComponent = Long.toString(now, 36); // Base36 encoding
+
+        // Add 3 random chars for collision prevention
+        String randomChars = NanoId.generate(3);
+
+        return timeComponent + randomChars;
+    }
 
     /**
      * Creates a new NetState object from serialized data from the server.
@@ -29,12 +55,14 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
         String uuid = dataInputStream.readUTF();
         String className = dataInputStream.readUTF();
+        ControlMode syncMode = ControlMode.from(dataInputStream.read());
 
         Class<?> clazz = Class.forName(className);
         INetObject netObject = (INetObject) clazz.getDeclaredConstructor().newInstance();
         netObject.deserialize(dataInputStream);
 
         NetState<?> netState = new NetState<>(header, csm, netObject, uuid);
+        netState.setControlMode(syncMode == ControlMode.CLIENT ? ControlMode.SERVER : ControlMode.BOTH);
         
         return netState;
     }
@@ -53,6 +81,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
         String uuid = dataInputStream.readUTF();
         String className = dataInputStream.readUTF();
+        ControlMode syncMode = ControlMode.valueOf(dataInputStream.readUTF());
 
         if (!clazz.getName().equals(className)) {
             throw new ClassCastException("Expected class " + clazz.getName() + " but got " + className);
@@ -61,7 +90,10 @@ public class NetState<T extends INetObject> implements INetState<T> {
         T netObject = clazz.getDeclaredConstructor().newInstance();
         netObject.deserialize(dataInputStream);
 
-        return new NetState<>(header, csm, netObject, uuid);
+        NetState<T> netState = new NetState<>(header, csm, netObject, uuid);
+        netState.setControlMode(syncMode == ControlMode.CLIENT ? ControlMode.SERVER : ControlMode.BOTH);
+
+        return netState;
     }
 
     /**
@@ -93,7 +125,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
      * @param initialValue : The initial value of the state
      */
     public NetState(Header stateHeader, ClientStateManager stateManager, T initialValue) {
-        this(stateHeader, stateManager, initialValue, UUID.randomUUID().toString());
+        this(stateHeader, stateManager, initialValue, generateTimeBasedId());
     }
     
     public Header getHeader() {
@@ -103,7 +135,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
     public String toString() {
         return this.getClass().getSimpleName() + "{" +
             "stateHeader=" + stateHeader +
-            ", syncMode=" + syncMode +
+            ", syncMode=" + controlMode +
             ", value=" + value +
             '}';
     }
@@ -124,12 +156,12 @@ public class NetState<T extends INetObject> implements INetState<T> {
         this.value = value;
     }
 
-    public SyncMode getSyncMode() {
-        return syncMode;
+    public ControlMode getControlMode() {
+        return controlMode;
     }
 
-    public void setSyncMode(SyncMode syncMode) {
-        this.syncMode = syncMode;
+    public void setControlMode(ControlMode controlMode) {
+        this.controlMode = controlMode;
     }
 
     @Override
@@ -139,6 +171,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
         dos.writeUTF(uuid);
         dos.writeUTF(value.getClass().getName());
+        dos.write(controlMode.value());
 
         value.serialize(dos);
 
@@ -156,10 +189,19 @@ public class NetState<T extends INetObject> implements INetState<T> {
     }
 
     public void sendSelf() throws Exception {
+        if (controlMode == ControlMode.SERVER) { // If it is being controlled by the server (or just a different client), don't send it.
+            return;
+        }
+
         stateManager.sendState(this);
     }
 
     public void deleteSelf() throws Exception {
+        if (controlMode == ControlMode.SERVER) { // If it is being controlled by the server (or just a different client), don't delete it.
+            System.out.println("Tried to delete a server controlled state. This is not allowed.");
+            return;
+        }
+
         stateManager.sendStateDelete(this);
     }
 }
