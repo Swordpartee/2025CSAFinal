@@ -1,13 +1,8 @@
 package com.engine.game.collision;
 
-public class NoneCollider implements Collidable {
+public class NoneCollider implements Collider {
     @Override
-    public boolean colliding(Collidable other) {
-        return false;
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
+    public boolean colliding(Collider other) {
         return false;
     }
 
