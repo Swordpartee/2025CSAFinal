@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import com.engine.game.collision.Collidable;
+import com.engine.game.collision.Collider;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
 
@@ -59,12 +59,7 @@ public class Projectile implements GameObject {
     }
 
     @Override
-    public boolean colliding(Collidable other) {
-        return false;
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
+    public boolean colliding(Collider other) {
         return false;
     }
 

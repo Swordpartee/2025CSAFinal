@@ -117,12 +117,12 @@ public class PlayerController implements GameObject {
             spriteState = 3;
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            backSprite.draw(g);
+            spriteState = 1;
         } else 
         if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            frontSprite.draw(g);
+            spriteState = 0;
         } else {
-            frontSprite.draw(g);
+            spriteState = 0;
         }
 
         sprites[spriteState].draw(g);
