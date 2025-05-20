@@ -17,8 +17,9 @@ import com.engine.rendering.io.RenderListener;
 import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Point;
+import com.engine.util.PointController;
 
-public class PlayerController implements GameObject {
+public class PlayerController extends PointController implements GameObject {
     private final Sprite frontSprite;
     private final Sprite backSprite;
     private final Sprite leftSprite;
@@ -26,24 +27,23 @@ public class PlayerController implements GameObject {
     private final Sprite[] sprites;
     private int spriteState;
     private final boolean isSelf;
-    private final Point position;
     private final Point velocity;
     private final RectCollider collider;
 
     public PlayerController(Color color1, Color color2) {
-        this.position = new Point(0, 0);
+        super(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontSprite = new Sprite(position,
+        this.frontSprite = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.backSprite = new Sprite(position,
+        this.backSprite = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.leftSprite = new Sprite(position,
+        this.leftSprite = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.rightSprite = new Sprite(position,
+        this.rightSprite = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH,
+        this.collider = new RectCollider(getPosition(), Constants.PlayerConstants.PLAYER_WIDTH,
                 Constants.PlayerConstants.PLAYER_HEIGHT);
         
         this.sprites = new Sprite[] { frontSprite, backSprite, leftSprite, rightSprite };
@@ -67,7 +67,7 @@ public class PlayerController implements GameObject {
         }
 
         if (RenderListener.isKeyPressed(EventCode.SPACE)) {
-            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(position.getX(), position.getY(), 10, true));
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(getX(), getY(), 10, true));
             Renderer.addGameObjects(projectile.getValue());
             projectile.getValue().getVelocity().setX(1);
         }
@@ -89,21 +89,21 @@ public class PlayerController implements GameObject {
         velocity.setX(Functions.clamp(velocity.getX() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
         velocity.setY(Functions.clamp(velocity.getY() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
 
-        position.moveX(velocity.getX());
+        moveX(velocity.getX());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-            position.moveX(-velocity.getX());
+            moveX(-velocity.getX());
             velocity.setX(0);
         }
-        
-        position.moveY(velocity.getY());
+
+        moveY(velocity.getY());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-            position.moveY(-velocity.getY());
+            moveY(-velocity.getY());
             velocity.setY(0);
         }
 
         // Ensure player stays within screen bounds (considering position is the center)
-        position.setX(Functions.clamp(position.getX(), Constants.PlayerConstants.PLAYER_WIDTH / 2, Renderer.getWidth() - Constants.PlayerConstants.PLAYER_WIDTH / 2));
-        position.setY(Functions.clamp(position.getY(), Constants.PlayerConstants.PLAYER_HEIGHT / 2, Renderer.getHeight() - Constants.PlayerConstants.PLAYER_HEIGHT / 2));
+        setX(Functions.clamp(getX(), Constants.PlayerConstants.PLAYER_WIDTH / 2, Renderer.getWidth() - Constants.PlayerConstants.PLAYER_WIDTH / 2));
+        setY(Functions.clamp(getY(), Constants.PlayerConstants.PLAYER_HEIGHT / 2, Renderer.getHeight() - Constants.PlayerConstants.PLAYER_HEIGHT / 2));
     }
 
     @Override
@@ -115,14 +115,11 @@ public class PlayerController implements GameObject {
 
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
             spriteState = 2;
-        } else 
-        if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
+        } else if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
             spriteState = 3;
-        } else 
-        if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
+        } else if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
             spriteState = 1;
-        } else 
-        if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
+        } else if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
             spriteState = 0;
         } else {
             spriteState = 0;
@@ -143,8 +140,8 @@ public class PlayerController implements GameObject {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        this.position.setX(dataSegments.readInt());
-        this.position.setY(dataSegments.readInt());
+        setX(dataSegments.readInt());
+        setY(dataSegments.readInt());
         this.velocity.setX(dataSegments.readInt());
         this.velocity.setY(dataSegments.readInt());
         this.spriteState = dataSegments.readInt();
@@ -152,16 +149,17 @@ public class PlayerController implements GameObject {
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
-        dataSegments.writeInt((int) position.getX());
-        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) getX());
+        dataSegments.writeInt((int) getY());
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
         dataSegments.writeInt(spriteState);
     }
 
+    @Override
     public String toString() {
         return "PlayerController{" +
-                "position=" + position +
+                "position=" + getPosition() +
                 ", velocity=" + velocity +
                 '}';
     }

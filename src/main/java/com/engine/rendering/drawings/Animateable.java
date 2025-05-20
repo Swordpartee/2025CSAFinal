@@ -4,49 +4,36 @@ import java.awt.Graphics;
 
 import com.engine.util.Image;
 import com.engine.util.Point;
+import com.engine.util.PointController;
 
-public class Animateable implements Drawable {
-    private final Point center;
-
+public class Animateable extends PointController implements Drawable {
     private final double speed;
     private final Sprite[] frames;
 
     private double time;
 
     public Animateable(double x, double y, double speed, Image... Frames) {
-        this.center = new Point(x, y);
+        super(x, y);
         this.speed = speed;
 
         time = 0;
 
         frames = new Sprite[Frames.length];
         for (int i = 0; i < Frames.length; i++) {
-            frames[i] = new Sprite(center, Frames[i]);
+            frames[i] = new Sprite(getX(), getY(), Frames[i]);
         }
     }
 
-    public void setX(double x) {
-        center.setX(x);
-    }
+    public Animateable(Point position, double speed, Image... Frames) {
+        super(position);
+        this.speed = speed;
 
-    public void setY(double y) {
-        center.setY(y);
-    }
+        time = 0;
 
-    public double getX() {
-        return center.getX();
-    }
-
-    public double getY() {
-        return center.getY();
-    }
-
-    public void moveX(double x) {
-        center.moveX(x);
-    }
-
-    public void moveY(double y) {
-        center.moveY(y);
+        frames = new Sprite[Frames.length];
+        for (int i = 0; i < Frames.length; i++) {
+            frames[i] = new Sprite(getX(), getY(), Frames[i]);
+        }
     }
 
     public void reset() {
