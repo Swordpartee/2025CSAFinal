@@ -5,6 +5,7 @@ import com.engine.game.objects.PlayerController;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.Background;
+import com.engine.util.Image;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +15,7 @@ public class Main {
 
         Renderer.addGameObjects(new PlayerController());
 
-        Renderer.addDrawables(new Animateable(400, 400, 12, Constants.PlayerConstants.PLAYER_FRONT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_BACK_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_SPRITE));
+        Renderer.addDrawables(new Animateable(400, 400, 12,Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, new Image("src/main/resources/rightwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
 
         Renderer.start();
     }

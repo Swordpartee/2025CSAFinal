@@ -6,17 +6,19 @@ import com.engine.Constants;
 import com.engine.game.collision.Collidable;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.Renderer;
+import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Functions;
+import com.engine.util.Image;
 import com.engine.util.Point;
 
 public class PlayerController implements GameObject {
-    private final Sprite frontSprite;
-    private final Sprite backSprite;
-    private final Sprite leftSprite;
-    private final Sprite rightSprite;
+    private final Animateable frontSprite;
+    private final Animateable backSprite;
+    private final Animateable leftSprite;
+    private final Animateable rightSprite;
     private final Point position;
     private final Point velocity;
     private final RectCollider collider;
@@ -25,10 +27,10 @@ public class PlayerController implements GameObject {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
-        this.backSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
-        this.leftSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
-        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);    
+        this.frontSprite = new Animateable(position, 25, new Image("src/main/resources/frontwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE), new Image("src/main/resources/frontwalk2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        this.backSprite = new Animateable(position, 25, new Image("src/main/resources/backwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE), new Image("src/main/resources/backwalk2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        this.leftSprite = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, new Image("src/main/resources/leftwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        this.rightSprite = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, new Image("src/main/resources/rightwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));    
 
         this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
     }
