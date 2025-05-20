@@ -32,7 +32,10 @@ public class PlayerController implements GameObject {
     private final Animateable rightWalk;
     private final Sprite rightStop;
 
-    private final Sprite[] sprites;
+    // joes problem
+    private final Animateable[] walkAnimations;
+    private final Sprite[] stopSprites;
+
     private int spriteState;
     private final boolean isSelf;
     private final Point position;
@@ -45,30 +48,39 @@ public class PlayerController implements GameObject {
         this.velocity = new Point(0, 0);
 
         this.frontWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
-        this.frontStop = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
+        this.frontStop = new Sprite(position,
+                Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
         this.backWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
-        this.backStop = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
+        this.backStop = new Sprite(position,
+                Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
         this.leftWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
-        this.leftStop = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
+        this.leftStop = new Sprite(position,
+                Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
         this.rightWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
-        this.rightStop = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE); 
-           
-        this.frontSprite = new Sprite(position,
-                Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.backSprite = new Sprite(position,
-                Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.leftSprite = new Sprite(position,
-                Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-        this.rightSprite = new Sprite(position,
+        this.rightStop = new Sprite(position,
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+           
 
         this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH,
                 Constants.PlayerConstants.PLAYER_HEIGHT);
         
-        this.sprites = new Sprite[] { frontSprite, backSprite, leftSprite, rightSprite };
+        // joes problem
+        this.stopSprites = new Sprite[] {
+                frontStop,
+                backStop,
+                leftStop,
+                rightStop
+        };
+
+        this.walkAnimations = new Animateable[] {
+                frontWalk,
+                backWalk,
+                leftWalk,
+                rightWalk
+        };
 
         this.spriteState = 0;
         this.isSelf = true; // Assuming this is the local player
@@ -130,27 +142,20 @@ public class PlayerController implements GameObject {
 
     @Override
     public void draw(Graphics g) {
-        if (!isSelf) {
-            sprites[spriteState].draw(g);
-            return;
-        }
-
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
-            spriteState = 2;
+            leftWalk.draw(g);
         } else 
         if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
-            spriteState = 3;
+            rightWalk.draw(g);
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            spriteState = 1;
+            backWalk.draw(g);
         } else 
         if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            spriteState = 0;
+            frontWalk.draw(g);
         } else {
-            spriteState = 0;
+            frontStop.draw(g);
         }
-
-        sprites[spriteState].draw(g);
     }
 
     @Override
