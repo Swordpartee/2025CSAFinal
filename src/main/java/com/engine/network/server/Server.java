@@ -15,11 +15,13 @@ import javax.crypto.SecretKey;
 import com.engine.network.encryption.Encryption;
 import com.engine.network.encryption.HMACAuthenticator;
 import com.engine.network.headers.BaseHeader;
-
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
 public class Server {
+    public interface RecvFunc {
+        void run(ServerPacketData data) throws Exception;
+    }
 
     private DatagramSocket socket;
 
@@ -29,12 +31,17 @@ public class Server {
     private PrivateKey privateKey;
 
     private byte[] sendBuffer;
-    private byte[] recvBuffer;
 
     private RecvFunc recv;
 
     private HashMap<String, String> rooms = new HashMap<String, String>();
     private HashMap<SocketAddress, SessionInfo> sessions = new HashMap<SocketAddress, SessionInfo>();
+
+    // private final ExecutorService executor = Executors.newFixedThreadPool(2); // LOL im an idiot for using effecitvely a single thread
+    // private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+
+    // private final ExecutorService cryptoExecutor = Executors.newCachedThreadPool();
 
     /**
      * Creates a new server instance, and starts listening for incoming packets.
@@ -51,8 +58,6 @@ public class Server {
 
         System.out.println(Arrays.toString(userManager.getUsers("9*A#awjd893E*jf37ug$h", false)));
     }
-
-    private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     /**
      * Starts a new thread to handle the incoming packets.
@@ -82,7 +87,7 @@ public class Server {
      */
     public void start() throws Exception {
         while (true) {
-            recvBuffer = new byte[1024];
+            byte[] recvBuffer = new byte[256];
             DatagramPacket localPacket = new DatagramPacket(recvBuffer, recvBuffer.length);
             socket.receive(localPacket);
 
@@ -152,6 +157,40 @@ public class Server {
      */
     public void sendSessionPacket(byte[] header, byte[] buffer, SessionInfo sessionInfo) throws Exception {
         sendPacket(header, buffer, sessionInfo.getAddress(), sessionInfo.getPort(), sessionInfo.getAESKey());
+    }
+
+    /**
+     * Sends a dense session packet (a packet with multiple msgs for a single header) to the server.
+     * This packet is encrypted with AES, and uses an HMAC token if you have already logged in to ensure the server still knows it's you.
+     * @param header : the header of the packet
+     * @param msgs : the messages to send
+     * @throws Exception
+     */
+    public void sendDenseSessionPacket(byte[] header, byte[][] msgs, SessionInfo sessionInfo) throws Exception {
+        byte[] concatenatedMsgs = new byte[0];
+        for (byte[] msg : msgs) {
+            byte[] lengthPrefix = new byte[] { (byte) msg.length };
+            concatenatedMsgs = Encryption.concatBytes(concatenatedMsgs, lengthPrefix, msg);
+        }
+        sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, concatenatedMsgs), sessionInfo.getAESKey());
+        DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, sessionInfo.getAddress(), sessionInfo.getPort());
+        socket.send(sendPacket);
+    }
+
+    public void sendDenseSessionPacketToRoom(byte[] header, byte[][] msgs, String room, SocketAddress... excludeUsers) throws Exception {
+        byte[] concatenatedMsgs = new byte[0];
+        for (byte[] msg : msgs) {
+            byte[] lengthPrefix = new byte[] { (byte) msg.length };
+            concatenatedMsgs = Encryption.concatBytes(concatenatedMsgs, lengthPrefix, msg);
+        }
+
+        ArrayList<SessionInfo> sessionInfos = getSessionsInRoom(room, excludeUsers);
+
+        for (SessionInfo info : sessionInfos) {
+            sendBuffer = Encryption.encryptAES(Encryption.concatBytes(header, concatenatedMsgs), info.getAESKey());
+            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, info.getAddress(), info.getPort());
+            socket.send(sendPacket);
+        }
     }
 
     /**

@@ -3,10 +3,13 @@ package com.engine.network.encryption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.engine.util.Functions;
 
 public class HMACAuthenticator {
   // HMAC algorithm to use (HMAC-SHA256)
@@ -14,12 +17,12 @@ public class HMACAuthenticator {
 
   /**
    * Generate an HMAC token for authentication
-   * @param sessionKey The secret key for the user's session
-   * @param username The username to include in the token
-   * @param timestamp Current timestamp
+   * @param sessionKey : The secret key for the user's session
+   * @param username : The username to include in the token
+   * @param timestamp : Current timestamp
    * @return Base64 encoded HMAC token
    */
-  public static String generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
+  public static byte[] generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
     // Create the message to sign (username + timestamp)
     String message = username + ":" + timestamp;
     
@@ -35,36 +38,37 @@ public class HMACAuthenticator {
     
     // Generate the HMAC
     byte[] hmacBytes = mac.doFinal(message.getBytes());
-    
-    // Base64 encode the HMAC
-    return Base64.getEncoder().encodeToString(hmacBytes);
+
+    byte[] truncated = new byte[10];
+    System.arraycopy(hmacBytes, 0, truncated, 0, 10);
+    return truncated;
   }
 
   /**
    * Validate the HMAC token, by regenerating it with the values given and comparing it with the client's sent token
-   * @param sessionKey
-   * @param username
-   * @param timestamp
-   * @param clientHMAC
-   * @param maxTimeDriftSeconds
-   * @return
+   * @param sessionKey : The key for the user's session
+   * @param username : The username to include in the token
+   * @param timestamp : The timestamp to include in the token
+   * @param clientHMAC : The HMAC sent by the client
+   * @param maxTimeDriftSeconds : The maximum time drift allowed in seconds
+   * @return true if the token is valid, false otherwise
    */
-  public static boolean validateHMACToken(String sessionKey, String username, long timestamp, String clientHMAC, long maxTimeDriftSeconds) {
+  public static boolean validateHMACToken(String sessionKey, String username, long timestamp, byte[] clientHMAC, long maxTimeDriftSeconds) {
     try {
       // Check timestamp validity
-      long currentTime = System.currentTimeMillis() / 1000;
+      long currentTime = (long) (Functions.getTime() / 1000);
       if (Math.abs(currentTime - timestamp) > maxTimeDriftSeconds) {
         return false; // Token expired or time drifted too much
       }
       
       // Regenerate the HMAC
-      String regeneratedHMAC = generateHMACToken(sessionKey, username, timestamp);
+      byte[] regeneratedHMAC = generateHMACToken(sessionKey, username, timestamp);
 
       // System.out.println("Session Key: " + sessionKey + " Username: " + username + " Timestamp: " + timestamp);
       // System.out.println("Regenerated HMAC: " + regeneratedHMAC + " Client HMAC: " + clientHMAC);
       
       // Compare the regenerated HMAC with the client's HMAC
-      return regeneratedHMAC.equals(clientHMAC);
+      return Arrays.equals(regeneratedHMAC, clientHMAC);
     } catch (Exception e) {
       return false;
     }

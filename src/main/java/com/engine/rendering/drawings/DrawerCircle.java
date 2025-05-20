@@ -3,6 +3,7 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 import com.engine.util.Circle;
+import com.engine.util.Point;
 
 public class DrawerCircle extends Circle implements Drawable {
     private boolean filled;
@@ -15,8 +16,13 @@ public class DrawerCircle extends Circle implements Drawable {
      * @param filled whether to fill the circle or not
      */
     public DrawerCircle(double x, double y, double radius, boolean filled) {
-            super(x, y, radius);
-            this.filled = filled;
+        super(x, y, radius);
+        this.filled = filled;
+    }
+
+    public DrawerCircle(Point center, double radius, boolean filled) {
+        super(center, radius);
+        this.filled = filled;
     }
 
     /**

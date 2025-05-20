@@ -6,7 +6,10 @@ public enum Header {
   InitialStateBundle((byte[]) new byte[] { 1, 1 }, HeaderType.StateAdd),
   StateChangeBundle((byte[]) new byte[] { 1, 1 }, HeaderType.StateChange),
   IncreaseCookies((byte[]) new byte[] { 1, 2 }, HeaderType.Other),
-  GameObjectState((byte[]) new byte[] { 1, 3 }, HeaderType.StateChange);
+  GameObjectState((byte[]) new byte[] { 1, 3 }, HeaderType.StateChange),
+  PlayerState((byte[]) new byte[] { 1, 4 }, HeaderType.StateChange),
+  DeleteState((byte[]) new byte[] { 1, 5 }, HeaderType.StateDelete),
+  ProjectileState((byte[]) new byte[] { 1, 6 }, HeaderType.StateChange);
 
   private final byte[] value;
   private final HeaderType type;
@@ -55,7 +58,9 @@ public enum Header {
       }
     }
 
-    throw new IllegalArgumentException("No enum constant with byte[] value " + value);
+    return null;
+
+    // throw new IllegalArgumentException("No enum constant with byte[] value " + value);
   }
 
   /**

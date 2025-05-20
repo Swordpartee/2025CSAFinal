@@ -7,8 +7,6 @@ import com.engine.network.client.ClientPacketData;
 import com.engine.network.headers.BaseHeader;
 import com.engine.network.headers.Header;
 import com.engine.network.states.ClientStateManager;
-import com.engine.network.states.NetState;
-import com.engine.network.states.TestNetObject;
 
 /**
  * This class is an example of how to use the Client class.
@@ -32,15 +30,15 @@ public class ClientRunner {
 	public static final Scanner scan = new Scanner(System.in);
 	public static Client client = null;
 	public static ClientStateManager stateManager = null;
-	public static NetState<TestNetObject> intState = null;
+	// public static NetState<TestNetObject> intState = null;
 
 	public static void main(String[] args) throws Exception {
 		// Create a new client instance and connect to the server at "localhost:4445"
-		client = new Client(ClientRunner::processRecv, scan);
+		client = new Client(ClientRunner::processRecv);
 		client.connect("localhost", 4445);
 		stateManager = new ClientStateManager(client);
 
-		intState = new NetState<TestNetObject>(Header.GameObjectState, stateManager, new TestNetObject("Cheese", 1000000));
+		// intState = new NetState<TestNetObject>(Header.GameObjectState, stateManager, new TestNetObject("Cheese", 1000000));
 
 		// Wait to go on until the client is connected
 		while (!client.loggedIn()) {
@@ -70,7 +68,7 @@ public class ClientRunner {
 		boolean connected = true;
 		while (connected) {
   		try {
-				intState.sendSelf();
+				// intState.sendSelf();
 				client.sendDenseSessionPacket(BaseHeader.BackForthMsg.value(), new byte[][] { scan.nextLine().getBytes(), "Gimme more cookies".getBytes(), "Hi".getBytes() });
 			} catch (Exception e) { System.out.println(e); }
   	}
