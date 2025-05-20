@@ -11,26 +11,41 @@ import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Functions;
-import com.engine.util.Image;
 import com.engine.util.Point;
 
 public class PlayerController implements GameObject {
-    private final Animateable frontSprite;
-    private final Animateable backSprite;
-    private final Animateable leftSprite;
-    private final Animateable rightSprite;
+    private final Animateable frontWalk;
+    private final Sprite frontStop;
+
+    private final Animateable backWalk;
+    private final Sprite backStop;
+
+    private final Animateable leftWalk;
+    private final Sprite leftStop;
+
+    private final Animateable rightWalk;
+    private final Sprite rightStop;
+
     private final Point position;
     private final Point velocity;
+
     private final RectCollider collider;
 
     public PlayerController() {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontSprite = new Animateable(position, 25, new Image("src/main/resources/frontwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE), new Image("src/main/resources/frontwalk2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
-        this.backSprite = new Animateable(position, 25, new Image("src/main/resources/backwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE), new Image("src/main/resources/backwalk2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
-        this.leftSprite = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, new Image("src/main/resources/leftwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
-        this.rightSprite = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, new Image("src/main/resources/rightwalk1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));    
+        this.frontWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
+        this.frontStop = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
+
+        this.backWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
+        this.backStop = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
+
+        this.leftWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
+        this.leftStop = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
+
+        this.rightWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
+        this.rightStop = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);    
 
         this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
     }
@@ -74,18 +89,18 @@ public class PlayerController implements GameObject {
     @Override
     public void draw(Graphics g) {
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
-            leftSprite.draw(g);
-        } else 
+            leftWalk.draw(g);
+        } else
         if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
-            rightSprite.draw(g);
+            rightWalk.draw(g);
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            backSprite.draw(g);
+            backWalk.draw(g);
         } else 
         if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            frontSprite.draw(g);
+            frontWalk.draw(g);
         } else {
-            frontSprite.draw(g);
+            frontStop.draw(g);
         }
     }
 

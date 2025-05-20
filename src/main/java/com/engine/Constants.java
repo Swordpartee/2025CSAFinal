@@ -10,9 +10,18 @@ public class Constants {
         public static final int PLAYER_HEIGHT = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
 
         public static final Image PLAYER_FRONT_SPRITE = new Image("src/main/resources/front1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_FRONT_WALK_SPRITE_ONE = new Image("src/main/resources/frontwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_FRONT_WALK_SPRITE_TWO = new Image("src/main/resources/frontwalk2.spr", PLAYER_SPRITE_SCALE);
+
         public static final Image PLAYER_BACK_SPRITE = new Image("src/main/resources/back1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_BACK_WALK_SPRITE_ONE = new Image("src/main/resources/backwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_BACK_WALK_SPRITE_TWO = new Image("src/main/resources/backwalk2.spr", PLAYER_SPRITE_SCALE);
+
         public static final Image PLAYER_LEFT_SPRITE = new Image("src/main/resources/left1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_LEFT_WALK_SPRITE = new Image("src/main/resources/leftwalk1.spr", PLAYER_SPRITE_SCALE);
+
         public static final Image PLAYER_RIGHT_SPRITE = new Image("src/main/resources/right1.spr", PLAYER_SPRITE_SCALE);
+        public static final Image PLAYER_RIGHT_WALK_SPRITE = new Image("src/main/resources/rightwalk1.spr", PLAYER_SPRITE_SCALE);
 
         public static final double PLAYER_ACCELERATION = 0.5;
         public static final double PLAYER_MAX_SPEED = 3;
