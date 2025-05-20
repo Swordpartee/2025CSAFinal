@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.engine.Constants;
-import com.engine.game.collision.Collidable;
+import com.engine.game.collision.Collider;
 import com.engine.game.objects.GameObject;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.RenderListener;
@@ -26,7 +26,7 @@ public class Renderer {
 
     private static final ArrayList<Drawable> drawables = new ArrayList<>();
 
-    private static final ArrayList<Collidable> collidables = new ArrayList<>();
+    private static final ArrayList<Collider> collidables = new ArrayList<>();
 
     private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
@@ -36,6 +36,8 @@ public class Renderer {
     private static int height = Constants.GameConstants.GAME_HEIGHT;
 
     private static final ScheduledExecutorService iterator = Executors.newScheduledThreadPool(Constants.RendererConstants.THREADS);
+    
+    private static Runnable onGameClose = () -> {};
 
     private static void init() {
         canvas.setPreferredSize(new Dimension(Constants.GameConstants.GAME_WIDTH, Constants.GameConstants.GAME_HEIGHT));
@@ -55,6 +57,7 @@ public class Renderer {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                onGameClose.run();
                 iterator.shutdown();
                 System.exit(0);
             }
@@ -93,6 +96,10 @@ public class Renderer {
         return height;
     }
 
+    public static void setOnGameClose(Runnable onGameClose) {
+        Renderer.onGameClose = onGameClose;
+    }
+
     public static void addListener() {
         frame.addKeyListener(RenderListener.getKeyListener());
         frame.addMouseListener(RenderListener.getMouseListener());
@@ -124,7 +131,7 @@ public class Renderer {
      * Adds a collidable object to be checked for collisions
      * @param cs collidables to add
      */
-    public static void addCollidables(Collidable... cs) {
+    public static void addCollidables(Collider... cs) {
         collidables.addAll(Arrays.asList(cs));
     }
 
@@ -136,6 +143,14 @@ public class Renderer {
         drawables.addAll(Arrays.asList(ds));
     }
 
+    /**
+     * Removes drawables from the renderer
+     * @param ds : drawables to remove
+     */
+    public static void removeDrawables(Drawable... ds) {
+        drawables.removeAll(Arrays.asList(ds));
+    }
+
     public static void addGameObjects(GameObject... gs) {
         for (GameObject g : gs) {
             addDrawables(g);
@@ -144,8 +159,8 @@ public class Renderer {
         }
     }
 
-    public static Collidable[] getCollidables() {
-        return collidables.toArray(Collidable[]::new);
+    public static Collider[] getCollidables() {
+        return collidables.toArray(Collider[]::new);
     }
     
     /**

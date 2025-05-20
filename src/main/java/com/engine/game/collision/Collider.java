@@ -1,9 +1,7 @@
 package com.engine.game.collision;
 
-public interface Collidable {
-    public boolean colliding(Collidable other);
-
-    public boolean colliding(double x, double y);
+public interface Collider {
+    public boolean colliding(Collider other);
     
     public ColliderType getType();
 
