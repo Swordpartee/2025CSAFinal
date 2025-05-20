@@ -1,6 +1,8 @@
 package com.engine.game.objects;
 
 import java.awt.Graphics;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
@@ -42,5 +44,29 @@ public class GameRect implements GameObject {
     @Override
     public ColliderType getType() {
         return ColliderType.OTHER;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public DrawerRect getDrawable() {
+        return drawable;
+    }
+
+    public RectCollider getCollider() {
+        return collider;
+    }
+
+    @Override
+    public void deserialize(DataInputStream dataSegments) throws Exception {
+        this.position.setX(dataSegments.readInt());
+        this.position.setY(dataSegments.readInt());
+    }
+
+    @Override
+    public void serialize(DataOutputStream dataSegments) throws Exception {
+        dataSegments.writeInt((int) position.getX());
+        dataSegments.writeInt((int) position.getY());
     }
 }

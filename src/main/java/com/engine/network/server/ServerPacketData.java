@@ -20,7 +20,7 @@ public class ServerPacketData {
 	public DatagramPacket pkt;
 	public SocketAddress address;
 
-	public String clientHMAC;
+	public byte[] clientHMAC;
 	public long clientTime;
 
 	public SessionInfo sessionInfo;
@@ -59,7 +59,7 @@ public class ServerPacketData {
 
 		if (sessionInfo.isLoggedIn()) {
 			clientTime = Convert.btol(msgs[0]);
-			clientHMAC = Convert.btos(msgs[1]);
+			clientHMAC = msgs[1];
 			msgStr = Convert.btos(msgs[2]);
 			msg = msgs[2];
 			msgs = Arrays.copyOfRange(msgs, 2, msgs.length);

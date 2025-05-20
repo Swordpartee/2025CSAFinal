@@ -1,10 +1,15 @@
 package com.engine.game.objects;
 
 import java.awt.Graphics;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 import com.engine.Constants;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
+import com.engine.network.Network;
+import com.engine.network.headers.Header;
+import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
@@ -17,24 +22,53 @@ public class PlayerController implements GameObject {
     private final Sprite backSprite;
     private final Sprite leftSprite;
     private final Sprite rightSprite;
+    private final Sprite[] sprites;
+    private int spriteState;
+    private final boolean isSelf;
     private final Point position;
     private final Point velocity;
     private final RectCollider collider;
 
-    public PlayerController() {
+    /**
+     * Constructor for PlayerController.
+     * @param isSelf Indicates if this player is the local player.
+     */
+    public PlayerController(boolean isSelf) {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
 
         this.frontSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
         this.backSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
         this.leftSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
-        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);    
+        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);   
+        
+        this.sprites = new Sprite[] { this.frontSprite, this.backSprite, this.leftSprite, this.rightSprite };
+        this.spriteState = 0;
 
         this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
+
+        this.isSelf = isSelf;
+    }
+
+    /**
+     * Constructor for PlayerController with default isSelf value (false).
+     */
+    public PlayerController() {
+        this(false);
     }
 
     @Override
     public void update() {
+        if (!isSelf) {
+            return;
+        }
+
+        if (RenderListener.isKeyPressed(EventCode.SPACE)) {
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(position.getX(), position.getY(), 10, true));
+            Renderer.addGameObjects(projectile.getValue());
+            projectile.getValue().getVelocity().setX(1);
+        }
+
         // Set velocity based on input
         if (RenderListener.isKeyPressed(EventCode.W)) {
             velocity.moveY(-Constants.PlayerConstants.PLAYER_ACCELERATION);
@@ -71,20 +105,27 @@ public class PlayerController implements GameObject {
 
     @Override
     public void draw(Graphics g) {
+        if (!isSelf) {
+            sprites[spriteState].draw(g);
+            return;
+        }
+
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
-            leftSprite.draw(g);
+            spriteState = 2;
         } else 
         if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
-            rightSprite.draw(g);
+            spriteState = 3;
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            backSprite.draw(g);
+            spriteState = 1;
         } else 
         if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            frontSprite.draw(g);
+            spriteState = 0;
         } else {
-            frontSprite.draw(g);
+            spriteState = 0;
         }
+
+        sprites[spriteState].draw(g);
     }
 
     @Override
@@ -96,4 +137,30 @@ public class PlayerController implements GameObject {
     public ColliderType getType() {
         return ColliderType.OTHER;
     }
+
+    @Override
+    public void deserialize(DataInputStream dataSegments) throws Exception {
+        this.position.setX(dataSegments.readInt());
+        this.position.setY(dataSegments.readInt());
+        this.velocity.setX(dataSegments.readInt());
+        this.velocity.setY(dataSegments.readInt());
+        this.spriteState = dataSegments.readInt();
+    }
+
+    @Override
+    public void serialize(DataOutputStream dataSegments) throws Exception {
+        dataSegments.writeInt((int) position.getX());
+        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) velocity.getX());
+        dataSegments.writeInt((int) velocity.getY());
+        dataSegments.writeInt(spriteState);
+    }
+
+    public String toString() {
+        return "PlayerController{" +
+                "position=" + position +
+                ", velocity=" + velocity +
+                '}';
+    }
+    
 }
