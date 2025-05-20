@@ -9,6 +9,7 @@ import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
+import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Point;
 
@@ -21,16 +22,29 @@ public class PlayerController implements GameObject {
     private final Point velocity;
     private final RectCollider collider;
 
-    public PlayerController() {
+    public PlayerController(Color color1, Color color2) {
         this.position = new Point(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_FRONT_SPRITE);
-        this.backSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_BACK_SPRITE);
-        this.leftSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_LEFT_SPRITE);
-        this.rightSprite = new Sprite(position, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE);    
+        this.frontSprite = new Sprite(position,
+                Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+        this.backSprite = new Sprite(position,
+                Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+        this.leftSprite = new Sprite(position,
+                Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+        this.rightSprite = new Sprite(position,
+                Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
+        this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH,
+                Constants.PlayerConstants.PLAYER_HEIGHT);
+    }
+    
+    public PlayerController() {
+        this(Color.WHITE, Color.BLACK);
+    }
+
+    public PlayerController(Color color) {
+        this(color, Color.BLACK);
     }
 
     @Override

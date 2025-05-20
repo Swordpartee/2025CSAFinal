@@ -50,4 +50,5 @@ public class Sprite implements Drawable {
     public void draw(Graphics graphic) {
         image.draw(graphic, center.getX(), center.getY());
     }
+    
 }

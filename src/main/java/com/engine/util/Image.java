@@ -86,4 +86,16 @@ public class Image {
         // Draw the image at the calculated position
         graphic.drawImage(image, topLeftX, topLeftY, width * scale, height * scale, null);
     }
+
+    public Image replaceColor(Color oldColor, Color newColor) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixelColor = image.getRGB(x, y);
+                if (pixelColor == oldColor.getRGB()) {
+                    image.setRGB(x, y, newColor.getRGB());
+                }
+            }
+        }
+        return this;
+    }
 }
