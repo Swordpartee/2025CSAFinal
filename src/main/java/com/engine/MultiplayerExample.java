@@ -83,7 +83,7 @@ public class MultiplayerExample {
         loginAndJoinRoom(); // Just using the placeholder login system I made for now.
 
         // Create a new PlayerController State (THis is what we transmit to the server, which gives it to the other clients)
-        NetState<PlayerController> playerState = new NetState<>(Header.PlayerState, Network.stateManager, new PlayerController(true));
+        NetState<PlayerController> playerState = new NetState<>(Header.PlayerState, Network.stateManager, new PlayerController());
         // NetState<Projectile> projectileState = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(Math.random() * 100, Math.random() * 100, 10, true));
 
         // Add the player to the Renderer (Nothing server related, just for the client)
