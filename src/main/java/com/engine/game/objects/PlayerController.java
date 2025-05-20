@@ -5,7 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import com.engine.Constants;
-import com.engine.game.collision.Collidable;
+import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.network.Network;
 import com.engine.network.headers.Header;
@@ -117,22 +117,20 @@ public class PlayerController implements GameObject {
             spriteState = 3;
         } else 
         if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            spriteState = 1;
-        } else { // I changed it back for you Nate :)
-            spriteState = 0;
+            backSprite.draw(g);
+        } else 
+        if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
+            frontSprite.draw(g);
+        } else {
+            frontSprite.draw(g);
         }
 
         sprites[spriteState].draw(g);
     }
 
     @Override
-    public boolean colliding(Collidable other) {
+    public boolean colliding(Collider other) {
         return collider.colliding(other);
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
-        return collider.colliding(x, y);
     }
 
     @Override

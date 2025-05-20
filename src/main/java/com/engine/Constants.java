@@ -23,6 +23,8 @@ public class Constants {
         public static final int GAME_WIDTH = 640;
         public static final int GAME_HEIGHT = 480;
         public static final String GAME_TITLE = "Game Engine Renderer";
+
+        public static final Image ROCK_SPRITE = new Image("src/main/resources/rock.spr", PlayerConstants.PLAYER_SPRITE_SCALE);
     }
 
     public static class RendererConstants {

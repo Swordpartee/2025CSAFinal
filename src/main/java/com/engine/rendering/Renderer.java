@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.engine.Constants;
-import com.engine.game.collision.Collidable;
+import com.engine.game.collision.Collider;
 import com.engine.game.objects.GameObject;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.RenderListener;
@@ -26,7 +26,7 @@ public class Renderer {
 
     private static final ArrayList<Drawable> drawables = new ArrayList<>();
 
-    private static final ArrayList<Collidable> collidables = new ArrayList<>();
+    private static final ArrayList<Collider> collidables = new ArrayList<>();
 
     private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
@@ -131,7 +131,7 @@ public class Renderer {
      * Adds a collidable object to be checked for collisions
      * @param cs collidables to add
      */
-    public static void addCollidables(Collidable... cs) {
+    public static void addCollidables(Collider... cs) {
         collidables.addAll(Arrays.asList(cs));
     }
 
@@ -159,8 +159,8 @@ public class Renderer {
         }
     }
 
-    public static Collidable[] getCollidables() {
-        return collidables.toArray(Collidable[]::new);
+    public static Collider[] getCollidables() {
+        return collidables.toArray(Collider[]::new);
     }
     
     /**

@@ -3,7 +3,7 @@ package com.engine.game.collision;
 import com.engine.util.Point;
 import com.engine.util.Rect;
 
-public class RectCollider extends Rect implements Collidable {
+public class RectCollider extends Rect implements Collider {
 
     public RectCollider() {
         super();
@@ -33,7 +33,7 @@ public class RectCollider extends Rect implements Collidable {
 
 
     @Override
-    public boolean colliding(Collidable other) {
+    public boolean colliding(Collider other) {
         if (this == other) {
             return false;
         }
@@ -71,12 +71,6 @@ public class RectCollider extends Rect implements Collidable {
                 return false;
             }
         }
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
-        return x >= this.getX() && x <= this.getX() + this.getWidth() &&
-               y >= this.getY() && y <= this.getY() + this.getHeight();
     }
 
     @Override

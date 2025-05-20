@@ -2,19 +2,24 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
+import com.engine.rendering.Renderer;
 import com.engine.util.Image;
 
 public class Background implements Drawable {
     private final Drawable[][] tiles;
 
-    public Background(int width, int height, int scale, Image tilePaths) {
-        this.tiles = new Drawable[width][height];
+    public Background(Image tileImage) {
+        int cols = (int) Math.ceil((double) Renderer.getWidth() / tileImage.getWidth()) + 1;
+        int rows = (int) Math.ceil((double) Renderer.getHeight() / tileImage.getHeight()) + 1;
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                tiles[i][j] = new Sprite(i * 16 * scale, j * 16 * scale, tilePaths);
+        tiles = new Drawable[rows][cols];
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                tiles[row][col] = new Sprite(col * tileImage.getWidth(), row * tileImage.getHeight(), tileImage);
             }
         }
+        
     }
 
     @Override

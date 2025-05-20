@@ -1,6 +1,7 @@
 package com.engine.util;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,8 +10,7 @@ public class Image {
     private final int scale;
     private int width;
     private int height;
-
-    private Color[][] pixels;
+    private BufferedImage image;
 
     public Image(String path, int scale) {
         this.scale = scale;
@@ -33,7 +33,7 @@ public class Image {
 
             width = Integer.parseInt(dimensions[0]);
             height = Integer.parseInt(dimensions[1]);
-            this.pixels = new Color[width][height];
+            this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
             for (int i = 0; i < height; i++) {
                 String line = reader.readLine();
@@ -56,13 +56,12 @@ public class Image {
                             int r = Integer.parseInt(rgb[0]);
                             int g = Integer.parseInt(rgb[1]);
                             int b = Integer.parseInt(rgb[2]);
-                            pixels[j][i] = new Color(r, g, b);
+                            // pixels[j][i] = new Color(r, g, b);
+                            image.setRGB(j, i, (r << 16) | (g << 8) | b | 0xFF000000); // Set pixel color
                         } catch (NumberFormatException e) {
                             throw new IOException(
                                     "Invalid color format at position [" + j + "," + i + "]: " + colorInfo);
                         }
-                    } else {
-                        pixels[j][i] = null; // Transparent pixel
                     }
                 }
             }
@@ -70,25 +69,21 @@ public class Image {
             throw new RuntimeException("Failed to load sprite: " + path, e);
         }
     }
+
+    public double getWidth() {
+        return width * scale;
+    }
+
+    public double getHeight() {
+        return height * scale;
+    }
     
     public void draw(Graphics graphic, double x, double y) {
         // Calculate top-left position from center
-        double topLeftX = x - (width * scale)/2;
-        double topLeftY = y - (height * scale)/2;
-        
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Color color = pixels[j][i];
-                if (color != null) {
-                    graphic.setColor(new java.awt.Color(color.r(), color.g(), color.b()));
-                    graphic.fillRect(
-                        (int) (topLeftX + j * scale), 
-                        (int) (topLeftY + i * scale), 
-                        scale, 
-                        scale
-                    );
-                }
-            }
-        }
+        int topLeftX = (int) (x - (width * scale) / 2);
+        int topLeftY = (int) (y - (height * scale) / 2);
+
+        // Draw the image at the calculated position
+        graphic.drawImage(image, topLeftX, topLeftY, width * scale, height * scale, null);
     }
 }

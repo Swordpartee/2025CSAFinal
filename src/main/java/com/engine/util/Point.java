@@ -104,6 +104,7 @@ public class Point {
      * Returns a string representation of the point.
      * @return a string in the format "(x, y)"
      */
+    @Override
     public String toString() {
         return "Point{" +
                 "x=" + x +
