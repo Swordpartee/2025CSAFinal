@@ -3,7 +3,7 @@ package com.engine.game.collision;
 import com.engine.util.Circle;
 import com.engine.util.Point;
 
-public class CircleCollider extends Circle implements Collidable {
+public class CircleCollider extends Circle implements Collider {
     /**
      * Creates a new circle collider
      * @param x position of the center of the circle
@@ -23,7 +23,7 @@ public class CircleCollider extends Circle implements Collidable {
     }
 
     @Override
-    public boolean colliding(Collidable other) {
+    public boolean colliding(Collider other) {
         if (this == other) {
             return false;
         }
@@ -50,11 +50,6 @@ public class CircleCollider extends Circle implements Collidable {
                 return false;
             }
         }
-    }
-
-    @Override
-    public boolean colliding(double x, double y) {
-        return Math.pow(x - this.getX(), 2) + Math.pow(y - this.getY(), 2) <= Math.pow(this.getRadius(), 2);
     }
 
     @Override
