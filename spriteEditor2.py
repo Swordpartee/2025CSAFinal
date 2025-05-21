@@ -152,6 +152,12 @@ class DisplayScreen:
                     if mouse_x < self.width and mouse_y < self.height:
                         grid_x = mouse_x // scale
                         grid_y = mouse_y // scale
+                        if Sidebar.clickedColorPicker:
+                            # Handle color picking from the grid
+                            pixel_color = grid.getPixel(grid_x, grid_y)
+                            if pixel_color is not None:
+                                Sidebar.setCurrentColor(pixel_color)
+                                Sidebar.clickedColorPicker = False
                         if Sidebar.eraser:
                             color = None
                         else:
