@@ -70,6 +70,9 @@ public class PlayerController implements GameObject {
             NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(position.getX(), position.getY(), 10, true));
             Renderer.addGameObjects(projectile.getValue());
             projectile.getValue().getVelocity().setX(1);
+            try {
+                projectile.sendSelf();
+            } catch (Exception e) {}
         }
 
         // Set velocity based on input
@@ -133,6 +136,10 @@ public class PlayerController implements GameObject {
 
     @Override
     public boolean colliding(Collider other) {
+        if (other == null) {
+            return false;
+        }
+
         return collider.colliding(other);
     }
 

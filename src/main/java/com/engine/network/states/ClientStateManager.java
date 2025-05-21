@@ -51,7 +51,7 @@ public class ClientStateManager {
      */
     private INetState<?>[] getStatesOfHeader(Header lookupHeader) {
         INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
+            .filter(state -> state != null && state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
         return states;
     }
 
@@ -62,7 +62,7 @@ public class ClientStateManager {
      */
     public INetState<?>[] getStatesOfType(Class<?> clazz) {
         INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> ((INetState<?>) state).getValue().getClass().equals(clazz))
+            .filter(state -> state != null && ((INetState<?>) state).getValue().getClass().equals(clazz))
             .toArray(INetState<?>[]::new);
         return states;
     }
@@ -221,7 +221,7 @@ public class ClientStateManager {
     public <T> void deleteStateByValue(T value) throws Exception {
         INetState<?>[] states = getStatesOfType(value.getClass());
         for (INetState<?> s : states) {
-            if (s.getValue().equals(value)) {
+            if (s.getControlMode() != ControlMode.SERVER && s.getValue().equals(value)) {
                 sendStateDelete(s);
                 return;
             }
