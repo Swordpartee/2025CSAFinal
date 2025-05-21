@@ -13,38 +13,26 @@ public class Animateable extends PointController implements Drawable {
     private double time;
 
     public Animateable(double x, double y, double speed, Image... Frames) {
-        this.center = new Point(x, y);
+        super(x, y);
         this.speed = speed;
 
         time = 0;
 
         frames = new Sprite[Frames.length];
         for (int i = 0; i < Frames.length; i++) {
-            frames[i] = new Sprite(center, Frames[i]);
+            frames[i] = new Sprite(super.getPosition(), Frames[i]);
         }
     }
 
     public Animateable(Point center, double speed, Image... Frames) {
-        this.center = center;
+        super(center);
         this.speed = speed;
 
         time = 0;
 
         frames = new Sprite[Frames.length];
         for (int i = 0; i < Frames.length; i++) {
-            frames[i] = new Sprite(center, Frames[i]);
-        }
-    }
-
-    public Animateable(Point position, double speed, Image... Frames) {
-        super(position);
-        this.speed = speed;
-
-        time = 0;
-
-        frames = new Sprite[Frames.length];
-        for (int i = 0; i < Frames.length; i++) {
-            frames[i] = new Sprite(getX(), getY(), Frames[i]);
+            frames[i] = new Sprite(super.getPosition(), Frames[i]);
         }
     }
 

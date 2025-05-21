@@ -43,15 +43,13 @@ public class Projectile extends PointController implements GameObject {
         this.drawable = new DrawerCircle(getPosition(), rad, true);
     }
 
+    @Override
     public void update(){
-        position.setX(position.getX() + velocity.getX());
-        position.setY(position.getY() + velocity.getY());
-
         try {
-            if (position.getX() < 0 || position.getX() > 640) {
+            if (getX() < 0 || getX() > 640) {
                 Network.stateManager.deleteStateByValue(this);
             }
-            if (position.getY() < 0 || position.getY() > 480) {
+            if (getY() < 0 || getY() > 480) {
                 Network.stateManager.deleteStateByValue(this);
             }
         } catch (Exception e) { } // EAT THE ERROR HAHAH
@@ -76,8 +74,8 @@ public class Projectile extends PointController implements GameObject {
     public void deserialize(DataInputStream dataSegments) throws Exception {
         this.rad = dataSegments.readInt();
         this.drawable.setRadius(rad);
-        this.position.setX(dataSegments.readInt());
-        this.position.setY(dataSegments.readInt());
+        this.setX(dataSegments.readInt());
+        this.setY(dataSegments.readInt());
         this.velocity.setX(dataSegments.readInt());
         this.velocity.setY(dataSegments.readInt());
     }
@@ -85,8 +83,8 @@ public class Projectile extends PointController implements GameObject {
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
         dataSegments.writeInt((int) rad);
-        dataSegments.writeInt((int) position.getX());
-        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) getX());
+        dataSegments.writeInt((int) getY());
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
     }
