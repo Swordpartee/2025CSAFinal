@@ -69,4 +69,14 @@ public class GameRect implements GameObject {
         dataSegments.writeInt((int) position.getX());
         dataSegments.writeInt((int) position.getY());
     }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        // Logic for when the object is created in the network
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        // Logic for when the object is destroyed in the network
+    }
 }

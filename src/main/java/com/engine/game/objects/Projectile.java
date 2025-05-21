@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 
 import com.engine.game.collision.Collider;
 import com.engine.network.Network;
+import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
 
@@ -88,6 +89,16 @@ public class Projectile implements GameObject {
         dataSegments.writeInt((int) position.getY());
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
+    }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        Renderer.addGameObjects(this);
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        Renderer.removeGameObjects(this);
     }
 
     public String toString() {

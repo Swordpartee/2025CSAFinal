@@ -16,4 +16,16 @@ public interface INetObject {
      * @throws Exception
      */
     public void serialize(DataOutputStream dataSegments) throws Exception;
+    /**
+     * The function to call when the object is created
+     * @param state : The state that is created
+     * @throws Exception
+     */
+    public void onNetworkCreate() throws Exception;
+    /**
+     * The function to call when the object is destroyed
+     * @param state : The state that is destroyed
+     * @throws Exception
+     */
+    public void onNetworkDestroy() throws Exception;
 }
