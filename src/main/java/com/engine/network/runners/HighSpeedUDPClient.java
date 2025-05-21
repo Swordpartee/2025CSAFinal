@@ -2,8 +2,6 @@ package com.engine.network.runners;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
 
 public class HighSpeedUDPClient {
 
@@ -12,8 +10,6 @@ public class HighSpeedUDPClient {
         int serverPort = 4445;
         int payloadSize = 128; // bytes per packet
         int totalPackets = 1_000_000_000; // total number of packets to send
-        int rateLimit = 0; // packets per second (0 = no limit)
-
         byte[] payload = new byte[payloadSize];
         DatagramSocket socket = new DatagramSocket();
         InetAddress address = InetAddress.getByName(serverIp);

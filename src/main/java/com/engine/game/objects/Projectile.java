@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import com.engine.game.collision.Collider;
+import com.engine.network.Network;
+import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
 import com.engine.util.PointController;
@@ -41,17 +43,18 @@ public class Projectile extends PointController implements GameObject {
         this.drawable = new DrawerCircle(getPosition(), rad, true);
     }
 
-    @Override
-    public void update() {
-        setX(getX() + velocity.getX());
-        setY(getY() + velocity.getY());
+    public void update(){
+        position.setX(position.getX() + velocity.getX());
+        position.setY(position.getY() + velocity.getY());
 
-        if (getX() < 0 || getX() > 640) {
-            velocity.setX(-velocity.getX());
-        }
-        if (getY() < 0 || getY() > 480) {
-            velocity.setY(-velocity.getY());
-        }
+        try {
+            if (position.getX() < 0 || position.getX() > 640) {
+                Network.stateManager.deleteStateByValue(this);
+            }
+            if (position.getY() < 0 || position.getY() > 480) {
+                Network.stateManager.deleteStateByValue(this);
+            }
+        } catch (Exception e) { } // EAT THE ERROR HAHAH
     }
 
     @Override
@@ -73,15 +76,29 @@ public class Projectile extends PointController implements GameObject {
     public void deserialize(DataInputStream dataSegments) throws Exception {
         this.rad = dataSegments.readInt();
         this.drawable.setRadius(rad);
-        getPosition().setX(dataSegments.readInt());
-        getPosition().setY(dataSegments.readInt());
+        this.position.setX(dataSegments.readInt());
+        this.position.setY(dataSegments.readInt());
+        this.velocity.setX(dataSegments.readInt());
+        this.velocity.setY(dataSegments.readInt());
     }
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
         dataSegments.writeInt((int) rad);
-        dataSegments.writeInt((int) getX());
-        dataSegments.writeInt((int) getY());
+        dataSegments.writeInt((int) position.getX());
+        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) velocity.getX());
+        dataSegments.writeInt((int) velocity.getY());
+    }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        Renderer.addGameObjects(this);
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        Renderer.removeGameObjects(this);
     }
 
     @Override

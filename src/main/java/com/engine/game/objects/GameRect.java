@@ -65,4 +65,14 @@ public class GameRect extends PointController implements GameObject {
         dataSegments.writeInt((int) getX());
         dataSegments.writeInt((int) getY());
     }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        // Logic for when the object is created in the network
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        // Logic for when the object is destroyed in the network
+    }
 }

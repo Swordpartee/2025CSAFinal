@@ -18,7 +18,9 @@ public enum BaseHeader {
   RoomError((byte[]) new byte[] { 0, 10 }),
 
 	BackForthMsg((byte[]) new byte[] { 0, 11 }),
-	MsgFailed((byte[]) new byte[] { 0, 12 });
+	MsgFailed((byte[]) new byte[] { 0, 12 }),
+
+  Disconnect((byte[]) new byte[] { 0, 13 });
 
 	private final byte[] value;
 
