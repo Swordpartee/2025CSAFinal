@@ -5,33 +5,13 @@ import java.awt.Graphics;
 import com.engine.util.Image;
 import com.engine.util.Point;
 
-public class Animateable implements Drawable {
-    private final Point center;
-
-    private final double speed;
+public class Animateable extends PointController implements Drawable {
     private final Sprite[] frames;
 
-    private double time;
+    private int frame = 0;
 
-    public Animateable(double x, double y, double speed, Image... Frames) {
-        this.center = new Point(x, y);
-        this.speed = speed;
-
-        time = 0;
-
-        frames = new Sprite[Frames.length];
-        for (int i = 0; i < Frames.length; i++) {
-            frames[i] = new Sprite(center, Frames[i]);
-        }
-    }
-
-    public void setX(double x) {
-        center.setX(x);
-    }
-
-    public void setY(double y) {
-        center.setY(y);
-    }
+    public Animateable(Point position, Image... Frames) {
+        super(position);
 
     public double getX() {
         return center.getX();
@@ -50,13 +30,17 @@ public class Animateable implements Drawable {
     }
 
     public void reset() {
-        time = 0;
+        frame = 0;
+    }
+
+    public void nextFrame() {
+        frame++;
+        frame %= frames.length;
     }
 
     @Override
     public void draw(Graphics graphic) {
-        time ++;
-        frames[(int) (time / speed) % frames.length].draw(graphic);
+        frames[frame].draw(graphic);
     }
 
 }

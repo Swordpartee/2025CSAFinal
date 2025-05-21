@@ -16,7 +16,12 @@ public class Image {
         this.scale = scale;
 
         getPixels(path);
+    }
 
+    public Image() {
+        this.scale = 1;
+
+        this.image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
     }
     
     private void getPixels(String path) {
