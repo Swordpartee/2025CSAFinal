@@ -5,7 +5,10 @@ import com.engine.game.objects.PlayerController;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
+import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.Color;
 import com.engine.util.Image;
 
@@ -21,9 +24,21 @@ public class Main {
                 Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
                 Constants.PlayerConstants.getPlayerLeftSprite()));
 
-        Renderer.addDrawables(new Sprite(300, 400, new Image("src/main/resources/swing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        InstanceAnimateable swing = new InstanceAnimateable(200, 400, 5,
+                new Image(),
+                new Image("src/main/resources/swing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/swing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/swing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/swing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/swing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
-        Renderer.addDrawables(new CycleAnimateable(300, 300, 3, new Image("src/main/resources/swing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        Renderer.addDrawables(new Sprite(100, 400, new Image("src/main/resources/right1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        Renderer.addDrawables(swing);
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
+            swing.run();
+        });
+
+        Renderer.addDrawables(new CycleAnimateable(300, 100, 3, new Image("src/main/resources/swing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
                 new Image("src/main/resources/swing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
                 new Image("src/main/resources/swing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
                 new Image("src/main/resources/swing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),

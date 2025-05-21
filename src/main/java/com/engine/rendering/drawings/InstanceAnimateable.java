@@ -43,12 +43,16 @@ public class InstanceAnimateable extends Animateable {
             if (time >= period) {
                 time = 0;
                 loops++;
-                
+
                 nextFrame();
             }
-            super.draw(graphics);
-        }
-        else {
+            if (loops >= super.getFrames()) {
+                loops = 0;
+                running = false;
+            } else {
+                super.draw(graphics);
+            }
+        } else {
             reset();
             defaultSprite.draw(graphics);
         }

@@ -12,6 +12,7 @@ import com.engine.network.headers.Header;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Animateable;
+import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
@@ -64,19 +65,19 @@ public class PlayerController extends PointController implements GameObject {
         super(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
+        this.frontWalk = new CycleAnimateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
         this.frontStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.backWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
+        this.backWalk = new CycleAnimateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
         this.backStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.leftWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
+        this.leftWalk = new CycleAnimateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
         this.leftStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.rightWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
+        this.rightWalk = new CycleAnimateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
         this.rightStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
            

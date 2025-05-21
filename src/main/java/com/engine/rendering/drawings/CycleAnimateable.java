@@ -22,6 +22,11 @@ public class CycleAnimateable extends Animateable {
 
     @Override
     public void draw(Graphics graphics) {
+        time++;
+        if (time >= period) {
+            time = 0;
+            nextFrame();
+        }
         super.draw(graphics);
     }
 

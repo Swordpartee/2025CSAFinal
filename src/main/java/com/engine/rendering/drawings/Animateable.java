@@ -20,6 +20,10 @@ public class Animateable extends PointController implements Drawable {
         }
     }
 
+    public int getFrames() {
+        return frames.length;
+    }
+
     public void reset() {
         frame = 0;
     }
