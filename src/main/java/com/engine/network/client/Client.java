@@ -345,7 +345,9 @@ public class Client {
      * Closes the client and shuts down the socket.
      * This method should be called when the client is no longer needed.
      */
-    public void close() {
+    public void close() throws Exception {
+        sendSessionPacket(BaseHeader.Disconnect.value(), "Disconnecting...");
+
         // Shutdown the executor in addition to closing the socket
         if (executor != null) {
             executor.shutdown();

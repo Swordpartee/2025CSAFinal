@@ -76,6 +76,7 @@ public class Renderer {
             try {
                 redraw();
             } catch (Exception e) {
+                System.out.println("Error in rendering loop: " + e.getMessage());
                 e.printStackTrace();
             }
         }, 0, Constants.RendererConstants.FRAME_DELAY, TimeUnit.MILLISECONDS);
@@ -113,10 +114,19 @@ public class Renderer {
 
     /**
      * Adds a process to be run
+     * @param runnable 
      * @param ps processes to add
      */
     public static void addProcesses(Runnable... ps) {
         processes.addAll(Arrays.asList(ps));
+    }
+
+    /**
+     * Removes a process from the renderer
+     * @param ps processes to remove
+     */
+    public static void removeProcesses(Runnable... ps) {
+        processes.removeAll(Arrays.asList(ps));
     }
 
     /**
@@ -159,6 +169,20 @@ public class Renderer {
         }
     }
 
+    /**
+     * Removes drawables from the renderer
+     * @param ds : drawables to remove
+     */
+    public static void removeGameObjects(GameObject... ds) {
+        try {
+            drawables.removeAll(Arrays.asList(ds));
+            updateables.removeAll(Arrays.asList(ds));
+            collidables.removeAll(Arrays.asList(ds));
+        } catch (Exception e) {
+            System.out.println("Tried to remove a game object that doesn't exist: " + e);
+        }
+    }
+
     public static Collider[] getCollidables() {
         return collidables.toArray(Collider[]::new);
     }
@@ -175,16 +199,32 @@ public class Renderer {
         graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // draws all the created drawable objects
-        for (Drawable d : drawables)
-            d.draw(graphic);
+        // Draw all drawable objects
+        synchronized (drawables) {
+            for (int i = 0, size = drawables.size(); i < size; i++) {
+                if (i >= drawables.size()) { break; }
+                if (drawables.get(i) == null) { drawables.remove(i); i--; continue; }
+                drawables.get(i).draw(graphic);
+            }
+        }
 
-        // updates all created updateable objects
-        for (Updateable u : updateables)
-            u.update();
+        // Update all updateable objects
+        synchronized (updateables) {
+            for (int i = 0, size = updateables.size(); i < size; i++) {
+                if (i >= updateables.size()) { break; }
+                if (updateables.get(i) == null) { updateables.remove(i); i--; continue; }
+                updateables.get(i).update();
+            }
+        }
 
-        // runs all created processes
-        for (Runnable p : processes)
-            p.run();
+        // Run all processes
+        synchronized (processes) {
+            for (int i = 0, size = processes.size(); i < size; i++) {
+                if (i >= processes.size()) { break; }
+                if (processes.get(i) == null) { processes.remove(i); i--; continue; }
+                processes.get(i).run();
+            }
+        }
 
         graphic.dispose();
         buffer.show();

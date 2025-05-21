@@ -70,7 +70,7 @@ public class ClientRunner {
   		try {
 				// intState.sendSelf();
 				client.sendDenseSessionPacket(BaseHeader.BackForthMsg.value(), new byte[][] { scan.nextLine().getBytes(), "Gimme more cookies".getBytes(), "Hi".getBytes() });
-			} catch (Exception e) { System.out.println(e); }
+			} catch (Exception e) { System.out.println("Error: " + e); }
   	}
 		scan.close();
 	}

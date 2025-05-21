@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import com.engine.game.collision.Collider;
+import com.engine.network.Network;
+import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
 
@@ -41,16 +43,18 @@ public class Projectile implements GameObject {
         this.drawable = new DrawerCircle(this.position, rad, true);
     }
 
-    public void update() {
+    public void update(){
         position.setX(position.getX() + velocity.getX());
         position.setY(position.getY() + velocity.getY());
 
-        if (position.getX() < 0 || position.getX() > 640) {
-            velocity.setX(-velocity.getX());
-        }
-        if (position.getY() < 0 || position.getY() > 480) {
-            velocity.setY(-velocity.getY());
-        }
+        try {
+            if (position.getX() < 0 || position.getX() > 640) {
+                Network.stateManager.deleteStateByValue(this);
+            }
+            if (position.getY() < 0 || position.getY() > 480) {
+                Network.stateManager.deleteStateByValue(this);
+            }
+        } catch (Exception e) { } // EAT THE ERROR HAHAH
     }
 
     @Override
@@ -74,6 +78,8 @@ public class Projectile implements GameObject {
         this.drawable.setRadius(rad);
         this.position.setX(dataSegments.readInt());
         this.position.setY(dataSegments.readInt());
+        this.velocity.setX(dataSegments.readInt());
+        this.velocity.setY(dataSegments.readInt());
     }
 
     @Override
@@ -81,6 +87,18 @@ public class Projectile implements GameObject {
         dataSegments.writeInt((int) rad);
         dataSegments.writeInt((int) position.getX());
         dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) velocity.getX());
+        dataSegments.writeInt((int) velocity.getY());
+    }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        Renderer.addGameObjects(this);
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        Renderer.removeGameObjects(this);
     }
 
     public String toString() {

@@ -110,6 +110,8 @@ public class Functions {
 
     public static boolean collidingWithAny(Collider collidable, Collider... others) {
         for (Collider other : others) {
+            if (other == null) { continue; }
+
             if (collidable.colliding(other)) {
                 return true;
             }

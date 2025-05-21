@@ -50,7 +50,7 @@ public class ServerRunner {
 				server.sendSessionPacketToRoom(data.header, data.msg, data.sessionInfo.getRoom(), data.address);
 			}
 		}
-		catch (Exception e) { System.out.println(e); }
+		catch (Exception e) { System.out.println("Server Error: " + e); }
 	}
 	
 	public static void main(String[] args) throws Exception {
