@@ -21,37 +21,17 @@ public class ClientStateManager {
     public static int MessagesSent = 0;
     public static int MessagesReceived = 0;
 
-    private final HashMap<Class<?>, StateF<?>> addFunctions = new HashMap<>(); // Allow for getting states by class
-    private final HashMap<Class<?>, StateF<?>> deleteFunctions = new HashMap<>(); // Allow for getting states by class
     private final HashMap<String, INetState<?>> stateIDMap = new HashMap<>(); // Allow for getting states by ID
     private final Client client;
-
-    /**
-     * Adds a function to be called when a state is added of a certain class.
-     * @param function : The function to be called.
-     * @param clazz : The class of the state.
-     */
-    public <T extends INetObject> void addAddFunction(StateF<?> function, Class<?> clazz) {
-        addFunctions.put(clazz, function);
-    }
-
-    /**
-     * Adds a function to be called when a state is deleted of a certain class.
-     * @param function : The function to be called.
-     * @param clazz : The class of the state.
-     */
-    public <T extends INetObject> void addDeleteFunction(StateF<?> function, Class<?> clazz) {
-        deleteFunctions.put(clazz, function);
-    }
 
     /**
      * Gets all of the states with a certain header.
      * @param lookupHeader : The header to look up.
      * @return An array of states with the given header.
      */
-    private INetState<?>[] getStatesOfHeader(Header lookupHeader) {
+    public INetState<?>[] getStatesOfHeader(Header lookupHeader) {
         INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
+            .filter(state -> state != null && state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
         return states;
     }
 
@@ -62,7 +42,7 @@ public class ClientStateManager {
      */
     public INetState<?>[] getStatesOfType(Class<?> clazz) {
         INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> ((INetState<?>) state).getValue().getClass().equals(clazz))
+            .filter(state -> state != null && ((INetState<?>) state).getValue().getClass().equals(clazz))
             .toArray(INetState<?>[]::new);
         return states;
     }
@@ -80,7 +60,7 @@ public class ClientStateManager {
      * @param state : The state to add.
      * @return True if the state was added, false if it already exists.
      */
-    public <T> boolean addState(INetState<T> state) {
+    public <T extends INetObject> boolean addState(INetState<T> state) {
         if (stateIDMap.containsKey(state.getId())) {
             return false;
         }
@@ -94,7 +74,7 @@ public class ClientStateManager {
      * @param state : The state to remove.
      * @return True if the state was removed, false if it does not exist.
      */
-    public <T> boolean removeState(INetState<T> state) {
+    public <T extends INetObject> boolean removeState(INetState<T> state) {
         if (!stateIDMap.containsKey(state.getId())) {
             return false;
         }
@@ -107,7 +87,7 @@ public class ClientStateManager {
      * @param state : The state to send.
      * @throws Exception
      */
-    public <T> void sendState(INetState<T> state) throws Exception {
+    public <T extends INetObject> void sendState(INetState<T> state) throws Exception {
         ClientStateManager.MessagesSent++;
         client.sendSessionPacket(state.getHeader().value(), state.getSendData());
     }
@@ -207,10 +187,10 @@ public class ClientStateManager {
      * @param state : The state to delete.
      * @throws Exception
      */
-    public <T> void sendStateDelete(INetState<T> state) throws Exception {
+    public <T extends INetObject> void sendStateDelete(INetState<T> state) throws Exception {
         client.sendSessionPacket(Header.DeleteState.value(), state.getId());
         stateIDMap.remove(state.getId());
-        deleteFunctions.get(state.getValue().getClass()).run(state);
+        ((INetObject) state.getValue()).onNetworkDestroy();
     }
 
     /**
@@ -221,7 +201,7 @@ public class ClientStateManager {
     public <T> void deleteStateByValue(T value) throws Exception {
         INetState<?>[] states = getStatesOfType(value.getClass());
         for (INetState<?> s : states) {
-            if (s.getValue().equals(value)) {
+            if (s.getControlMode() != ControlMode.SERVER && s.getValue().equals(value)) {
                 sendStateDelete(s);
                 return;
             }
@@ -342,7 +322,7 @@ public class ClientStateManager {
             if (state == null) { // No state exists with this ID
                 // System.out.println("State not found: " + id);
                 INetState<?> newState = NetState.fromSerializedData(header, msg, this); // Create a new state in the State Manager
-                addFunctions.get(newState.getValue().getClass()).run(newState); // Call the add function for this state
+                ((INetObject) newState.getValue()).onNetworkCreate(); // Call the onNetworkCreate function for this state
                 continue;
             }
             if (!state.getHeader().compare(header)) {
@@ -361,7 +341,7 @@ public class ClientStateManager {
      * @param header : The header of the state delete.
      * @param data : The data received from the server.
      */
-    private <T> void recvStateDelete(Header header, ClientPacketData data) {
+    private <T> void recvStateDelete(Header header, ClientPacketData data) throws Exception {
         // System.out.println("Delete State: " + Convert.btos(data.msg));
 
 
@@ -370,7 +350,7 @@ public class ClientStateManager {
         stateIDMap.remove(Convert.btos(data.msg));
 
         if (state != null) {
-            deleteFunctions.get(state.getValue().getClass()).run(state);
+            ((INetObject) state.getValue()).onNetworkDestroy(); // Call the onNetworkDestroy function for this state
         } else {
             System.out.println("State not found: " + Convert.btos(data.msg));
         }

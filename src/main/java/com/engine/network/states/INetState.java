@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 
 import com.engine.network.headers.Header;
 
-public interface INetState<T> {
+public interface INetState<T extends INetObject> {
   /**
    * Get the value of the state
    * @return The value of the state

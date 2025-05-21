@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import com.engine.util.Image;
 import com.engine.util.Point;
+import com.engine.util.PointController;
 
 public class Animateable extends PointController implements Drawable {
     private final Sprite[] frames;
@@ -13,20 +14,10 @@ public class Animateable extends PointController implements Drawable {
     public Animateable(Point position, Image... Frames) {
         super(position);
 
-    public double getX() {
-        return center.getX();
-    }
-
-    public double getY() {
-        return center.getY();
-    }
-
-    public void moveX(double x) {
-        center.moveX(x);
-    }
-
-    public void moveY(double y) {
-        center.moveY(y);
+        frames = new Sprite[Frames.length];
+        for (int i = 0; i < Frames.length; i++) {
+            frames[i] = new Sprite(super.getPosition(), Frames[i]);
+        }
     }
 
     public void reset() {

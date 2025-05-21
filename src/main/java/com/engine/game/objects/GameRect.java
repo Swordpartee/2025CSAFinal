@@ -8,22 +8,22 @@ import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
 import com.engine.util.Point;
+import com.engine.util.PointController;
 
-public class GameRect implements GameObject {
-    private final Point position;
+public class GameRect extends PointController implements GameObject {
     private final DrawerRect drawable;
     private final RectCollider collider;
 
     public GameRect(double x, double y, double width, double height, boolean filled) {
-        this.position = new Point(x, y);
-        this.drawable = new DrawerRect(position, width, height, filled);
-        this.collider = new RectCollider(position, width, height);
+        super(x, y);
+        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
+        this.collider = new RectCollider(super.getPosition(), width, height);
     }
 
     public GameRect(Point position, double width, double height, boolean filled) {
-        this.position = position;
-        this.drawable = new DrawerRect(position, width, height, filled);
-        this.collider = new RectCollider(position, width, height);
+        super(position);
+        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
+        this.collider = new RectCollider(super.getPosition(), width, height);
     }
 
     @Override
@@ -46,10 +46,6 @@ public class GameRect implements GameObject {
         return ColliderType.OTHER;
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
     public DrawerRect getDrawable() {
         return drawable;
     }
@@ -60,13 +56,23 @@ public class GameRect implements GameObject {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        this.position.setX(dataSegments.readInt());
-        this.position.setY(dataSegments.readInt());
+        setX(dataSegments.readInt());
+        setY(dataSegments.readInt());
     }
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
-        dataSegments.writeInt((int) position.getX());
-        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) getX());
+        dataSegments.writeInt((int) getY());
+    }
+
+    @Override
+    public void onNetworkCreate() throws Exception {
+        // Logic for when the object is created in the network
+    }
+
+    @Override
+    public void onNetworkDestroy() throws Exception {
+        // Logic for when the object is destroyed in the network
     }
 }

@@ -372,6 +372,20 @@ public class Server {
             return true;
         }
 
+        if (BaseHeader.Disconnect.compare(data.header)) {
+            System.out.println("User " + data.sessionInfo.getUsername() + " disconnected.");
+
+            sessions.remove(data.address); // Remove the session from the server
+
+            // Take the user out of the room if the room is now empty
+            if (getSessionsInRoom(data.sessionInfo.getRoom()).size() == 0) {
+                rooms.remove(data.sessionInfo.getRoom());
+                System.out.println("Room " + data.sessionInfo.getRoom() + " is now empty. Deleting room.");
+            }
+
+            return true;
+        }
+
         return false;
     }
 
