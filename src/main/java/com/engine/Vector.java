@@ -1,6 +1,8 @@
-package com.engine.util;
+package com.engine;
 
 import java.awt.Point;
+
+import com.engine.util.Functions;
 
 public class Vector {
     private double x;

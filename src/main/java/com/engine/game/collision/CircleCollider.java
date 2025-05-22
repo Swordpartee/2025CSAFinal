@@ -1,24 +1,14 @@
 package com.engine.game.collision;
 
 import com.engine.util.Circle;
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 
 public class CircleCollider extends Circle implements Collider {
     /**
      * Creates a new circle collider
-     * @param x position of the center of the circle
-     * @param y position of the center of the circle
-     * @param radius of the circle
-     */
-    public CircleCollider(double x, double y, double radius) {
-        super(x, y, radius);
-    }
-
-    /**
-     * Creates a new circle collider
      * @param circle the circle to use as the collider
      */
-    public CircleCollider(Point center, double radius) {
+    public CircleCollider(PointConfig center, double radius) {
         super(center, radius);
     }
 

@@ -3,20 +3,19 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 import com.engine.util.Image;
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
 public class Sprite extends PointController implements Drawable {
     private final Image image;
 
-    public Sprite(Point center, Image image) {
-        super(center);
+    public Sprite(PointConfig pointConfig, Image image) {
+        super(pointConfig);
         this.image = image;
     }
 
     public Sprite(double x, double y, Image image) {
-        super(x, y);
-        this.image = image;
+        this(new PointConfig(x, y), image);
     }
 
     @Override

@@ -70,7 +70,7 @@ public class MultiplayerExample {
     public static void main(String[] args) throws Exception {
         Network.connect();
 
-        text = new DrawerText("Hello World", 10, 10, 10, "Arial");
+        text = new DrawerText(10, 10, "Hello World", 10, "Arial");
 
         // Login and join a room (admin:9*A#awjd893E*jf37ug$h)
         loginAndJoinRoom(); // Just using the placeholder login system I made for now.

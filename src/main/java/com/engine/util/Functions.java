@@ -1,5 +1,6 @@
 package com.engine.util;
 
+import com.engine.Vector;
 import com.engine.game.collision.Collider;
 
 public class Functions {
