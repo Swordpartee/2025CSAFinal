@@ -39,11 +39,6 @@ public class GameRect extends PointController implements GameObject {
         return collider.colliding(other);
     }
 
-    @Override
-    public ColliderType getType() {
-        return ColliderType.OTHER;
-    }
-
     public DrawerRect getDrawable() {
         return drawable;
     }

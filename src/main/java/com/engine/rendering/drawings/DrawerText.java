@@ -32,6 +32,10 @@ public class DrawerText extends PointController implements Drawable {
     this(new PointConfig(x, y), text, fontSize, fontName);
   }
 
+  public DrawerText(PointConfig position, String text) {
+    this(position, text, 12, "Arial");
+  }
+
   /**
    * Gets the text to be drawn
    * @return the text to be drawn

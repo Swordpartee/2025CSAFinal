@@ -38,7 +38,7 @@ public class Projectile extends PointController implements GameObject {
     }
 
     @Override
-    public void update(){
+    public void update() {
         try {
             if (getX() < 0 || getX() > 640) {
                 Network.stateManager.deleteStateByValue(this);
