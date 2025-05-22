@@ -3,7 +3,6 @@ package com.engine.game.objects;
 import com.engine.game.collision.Collider;
 import com.engine.network.states.INetObject;
 import com.engine.rendering.drawings.Drawable;
-import com.engine.util.Clickable;
 import com.engine.util.Updateable;
 
 public interface GameObject extends Updateable, Drawable, Collider, INetObject {
