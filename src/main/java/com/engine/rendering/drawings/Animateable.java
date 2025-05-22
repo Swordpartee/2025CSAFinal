@@ -6,7 +6,7 @@ import com.engine.util.Image;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
-public class Animateable extends PointController implements Drawable {
+public abstract class Animateable extends PointController implements Drawable {
     private final Sprite[] frames;
 
     private int frame = 0;
