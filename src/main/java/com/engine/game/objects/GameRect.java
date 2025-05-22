@@ -7,13 +7,18 @@ import java.io.DataOutputStream;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
+<<<<<<< HEAD
 import com.engine.util.PointConfig;
+=======
+import com.engine.util.Point;
+>>>>>>> origin/main
 import com.engine.util.PointController;
 
 public class GameRect extends PointController implements GameObject {
     private final DrawerRect drawable;
     private final RectCollider collider;
 
+<<<<<<< HEAD
     public GameRect(PointConfig position, double width, double height, boolean filled) {
         super(position);
         this.drawable = new DrawerRect(position, width, height, filled);
@@ -22,6 +27,18 @@ public class GameRect extends PointController implements GameObject {
 
     public GameRect(double x, double y, double width, double height, boolean filled) {
         this(new PointConfig(x, y), width, height, filled);
+=======
+    public GameRect(double x, double y, double width, double height, boolean filled) {
+        super(x, y);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
+    }
+
+    public GameRect(Point position, double width, double height, boolean filled) {
+        super(position);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
+>>>>>>> origin/main
     }
 
     @Override
@@ -34,6 +51,14 @@ public class GameRect extends PointController implements GameObject {
         return collider.colliding(other);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public ColliderType getType() {
+        return ColliderType.OTHER;
+    }
+
+>>>>>>> origin/main
     public DrawerRect getDrawable() {
         return drawable;
     }

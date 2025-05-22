@@ -7,6 +7,7 @@ public class Rect extends PointController {
     public Rect(PointConfig pointConfig, double width, double height) {
         super(pointConfig);
 
+<<<<<<< HEAD
         this.width = width;
         this.height = height;
     }
@@ -17,6 +18,31 @@ public class Rect extends PointController {
     // public Rect(double centerX, double centerY, double width, double height) {
     //     this(new PointConfig(centerX, centerY), width, height);
     // }
+=======
+    /**
+     * Creates a rect with the given center coordinates and dimensions
+     */
+    public Rect(double centerX, double centerY, double width, double height) {
+        super(centerX, centerY);
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Creates a rect with the given center point and dimensions
+     */
+    public Rect(Point center, double width, double height) {
+        super(center);
+        this.width = width;
+        this.height = height;
+    }
+
+    public Rect() {
+        super();
+        this.width = 0;
+        this.height = 0;
+    }
+>>>>>>> origin/main
 
     public double getHeight() {
         return height;

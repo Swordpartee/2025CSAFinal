@@ -3,7 +3,11 @@ package com.engine.rendering.drawings;
 import java.awt.Font;
 import java.awt.Graphics;
 
+<<<<<<< HEAD
 import com.engine.util.PointConfig;
+=======
+import com.engine.util.Point;
+>>>>>>> origin/main
 import com.engine.util.PointController;
 
 public class DrawerText extends PointController implements Drawable {
@@ -20,20 +24,41 @@ public class DrawerText extends PointController implements Drawable {
    * @param fontSize the size of the font
    * @param fontName the name of the font
    */
+<<<<<<< HEAD
   public DrawerText(PointConfig position, String text, int fontSize, String fontName) {
     super(position);
+=======
+  public DrawerText(String text, double x, double y, int fontSize, String fontName) {
+    super(x, y);
+>>>>>>> origin/main
 
     this.text = text;
     this.fontSize = fontSize;
     this.fontName = fontName;
   }
 
+<<<<<<< HEAD
   public DrawerText(double x, double y, String text, int fontSize, String fontName) {
     this(new PointConfig(x, y), text, fontSize, fontName);
   }
 
   public DrawerText(PointConfig position, String text) {
     this(position, text, 12, "Arial");
+=======
+  /**
+   * Creates a new drawable text
+   * @param text the text to be drawn
+   * @param position the position of the text
+   * @param fontSize the size of the font
+   * @param fontName the name of the font
+   */
+  public DrawerText(String text, Point position, int fontSize, String fontName) {
+    super(position);
+    
+    this.text = text;
+    this.fontSize = fontSize;
+    this.fontName = fontName;
+>>>>>>> origin/main
   }
 
   /**
