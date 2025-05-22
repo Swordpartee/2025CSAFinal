@@ -19,8 +19,9 @@ import com.engine.rendering.io.RenderListener;
 import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Point;
+import com.engine.util.PointController;
 
-public class PlayerController implements GameObject {
+public class PlayerController extends PointController implements GameObject {
     public enum SpriteState {
         FRONT_STOP,
         BACK_STOP,
@@ -55,33 +56,32 @@ public class PlayerController implements GameObject {
     private final Drawable[] spriteStates;
     private SpriteState spriteState;
 
-    private final Point position;
     private final Point velocity;
 
     private final RectCollider collider;
 
     public PlayerController(Color color1, Color color2) {
-        this.position = new Point(0, 0);
+        super(0, 0);
         this.velocity = new Point(0, 0);
 
-        this.frontWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
-        this.frontStop = new Sprite(position,
+        this.frontWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
+        this.frontStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.backWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
-        this.backStop = new Sprite(position,
+        this.backWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
+        this.backStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.leftWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
-        this.leftStop = new Sprite(position,
+        this.leftWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
+        this.leftStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.rightWalk = new Animateable(position, 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
-        this.rightStop = new Sprite(position,
+        this.rightWalk = new Animateable(getPosition(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
+        this.rightStop = new Sprite(getPosition(),
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
            
 
-        this.collider = new RectCollider(position, Constants.PlayerConstants.PLAYER_WIDTH,
+        this.collider = new RectCollider(getPosition(), Constants.PlayerConstants.PLAYER_WIDTH,
                 Constants.PlayerConstants.PLAYER_HEIGHT);
         
         // System.out.println("PlayerController: " + this.collider.getWidth() + " " + this.collider.getHeight());
@@ -112,7 +112,7 @@ public class PlayerController implements GameObject {
     @Override
     public void update() {
         if (RenderListener.isKeyPressed(EventCode.SPACE)) {
-            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(position.getX(), position.getY(), 10, true));
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(getX(), getY(), 10, true));
             Renderer.addGameObjects(projectile.getValue());
             projectile.getValue().getVelocity().setX(1);
             try {
@@ -137,36 +137,33 @@ public class PlayerController implements GameObject {
         velocity.setX(Functions.clamp(velocity.getX() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
         velocity.setY(Functions.clamp(velocity.getY() * Constants.PlayerConstants.PLAYER_FRICTION, -Constants.PlayerConstants.PLAYER_MAX_SPEED, Constants.PlayerConstants.PLAYER_MAX_SPEED));
 
-        position.moveX(velocity.getX());
+        moveX(velocity.getX());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-            position.moveX(-velocity.getX());
+            moveX(-velocity.getX());
             velocity.setX(0);
         }
-        
-        position.moveY(velocity.getY());
+
+        moveY(velocity.getY());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
-            position.moveY(-velocity.getY());
+            moveY(-velocity.getY());
             velocity.setY(0);
         }
 
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
             spriteState = SpriteState.LEFT_WALK;
-        } else 
-        if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
+        } else if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
             spriteState = SpriteState.RIGHT_WALK;
-        } else 
-        if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
+        } else if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
             spriteState = SpriteState.BACK_WALK;
-        } else 
-        if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
+        } else if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
             spriteState = SpriteState.FRONT_WALK;
         } else {
             spriteState = SpriteState.FRONT_STOP;
         }
 
         // Ensure player stays within screen bounds (considering position is the center)
-        position.setX(Functions.clamp(position.getX(), Constants.PlayerConstants.PLAYER_WIDTH / 2, Renderer.getWidth() - Constants.PlayerConstants.PLAYER_WIDTH / 2));
-        position.setY(Functions.clamp(position.getY(), Constants.PlayerConstants.PLAYER_HEIGHT / 2, Renderer.getHeight() - Constants.PlayerConstants.PLAYER_HEIGHT / 2));
+        setX(Functions.clamp(getX(), Constants.PlayerConstants.PLAYER_WIDTH / 2, Renderer.getWidth() - Constants.PlayerConstants.PLAYER_WIDTH / 2));
+        setY(Functions.clamp(getY(), Constants.PlayerConstants.PLAYER_HEIGHT / 2, Renderer.getHeight() - Constants.PlayerConstants.PLAYER_HEIGHT / 2));
     }
 
     @Override
@@ -190,8 +187,8 @@ public class PlayerController implements GameObject {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        this.position.setX(dataSegments.readInt());
-        this.position.setY(dataSegments.readInt());
+        setX(dataSegments.readInt());
+        setY(dataSegments.readInt());
         this.velocity.setX(dataSegments.readInt());
         this.velocity.setY(dataSegments.readInt());
         this.spriteState = SpriteState.from(dataSegments.read());
@@ -199,16 +196,17 @@ public class PlayerController implements GameObject {
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
-        dataSegments.writeInt((int) position.getX());
-        dataSegments.writeInt((int) position.getY());
+        dataSegments.writeInt((int) getX());
+        dataSegments.writeInt((int) getY());
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
         dataSegments.write(spriteState.value());
     }
 
+    @Override
     public String toString() {
         return "PlayerController{" +
-                "position=" + position +
+                "position=" + getPosition() +
                 ", velocity=" + velocity +
                 '}';
     }
