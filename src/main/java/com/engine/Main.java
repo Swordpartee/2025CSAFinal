@@ -34,6 +34,7 @@ public class Main {
 
         Renderer.addDrawables(new Sprite(100, 400, new Image("src/main/resources/leftswing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
         Renderer.addDrawables(swing);
+        
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             swing.run();
         });
