@@ -1,10 +1,11 @@
-package com.engine.game.objects;
+package com.engine.game.UI;
 
+import com.engine.game.objects.GameRect;
 import com.engine.rendering.drawings.DrawerText;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 
-public class Button extends GameRect {
+public class Button extends GameRect implements UIElement {
     private final DrawerText text;
     private final Runnable action;
 

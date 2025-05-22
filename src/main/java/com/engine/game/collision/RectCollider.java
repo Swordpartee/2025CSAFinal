@@ -1,5 +1,6 @@
 package com.engine.game.collision;
 
+import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 
@@ -50,7 +51,7 @@ public class RectCollider extends Rect implements Collider {
         }
     }
     
-    public boolean colliding(PointConfig point) {
+    public boolean colliding(Point point) {
         // Convert from center-based to edge-based calculation
         double thisLeft = this.getX() - this.getWidth() / 2;
         double thisRight = this.getX() + this.getWidth() / 2;
