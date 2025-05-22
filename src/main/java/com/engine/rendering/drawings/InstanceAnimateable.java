@@ -47,11 +47,7 @@ public class InstanceAnimateable extends Animateable {
                 loops = 0;
                 running = false;
             } else {
-<<<<<<< HEAD
-                super.draw(graphics);
-=======
                 draw(graphics);
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
             }
         } else {
             reset();

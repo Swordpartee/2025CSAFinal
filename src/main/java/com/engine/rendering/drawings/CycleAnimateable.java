@@ -27,11 +27,7 @@ public class CycleAnimateable extends Animateable {
             time = 0;
             nextFrame();
         }
-<<<<<<< HEAD
-        super.draw(graphics);
-=======
         draw(graphics);
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
     }
 
 }

@@ -1,9 +1,6 @@
 package com.engine.game.collision;
 
-<<<<<<< HEAD
-=======
 import com.engine.util.Point;
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 

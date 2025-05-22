@@ -3,15 +3,7 @@ package com.engine.rendering.drawings;
 import java.awt.Font;
 import java.awt.Graphics;
 
-<<<<<<< HEAD
 import com.engine.util.PointConfig;
-=======
-<<<<<<< HEAD
-import com.engine.util.PointConfig;
-=======
-import com.engine.util.Point;
->>>>>>> origin/main
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointController;
 
 public class DrawerText extends PointController implements Drawable {
@@ -28,52 +20,20 @@ public class DrawerText extends PointController implements Drawable {
    * @param fontSize the size of the font
    * @param fontName the name of the font
    */
-<<<<<<< HEAD
   public DrawerText(PointConfig position, String text, int fontSize, String fontName) {
     super(position);
-=======
-<<<<<<< HEAD
-  public DrawerText(PointConfig position, String text, int fontSize, String fontName) {
-    super(position);
-=======
-  public DrawerText(String text, double x, double y, int fontSize, String fontName) {
-    super(x, y);
->>>>>>> origin/main
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 
     this.text = text;
     this.fontSize = fontSize;
     this.fontName = fontName;
   }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
   public DrawerText(double x, double y, String text, int fontSize, String fontName) {
     this(new PointConfig(x, y), text, fontSize, fontName);
   }
 
   public DrawerText(PointConfig position, String text) {
     this(position, text, 12, "Arial");
-<<<<<<< HEAD
-=======
-=======
-  /**
-   * Creates a new drawable text
-   * @param text the text to be drawn
-   * @param position the position of the text
-   * @param fontSize the size of the font
-   * @param fontName the name of the font
-   */
-  public DrawerText(String text, Point position, int fontSize, String fontName) {
-    super(position);
-    
-    this.text = text;
-    this.fontSize = fontSize;
-    this.fontName = fontName;
->>>>>>> origin/main
->>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
   }
 
   /**
