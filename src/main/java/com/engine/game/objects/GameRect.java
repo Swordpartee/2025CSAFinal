@@ -7,21 +7,52 @@ import java.io.DataOutputStream;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
+<<<<<<< HEAD
 import com.engine.util.PointConfig;
+=======
+<<<<<<< HEAD
+import com.engine.util.PointConfig;
+=======
+import com.engine.util.Point;
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointController;
 
 public class GameRect extends PointController implements GameObject {
     private final DrawerRect drawable;
     private final RectCollider collider;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
     public GameRect(PointConfig position, double width, double height, boolean filled) {
         super(position);
         this.drawable = new DrawerRect(position, width, height, filled);
         this.collider = new RectCollider(position, width, height);
+<<<<<<< HEAD
     }
 
     public GameRect(double x, double y, double width, double height, boolean filled) {
         this(new PointConfig(x, y), width, height, filled);
+=======
+    }
+
+    public GameRect(double x, double y, double width, double height, boolean filled) {
+        this(new PointConfig(x, y), width, height, filled);
+=======
+    public GameRect(double x, double y, double width, double height, boolean filled) {
+        super(x, y);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
+    }
+
+    public GameRect(Point position, double width, double height, boolean filled) {
+        super(position);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
     }
 
     @Override
@@ -30,15 +61,21 @@ public class GameRect extends PointController implements GameObject {
     }
 
     @Override
-    public void update() {
-        // Update logic for the rectangle can be added here
-    }
-
-    @Override
     public boolean colliding(Collider other) {
         return collider.colliding(other);
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    @Override
+    public ColliderType getType() {
+        return ColliderType.OTHER;
+    }
+
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
     public DrawerRect getDrawable() {
         return drawable;
     }

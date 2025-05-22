@@ -4,12 +4,18 @@ import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import com.engine.game.collision.Collider;
 import com.engine.network.Network;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
+<<<<<<< HEAD
 import com.engine.util.PointConfig;
+=======
+<<<<<<< HEAD
+import com.engine.util.PointConfig;
+=======
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointController;
 
 public class Projectile extends PointController implements GameObject {
@@ -30,6 +36,11 @@ public class Projectile extends PointController implements GameObject {
      * @param height The height of the projectile.
      * @param filled Indicates if the projectile is filled or not.
      */
+<<<<<<< HEAD
+    public Projectile(PointConfig position, double rad, boolean filled) {
+        super(position);
+=======
+<<<<<<< HEAD
     public Projectile(PointConfig position, double rad, boolean filled) {
         super(position);
         this.velocity = new Point(0, 0);
@@ -39,6 +50,22 @@ public class Projectile extends PointController implements GameObject {
 
     @Override
     public void update() {
+=======
+    public Projectile(double x, double y, double rad, boolean filled) {
+        super(x, y);
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
+        this.velocity = new Point(0, 0);
+        this.rad = rad;
+        this.drawable = new DrawerCircle(getPoint(), rad, filled);
+    }
+
+    @Override
+<<<<<<< HEAD
+    public void update() {
+=======
+    public void update(){
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
         try {
             if (getX() < 0 || getX() > 640) {
                 Network.stateManager.deleteStateByValue(this);
@@ -52,16 +79,6 @@ public class Projectile extends PointController implements GameObject {
     @Override
     public void draw(Graphics graphic) {
         drawable.draw(graphic);
-    }
-
-    @Override
-    public boolean colliding(Collider other) {
-        return false;
-    }
-
-    @Override
-    public ColliderType getType() {
-        return ColliderType.NONE;
     }
 
     @Override

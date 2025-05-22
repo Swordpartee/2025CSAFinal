@@ -22,7 +22,14 @@ import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Image;
 import com.engine.util.Point;
+<<<<<<< HEAD
 import com.engine.util.PointConfig;
+=======
+<<<<<<< HEAD
+import com.engine.util.PointConfig;
+=======
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointController;
 
 public class PlayerController extends PointController implements GameObject {
@@ -60,14 +67,27 @@ public class PlayerController extends PointController implements GameObject {
     private final Drawable[] spriteStates;
     private SpriteState spriteState;
 
+<<<<<<< HEAD
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
 
+=======
+<<<<<<< HEAD
+    private final InstanceAnimateable leftSwing;
+    private final InstanceAnimateable rightSwing;
+
+=======
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
     private final Point velocity;
 
     private final RectCollider collider;
 
     public PlayerController(Color color1, Color color2) {
+<<<<<<< HEAD
+        super(new PointConfig(0, 0));
+=======
+<<<<<<< HEAD
         super(new PointConfig(0, 0));
         this.velocity = new Point(0, 0);
 
@@ -113,6 +133,58 @@ public class PlayerController extends PointController implements GameObject {
            
 
         this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH,
+=======
+        super(0, 0);
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
+        this.velocity = new Point(0, 0);
+
+        this.rightSwing = new InstanceAnimateable(new PointConfig(getPosition(), 105, 0), 5,
+                new Image(),
+                new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
+        this.leftSwing = new InstanceAnimateable(new PointConfig(getPosition(), -105, 0), 5,
+                new Image(),
+                new Image("src/main/resources/leftswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/leftswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/leftswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/leftswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/leftswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
+            if (velocity.getX() < -0.1) {
+                leftSwing.run();
+            } else if (velocity.getX() > 0.1) {
+                rightSwing.run();
+            }
+        });
+
+        this.frontWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
+        this.frontStop = new Sprite(getPoint(),
+                Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+
+        this.backWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
+        this.backStop = new Sprite(getPoint(),
+                Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+
+        this.leftWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
+        this.leftStop = new Sprite(getPoint(),
+                Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+
+        this.rightWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
+        this.rightStop = new Sprite(getPoint(),
+                Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
+           
+
+<<<<<<< HEAD
+        this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH,
+=======
+        this.collider = new RectCollider(getPosition(), Constants.PlayerConstants.PLAYER_WIDTH,
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
                 Constants.PlayerConstants.PLAYER_HEIGHT);
         
         // System.out.println("PlayerController: " + this.collider.getWidth() + " " + this.collider.getHeight());
@@ -143,7 +215,15 @@ public class PlayerController extends PointController implements GameObject {
     @Override
     public void update() {
         if (RenderListener.isKeyPressed(EventCode.SPACE)) {
+<<<<<<< HEAD
             NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(getPoint().copy(), 10, true));
+=======
+<<<<<<< HEAD
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(getPoint().copy(), 10, true));
+=======
+            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(getX(), getY(), 10, true));
+>>>>>>> origin/main
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
             Renderer.addGameObjects(projectile.getValue());
             projectile.getValue().getVelocity().setX(1);
             try {
@@ -211,11 +291,6 @@ public class PlayerController extends PointController implements GameObject {
         }
 
         return collider.colliding(other);
-    }
-
-    @Override
-    public ColliderType getType() {
-        return ColliderType.OTHER;
     }
 
     @Override

@@ -1,5 +1,9 @@
 package com.engine.game.collision;
 
+<<<<<<< HEAD
+=======
+import com.engine.util.Point;
+>>>>>>> 6fdcdf302b0a17d74ae40c18398d77ea6af752e6
 import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 
@@ -19,20 +23,20 @@ public class RectCollider extends Rect implements Collider {
             case RECT -> {
                 RectCollider rect = (RectCollider) other;
                 // Convert from center-based to edge-based calculation
-                double thisLeft = this.getX() - this.getWidth()/2;
-                double thisRight = this.getX() + this.getWidth()/2;
-                double thisTop = this.getY() - this.getHeight()/2;
-                double thisBottom = this.getY() + this.getHeight()/2;
-                
-                double otherLeft = rect.getX() - rect.getWidth()/2;
-                double otherRight = rect.getX() + rect.getWidth()/2;
-                double otherTop = rect.getY() - rect.getHeight()/2;
-                double otherBottom = rect.getY() + rect.getHeight()/2;
-                
-                return thisLeft < otherRight && 
-                       thisRight > otherLeft && 
-                       thisTop < otherBottom && 
-                       thisBottom > otherTop;
+                double thisLeft = this.getX() - this.getWidth() / 2;
+                double thisRight = this.getX() + this.getWidth() / 2;
+                double thisTop = this.getY() - this.getHeight() / 2;
+                double thisBottom = this.getY() + this.getHeight() / 2;
+
+                double otherLeft = rect.getX() - rect.getWidth() / 2;
+                double otherRight = rect.getX() + rect.getWidth() / 2;
+                double otherTop = rect.getY() - rect.getHeight() / 2;
+                double otherBottom = rect.getY() + rect.getHeight() / 2;
+
+                return thisLeft < otherRight &&
+                        thisRight > otherLeft &&
+                        thisTop < otherBottom &&
+                        thisBottom > otherTop;
             }
             case CIRCLE -> {
                 CircleCollider circle = (CircleCollider) other;
@@ -48,6 +52,17 @@ public class RectCollider extends Rect implements Collider {
                 return false;
             }
         }
+    }
+    
+    public boolean colliding(Point point) {
+        // Convert from center-based to edge-based calculation
+        double thisLeft = this.getX() - this.getWidth() / 2;
+        double thisRight = this.getX() + this.getWidth() / 2;
+        double thisTop = this.getY() - this.getHeight() / 2;
+        double thisBottom = this.getY() + this.getHeight() / 2;
+
+        return point.getX() > thisLeft && point.getX() < thisRight &&
+               point.getY() > thisTop && point.getY() < thisBottom;
     }
 
     @Override
