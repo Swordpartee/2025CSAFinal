@@ -43,11 +43,11 @@ public class InstanceAnimateable extends Animateable {
                 nextFrame();
             }
 
-            if (loops >= super.getFrames()) {
+            if (loops >= getFrames()) {
                 loops = 0;
                 running = false;
             } else {
-                super.draw(graphics);
+                draw(graphics);
             }
         } else {
             reset();

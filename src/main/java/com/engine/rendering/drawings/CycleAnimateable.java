@@ -27,7 +27,7 @@ public class CycleAnimateable extends Animateable {
             time = 0;
             nextFrame();
         }
-        super.draw(graphics);
+        draw(graphics);
     }
 
 }
