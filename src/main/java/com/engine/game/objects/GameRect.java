@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
+import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
@@ -32,6 +33,11 @@ public class GameRect extends PointController implements GameObject {
     @Override
     public boolean colliding(Collider other) {
         return collider.colliding(other);
+    }
+
+    @Override
+    public boolean colliding(Point point) {
+        return collider.colliding(point);
     }
 
     public DrawerRect getDrawable() {

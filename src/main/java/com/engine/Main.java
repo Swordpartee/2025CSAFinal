@@ -1,5 +1,6 @@
 package com.engine;
 
+import com.engine.game.UI.Button;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
 import com.engine.rendering.Renderer;
@@ -15,6 +16,9 @@ import com.engine.util.Image;
 public class Main {
     public static void main(String[] args) {
         Renderer.addDrawables(new Background(Constants.GameConstants.getRockSprite()));
+
+        Renderer.addUIElements(new Button(new GameRect(25, 25, 50, 50, true),
+                () -> System.out.println("Button Clicked!")));
         
         Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false));
 

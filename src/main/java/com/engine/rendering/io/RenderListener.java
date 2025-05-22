@@ -9,7 +9,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.engine.Vector;
+import com.engine.util.Point;
 
 public class RenderListener {
     private static final MouseAdapter mouseListener = new MouseAdapter() {
@@ -18,7 +18,7 @@ public class RenderListener {
             if (mouseEvents[e.getButton()] == null) {  
                 mouseEvents[e.getButton()] = e;
 
-                callBinding(EventCode.EventType.KEY_PRESSED, e.getButton());
+                callBinding(EventCode.EventType.MOUSE_PRESSED, e.getButton());
             }
         }
 
@@ -26,13 +26,13 @@ public class RenderListener {
         public void mouseReleased(MouseEvent e) {
             mouseEvents[e.getButton()] = null;
 
-            callBinding(EventCode.EventType.KEY_RELEASED, e.getButton());
+            callBinding(EventCode.EventType.MOUSE_RELEASED, e.getButton());
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            mousePos.setX(e.getPoint().getX() - 400 + 8);
-            mousePos.setY(e.getPoint().getY() - 300 + 31);
+            mousePos.setX(e.getPoint().getX());
+            mousePos.setY(e.getPoint().getY());
 
             callBinding(EventCode.EventType.MOUSE_MOVED);
         }
@@ -91,9 +91,9 @@ public class RenderListener {
     private static final MouseEvent[] mouseEvents = new MouseEvent[3];
     private static final KeyEvent[] keyEvents = new KeyEvent[256];
 
-    private static final Vector mousePos = new Vector();
+    private static final Point mousePos = new Point();
 
-    public static Vector getMousePos() {
+    public static Point getMousePos() {
         return mousePos;
     }
 
@@ -115,6 +115,10 @@ public class RenderListener {
 
     public static void addBinding(EventCode.EventType eventType, EventCode code, Runnable action) {
         bindings.add(new Binding(eventType, code, action));
+    }
+
+    public static void addBinding(EventCode.EventType eventType, Runnable action) {
+        bindings.add(new Binding(eventType, action));
     }
 
     public static void addBinding(Binding binding) {

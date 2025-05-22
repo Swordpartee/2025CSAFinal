@@ -1,6 +1,7 @@
 package com.engine.game.collision;
 
 import com.engine.util.Circle;
+import com.engine.util.Point;
 import com.engine.util.PointConfig;
 
 public class CircleCollider extends Circle implements Collider {
@@ -40,6 +41,13 @@ public class CircleCollider extends Circle implements Collider {
                 return false;
             }
         }
+    }
+
+    @Override
+    public boolean colliding(Point point) {
+        double distanceSquared = Math.pow(point.getX() - this.getX(), 2)
+                + Math.pow(point.getY() - this.getY(), 2);
+        return distanceSquared <= Math.pow(this.getRadius(), 2);
     }
 
     @Override
