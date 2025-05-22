@@ -16,14 +16,14 @@ public class GameRect extends PointController implements GameObject {
 
     public GameRect(double x, double y, double width, double height, boolean filled) {
         super(x, y);
-        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
-        this.collider = new RectCollider(super.getPosition(), width, height);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
     }
 
     public GameRect(Point position, double width, double height, boolean filled) {
         super(position);
-        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
-        this.collider = new RectCollider(super.getPosition(), width, height);
+        this.drawable = new DrawerRect(getPosition(), width, height, filled);
+        this.collider = new RectCollider(getPosition(), width, height);
     }
 
     @Override
