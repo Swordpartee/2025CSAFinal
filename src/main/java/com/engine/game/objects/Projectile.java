@@ -9,6 +9,7 @@ import com.engine.network.Network;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Point;
+import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
 public class Projectile extends PointController implements GameObject {
@@ -29,18 +30,11 @@ public class Projectile extends PointController implements GameObject {
      * @param height The height of the projectile.
      * @param filled Indicates if the projectile is filled or not.
      */
-    public Projectile(double x, double y, double rad, boolean filled) {
-        super(x, y);
+    public Projectile(PointConfig position, double rad, boolean filled) {
+        super(position);
         this.velocity = new Point(0, 0);
         this.rad = rad;
-        this.drawable = new DrawerCircle(getPosition(), rad, filled);
-    }
-
-    public Projectile() {
-        super();
-        this.velocity = new Point(0, 0);
-        this.rad = 0;
-        this.drawable = new DrawerCircle(getPosition(), rad, true);
+        this.drawable = new DrawerCircle(getPoint(), rad, filled);
     }
 
     @Override

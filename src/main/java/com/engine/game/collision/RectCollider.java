@@ -1,36 +1,13 @@
 package com.engine.game.collision;
 
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 
 public class RectCollider extends Rect implements Collider {
 
-    public RectCollider() {
-        super();
-    }
-    /**
-     * Creates a new rectangle collider
-     * @param x position of the top left corner of the rectangle
-     * @param y position of the top left corner of the rectangle
-     * @param width of the rectangle
-     * @param height of the rectangle
-     */
-    public RectCollider(double x, double y, double width, double height) {
-        super(x, y, width, height);
-    }
-
-    /**
-     * Creates a new rectangle collider
-     * @param rect the rectangle to use as the collider
-     */
-    public RectCollider(Rect rect) {
-        super(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-    }
-
-    public RectCollider(Point center, double width, double height) {
+    public RectCollider(PointConfig center, double width, double height) {
         super(center, width, height);
     }
-
 
     @Override
     public boolean colliding(Collider other) {

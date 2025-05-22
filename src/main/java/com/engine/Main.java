@@ -26,23 +26,23 @@ public class Main {
 
         InstanceAnimateable swing = new InstanceAnimateable(200, 400, 5,
                 new Image(),
-                new Image("src/main/resources/swing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+                new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
-        Renderer.addDrawables(new Sprite(100, 400, new Image("src/main/resources/right1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        Renderer.addDrawables(new Sprite(100, 400, new Image("src/main/resources/leftswing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
         Renderer.addDrawables(swing);
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             swing.run();
         });
 
-        Renderer.addDrawables(new CycleAnimateable(300, 100, 3, new Image("src/main/resources/swing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/swing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        Renderer.addDrawables(new CycleAnimateable(300, 100, 3, new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+                new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
 
         Renderer.start();
     }

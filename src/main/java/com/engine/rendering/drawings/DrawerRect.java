@@ -2,26 +2,13 @@ package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
 
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 
 public class DrawerRect extends Rect implements Drawable {
     private boolean filled;
 
-    /**
-     * Creates a new drawable rectangle
-     * @param x position of the top left corner of the rectangle
-     * @param y position of the top left corner of the rectangle
-     * @param width of the rectangle
-     * @param height of the rectangle
-     * @param filled whether to fill the rectangle or not
-     */
-    public DrawerRect(double x, double y, double width, double height, boolean filled) {
-        super(x, y, width, height);
-        this.filled = filled;
-    }
-
-    public DrawerRect(Point position, double width, double height, boolean filled) {
+    public DrawerRect(PointConfig position, double width, double height, boolean filled) {
         super(position, width, height);
         this.filled = filled;
     }

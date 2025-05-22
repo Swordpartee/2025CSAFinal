@@ -3,7 +3,7 @@ package com.engine.rendering.drawings;
 import java.awt.Graphics;
 
 import com.engine.util.Image;
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 
 public class InstanceAnimateable extends Animateable {
     private final Sprite defaultSprite;
@@ -13,7 +13,7 @@ public class InstanceAnimateable extends Animateable {
     private int loops;
     private boolean running;
 
-    public InstanceAnimateable(Point position, double period, Image defaultSprite, Image... frames) {
+    public InstanceAnimateable(PointConfig position, double period, Image defaultSprite, Image... frames) {
         super(position, frames);
 
         this.defaultSprite = new Sprite(position, defaultSprite);
@@ -25,11 +25,7 @@ public class InstanceAnimateable extends Animateable {
     }
 
     public InstanceAnimateable(double x, double y, double period, Image defaultSprite, Image... frames) {
-        this(new Point(x, y), period, defaultSprite, frames);
-    }
-
-    public InstanceAnimateable(Point positon, double period, Image... frames) {
-        this(positon, period, new Image(), frames);
+        this(new PointConfig(x, y), period, defaultSprite, frames);
     }
 
     public void run() {
@@ -46,6 +42,7 @@ public class InstanceAnimateable extends Animateable {
 
                 nextFrame();
             }
+
             if (loops >= super.getFrames()) {
                 loops = 0;
                 running = false;

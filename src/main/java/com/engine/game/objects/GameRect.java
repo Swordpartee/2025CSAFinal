@@ -7,23 +7,21 @@ import java.io.DataOutputStream;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.drawings.DrawerRect;
-import com.engine.util.Point;
+import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
 public class GameRect extends PointController implements GameObject {
     private final DrawerRect drawable;
     private final RectCollider collider;
 
-    public GameRect(double x, double y, double width, double height, boolean filled) {
-        super(x, y);
-        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
-        this.collider = new RectCollider(super.getPosition(), width, height);
+    public GameRect(PointConfig position, double width, double height, boolean filled) {
+        super(position);
+        this.drawable = new DrawerRect(position, width, height, filled);
+        this.collider = new RectCollider(position, width, height);
     }
 
-    public GameRect(Point position, double width, double height, boolean filled) {
-        super(position);
-        this.drawable = new DrawerRect(super.getPosition(), width, height, filled);
-        this.collider = new RectCollider(super.getPosition(), width, height);
+    public GameRect(double x, double y, double width, double height, boolean filled) {
+        this(new PointConfig(x, y), width, height, filled);
     }
 
     @Override
