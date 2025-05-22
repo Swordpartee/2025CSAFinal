@@ -1,14 +1,17 @@
 package com.engine.game.collision;
 
 public interface Collider {
-    public boolean colliding(Collider other);
-    
-    public ColliderType getType();
+    default public boolean colliding(Collider other) {
+        return false;
+    }
+
+    default public ColliderType getType() {
+        return ColliderType.OTHER;
+    };
 
     enum ColliderType {
         CIRCLE,
         RECT,
-        OTHER, 
-        NONE
+        OTHER
     }
 }

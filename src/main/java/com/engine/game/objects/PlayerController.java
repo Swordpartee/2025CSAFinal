@@ -214,11 +214,6 @@ public class PlayerController extends PointController implements GameObject {
     }
 
     @Override
-    public ColliderType getType() {
-        return ColliderType.OTHER;
-    }
-
-    @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
         setX(dataSegments.readInt());
         setY(dataSegments.readInt());

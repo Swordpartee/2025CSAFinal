@@ -30,18 +30,8 @@ public class GameRect extends PointController implements GameObject {
     }
 
     @Override
-    public void update() {
-        // Update logic for the rectangle can be added here
-    }
-
-    @Override
     public boolean colliding(Collider other) {
         return collider.colliding(other);
-    }
-
-    @Override
-    public ColliderType getType() {
-        return ColliderType.OTHER;
     }
 
     public DrawerRect getDrawable() {

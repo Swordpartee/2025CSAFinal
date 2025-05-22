@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import com.engine.game.collision.Collider;
 import com.engine.network.Network;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerCircle;
@@ -38,7 +37,7 @@ public class Projectile extends PointController implements GameObject {
     }
 
     @Override
-    public void update(){
+    public void update() {
         try {
             if (getX() < 0 || getX() > 640) {
                 Network.stateManager.deleteStateByValue(this);
@@ -52,16 +51,6 @@ public class Projectile extends PointController implements GameObject {
     @Override
     public void draw(Graphics graphic) {
         drawable.draw(graphic);
-    }
-
-    @Override
-    public boolean colliding(Collider other) {
-        return false;
-    }
-
-    @Override
-    public ColliderType getType() {
-        return ColliderType.NONE;
     }
 
     @Override
