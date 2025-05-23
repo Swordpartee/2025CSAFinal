@@ -188,9 +188,9 @@ public class ClientStateManager {
      * @throws Exception
      */
     public <T extends INetObject> void sendStateDelete(INetState<T> state) throws Exception {
+        ((INetObject) state.getValue()).onNetworkDestroy();
         client.sendSessionPacket(Header.DeleteState.value(), state.getId());
         stateIDMap.remove(state.getId());
-        ((INetObject) state.getValue()).onNetworkDestroy();
     }
 
     /**

@@ -82,6 +82,14 @@ public class Point {
         y += dy;
     }
 
+    public void scaleX(double scale) {
+        x *= scale;
+    }
+
+    public void scaleY(double scale) {
+        y *= scale;
+    }
+
     /**
      * Increments both x and y coordinates by a given amount.
      * @param dx change in x
