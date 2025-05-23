@@ -1,30 +1,28 @@
 package com.engine.game.UI;
 
-import com.engine.game.objects.GameRect;
-import com.engine.rendering.drawings.DrawerText;
-import com.engine.util.Point;
-import com.engine.util.PointConfig;
+import java.awt.Graphics;
 
-public class Button extends GameRect implements UIElement {
-    private final DrawerText text;
+import com.engine.game.objects.GameObject;
+import com.engine.util.Point;
+
+public class Button implements UIElement {
     private final Runnable action;
 
-    public Button(PointConfig position, int width, int height, String text, Runnable action) {
-        super(position, width, height, true);
+    private final GameObject object;
 
-        this.text = new DrawerText(position, text);
+    public Button(GameObject object, Runnable action) {
         this.action = action;
+        this.object = object;
     }
 
     @Override
-    public void draw(java.awt.Graphics graphic) {
-        super.draw(graphic);
-        text.draw(graphic);
+    public void draw(Graphics graphic) {
+        object.draw(graphic);
     }
 
     @Override
     public void onClick(Point point) {
-        if (getCollider().colliding(point)) {
+        if (object.colliding(point)) {
             action.run();
         }
     }

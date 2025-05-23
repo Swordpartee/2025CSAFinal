@@ -214,6 +214,15 @@ public class PlayerController extends PointController implements GameObject {
     }
 
     @Override
+    public boolean colliding(Point point) {
+        if (point == null) {
+            return false;
+        }
+
+        return collider.colliding(point);
+    }
+
+    @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
         setX(dataSegments.readInt());
         setY(dataSegments.readInt());

@@ -51,6 +51,7 @@ public class RectCollider extends Rect implements Collider {
         }
     }
     
+    @Override
     public boolean colliding(Point point) {
         // Convert from center-based to edge-based calculation
         double thisLeft = this.getX() - this.getWidth() / 2;
