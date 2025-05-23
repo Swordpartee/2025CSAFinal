@@ -31,9 +31,13 @@ public class Projectile extends PointController implements GameObject {
      */
     public Projectile(PointConfig position, double rad, boolean filled) {
         super(position);
-        this.velocity = new Point(1, 0);
+        this.velocity = new Point(0, 0);
         this.rad = rad;
         this.drawable = new DrawerCircle(getPoint(), rad, filled);
+    }
+
+    public Projectile() {
+        this(new PointConfig(0, 0), 10, true);
     }
 
     @Override
