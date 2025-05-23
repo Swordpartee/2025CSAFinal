@@ -6,12 +6,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.engine.util.Point;
 
 public class RenderListener {
+    public interface KeyTypedListener {
+        void keyTyped(KeyEvent e);
+    }
+
     private static final MouseAdapter mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
@@ -46,6 +51,14 @@ public class RenderListener {
     
                 callBinding(EventCode.EventType.KEY_PRESSED, e.getKeyCode());
             }
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+            
+            // System.out.println("A");
+            keyTypedListeners.forEach(listener -> listener.keyTyped(e));
         }
 
         @Override
@@ -90,6 +103,8 @@ public class RenderListener {
 
     private static final MouseEvent[] mouseEvents = new MouseEvent[3];
     private static final KeyEvent[] keyEvents = new KeyEvent[256];
+
+    private static final ArrayList<KeyTypedListener> keyTypedListeners = new ArrayList<>();
 
     private static final Point mousePos = new Point();
 
@@ -139,5 +154,9 @@ public class RenderListener {
                 binding.run();
             }
         }
+    }
+
+    public static void addKeyTypedListener(KeyTypedListener listener) {
+        keyTypedListeners.add(listener);
     }
 }

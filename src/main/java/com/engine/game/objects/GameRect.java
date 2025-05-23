@@ -48,6 +48,10 @@ public class GameRect extends PointController implements GameObject {
         return collider;
     }
 
+    public Point getPosition() {
+        return getPosition();
+    }
+
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
         setX(dataSegments.readInt());

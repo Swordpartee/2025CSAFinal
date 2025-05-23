@@ -2,6 +2,9 @@ package com.engine;
 
 import java.util.Scanner;
 
+import com.engine.game.UI.Button;
+import com.engine.game.UI.Textbox;
+import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
 import com.engine.game.objects.Projectile;
 import com.engine.network.Network;
@@ -13,39 +16,60 @@ import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerText;
 import com.engine.util.Functions;
+import com.engine.util.PointConfig;
 
 public class MultiplayerExample {
     public static NetState<PlayerController> playerState;
     public static DrawerText text;
     public static double lastTime = 0;
+
+    public static volatile String loginOptionChosen = "";
     //
     //  THIS IS THE ONLY FUNCTION THAT DOES NOT USE STATES, SO PLEASE ASK IF YOU HAVE QUESITIONS ABOUT IT
     //  dont worry about it for now, I can explain it on Monday, or whenever you want to start making the login screen
     //     
     public static void loginAndJoinRoom() throws Exception {
-        // DrawerText text = new DrawerText("Please enter in your username and password below:", Constants.GameConstants.GAME_WIDTH / 2, Constants.GameConstants.GAME_HEIGHT / 2, 10, "Arial");
 
-        // DrawerRect textBox = new DrawerRect(Constants.GameConstants.GAME_WIDTH / 2 - 50.0, Constants.GameConstants.GAME_HEIGHT / 2 + 20.0, 100.0, 20.0, false);
+        // Let the user choose between login and signup
+        GameRect buttonRect = new GameRect(25, 12.5, 75, 25, true);
+        Button button = new Button(buttonRect, () -> {
+            loginOptionChosen = "login";
+        });
+        DrawerText buttonText = new DrawerText(new PointConfig(5, 17), "Login", 10, "Arial");
 
-        // Renderer.addDrawables(text, textBox);
+        GameRect button2Rect = new GameRect(25, 50, 75, 25, true);
+        Button button2 = new Button(button2Rect, () -> {
+            loginOptionChosen = "signup";
+        });
+        DrawerText button2Text = new DrawerText(new PointConfig(5, 55), "Sign Up", 10, "Arial");
 
+        Renderer.addUIElements(button, buttonText, button2, button2Text);
 
-        // Runnable loginRunnable = () -> {
-        //     // This is the login screen, where the user can enter their username and password
-        //     // You can add a text box here to make it look nicer, but for now, this is fine.
-        //     text.setText("Login");
-        // };
+        while (loginOptionChosen.length() == 0) { }
 
-        // Renderer.addProcesses(loginRunnable);
-
-        Scanner scan = new Scanner(System.in);
+        Renderer.removeUIElements(button, buttonText, button2, button2Text);
+        
+        // Create the login screen        
+        DrawerText drawText = new DrawerText(new PointConfig(0, 10), "Please enter in your username and password below:", 10, "Arial");
+        DrawerText drawText2 = new DrawerText(new PointConfig(0, 30), "Username:", 10, "Arial");
+        Textbox textBox = new Textbox(new PointConfig(110, 25), 100, 20, (text) -> { return false; });
+        DrawerText drawText3 = new DrawerText(new PointConfig(0, 50), "Password:", 10, "Arial");
+        Textbox textBox2 = new Textbox(new PointConfig(110, 45), 100, 20, (text) -> {
+            try {
+                Network.client.sendSessionPacketAndWait(loginOptionChosen == "login" ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (textBox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthError.value()});
+            } catch (Exception e) {
+                return false;
+            }
+            return true; 
+        });
+        Renderer.addUIElements(drawText, drawText2, textBox, drawText3, textBox2);
 
         // Wait to go on until the client is connected
-		while (!Network.client.loggedIn()) {
-			System.out.println("Enter your username and password: (username:password)");
-			// Send the username and password to the server (username:password)
-			Network.client.sendSessionPacketAndWait(BaseHeader.AuthLogin.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthError.value()});
-		}
+		while (!Network.client.loggedIn()) { }
+
+        Renderer.removeUIElements(drawText, drawText2, textBox, drawText3, textBox2);
+
+        Scanner scan = new Scanner(System.in);
 
 		// Wait to go on until the client is in a room.
 		while (!Network.client.roomSet()) {
@@ -62,6 +86,7 @@ public class MultiplayerExample {
 			}
 		}
 
+        Renderer.removeUIElements(textBox);
         // Renderer.removeDrawables(text, textBox);
         // Renderer.removeProcesses(loginRunnable);
         scan.close();
@@ -72,11 +97,11 @@ public class MultiplayerExample {
 
         text = new DrawerText(10, 10, "Hello World", 10, "Arial");
 
-        // Login and join a room (admin:9*A#awjd893E*jf37ug$h)
-        loginAndJoinRoom(); // Just using the placeholder login system I made for now.
-
         // Create the game window
         Renderer.start();
+
+        // Login and join a room (admin:9*A#awjd893E*jf37ug$h)
+        loginAndJoinRoom(); // Just using the placeholder login system I made for now.
 
         // Create a new PlayerController State (THis is what we transmit to the server, which gives it to the other clients)
         NetState<PlayerController> playerState = new NetState<>(Header.PlayerState, Network.stateManager, new PlayerController());

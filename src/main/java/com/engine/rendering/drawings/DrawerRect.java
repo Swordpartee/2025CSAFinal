@@ -1,5 +1,6 @@
 package com.engine.rendering.drawings;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import com.engine.util.PointConfig;
@@ -37,6 +38,8 @@ public class DrawerRect extends Rect implements Drawable {
         int width = (int) Math.round(this.getWidth());
         int height = (int) Math.round(this.getHeight());
         
+        graphic.setColor(Color.GRAY);
+
         if(filled) {
             graphic.fillRect(x, y, width, height);
         } else {
@@ -45,5 +48,7 @@ public class DrawerRect extends Rect implements Drawable {
                 graphic.drawRect(x + i, y + i, width - i * 2, height - i * 2);
             }
         }
+
+        graphic.setColor(Color.BLACK);
     }
 }

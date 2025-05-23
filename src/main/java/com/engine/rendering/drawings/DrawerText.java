@@ -3,10 +3,11 @@ package com.engine.rendering.drawings;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import com.engine.game.UI.UIElement;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
-public class DrawerText extends PointController implements Drawable {
+public class DrawerText extends PointController implements UIElement {
     private String text;
     private int fontSize;
     private String fontName;
