@@ -1,5 +1,7 @@
 package com.engine;
 
+import com.engine.game.UI.Button;
+import com.engine.game.UI.UIElement;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
 import com.engine.rendering.Renderer;
@@ -15,10 +17,19 @@ import com.engine.util.Image;
 public class Main {
     public static void main(String[] args) {
         Renderer.addDrawables(new Background(Constants.GameConstants.getRockSprite()));
+
+        Renderer.addUIElements(new Button(new GameRect(25, 25, 50, 50, true),
+                () -> System.out.println("Button Clicked!")));
         
         Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false));
 
-        Renderer.addGameObjects(new PlayerController(Color.YELLOW));
+        PlayerController player = new PlayerController(Color.RED);
+
+        Renderer.addGameObjects(player);
+
+        Renderer.addUIElements(new Button(player, () -> {
+            System.out.println("Player Clicked!");
+        }));
 
         Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
                 Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),

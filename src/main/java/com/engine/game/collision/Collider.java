@@ -1,7 +1,13 @@
 package com.engine.game.collision;
 
+import com.engine.util.Point;
+
 public interface Collider {
     default public boolean colliding(Collider other) {
+        return false;
+    }
+
+    default public boolean colliding(Point point) {
         return false;
     }
 

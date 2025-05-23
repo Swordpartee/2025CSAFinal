@@ -14,10 +14,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.engine.Constants;
+import com.engine.game.UI.UIElement;
 import com.engine.game.collision.Collider;
 import com.engine.game.objects.GameObject;
 import com.engine.rendering.drawings.Drawable;
+import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
+import com.engine.util.Clickable;
 import com.engine.util.Updateable;
 
 public class Renderer {
@@ -31,6 +34,8 @@ public class Renderer {
     private static final ArrayList<Updateable> updateables = new ArrayList<>();
 
     private static final ArrayList<Runnable> processes = new ArrayList<>();
+
+    private static final ArrayList<Clickable> clickables = new ArrayList<>();
 
     private static int width = Constants.GameConstants.GAME_WIDTH;
     private static int height = Constants.GameConstants.GAME_HEIGHT;
@@ -53,6 +58,12 @@ public class Renderer {
         canvas.createBufferStrategy(Constants.RendererConstants.BUFFERS);
 
         addListener();
+
+        RenderListener.addBinding(EventCode.EventType.MOUSE_PRESSED, EventCode.LEFT_MOUSE, () -> {
+            for (Clickable clickable : clickables) {
+                clickable.onClick(RenderListener.getMousePos());
+            }
+        });
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -161,12 +172,19 @@ public class Renderer {
         drawables.removeAll(Arrays.asList(ds));
     }
 
+    public static void addClickables(Clickable... cs) {
+        clickables.addAll(Arrays.asList(cs));
+    }
+
     public static void addGameObjects(GameObject... gs) {
-        for (GameObject g : gs) {
-            addDrawables(g);
-            addUpdateables(g);
-            addCollidables(g);
-        }
+        addDrawables(gs);
+        addUpdateables(gs);
+        addCollidables(gs);
+    }
+
+    public static void addUIElements(UIElement... us) {
+        addDrawables(us);
+        addClickables(us);
     }
 
     /**
