@@ -27,10 +27,6 @@ public class Main {
 
         Renderer.addGameObjects(player);
 
-        Renderer.addUIElements(new Button(player, () -> {
-            System.out.println("Player Clicked!");
-        }));
-
         Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
                 Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
                 Constants.PlayerConstants.getPlayerLeftSprite()));
@@ -43,12 +39,13 @@ public class Main {
                 new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
                 new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
-        Renderer.addDrawables(new Sprite(100, 400, new Image("src/main/resources/leftswing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        Renderer.addDrawables(new Sprite(50, 400, new Image("src/main/resources/leftswing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
         Renderer.addDrawables(swing);
+
         
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
-            swing.run();
-        });
+        Renderer.addUIElements(new Button(player, () -> {
+                swing.run();
+        }));
 
         Renderer.addDrawables(new CycleAnimateable(300, 100, 3, new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
                 new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
