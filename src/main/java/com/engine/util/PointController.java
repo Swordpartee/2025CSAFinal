@@ -51,4 +51,11 @@ public class PointController {
         pointConfig.moveY(y);
     }
 
+    public void scaleX(double x) {
+        pointConfig.scaleX(x);
+    }
+
+    public void scaleY(double y) {
+        pointConfig.scaleY(y);
+    }
 }

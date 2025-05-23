@@ -60,6 +60,14 @@ public class PointConfig {
         position.moveY(y);
     }
 
+    public void scaleX(double x) {
+        position.scaleX(x);
+    }
+
+    public void scaleY(double y) {
+        position.scaleY(y);
+    }
+
     public PointConfig copy() {
         return new PointConfig(new Point(position.getX(), position.getY()), new Point(offset.getX(), offset.getY()));
     }

@@ -31,21 +31,27 @@ public class Projectile extends PointController implements GameObject {
      */
     public Projectile(PointConfig position, double rad, boolean filled) {
         super(position);
-        this.velocity = new Point(0, 0);
+        this.velocity = new Point(1, 0);
         this.rad = rad;
         this.drawable = new DrawerCircle(getPoint(), rad, filled);
     }
 
     @Override
     public void update() {
+        moveX(velocity.getX());
+        moveY(velocity.getY());
         try {
             if (getX() < 0 || getX() > 640) {
                 Network.stateManager.deleteStateByValue(this);
             }
             if (getY() < 0 || getY() > 480) {
                 Network.stateManager.deleteStateByValue(this);
+                onNetworkDestroy();
             }
-        } catch (Exception e) { } // EAT THE ERROR HAHAH
+        } catch (Exception e) {
+            onNetworkDestroy();
+
+        } // EAT THE ERROR HAHAH
     }
 
     @Override
@@ -78,7 +84,7 @@ public class Projectile extends PointController implements GameObject {
     }
 
     @Override
-    public void onNetworkDestroy() throws Exception {
+    public void onNetworkDestroy() {
         Renderer.removeGameObjects(this);
     }
 
