@@ -1,5 +1,7 @@
 package com.engine;
 
+import java.awt.Color;
+
 import com.engine.game.UI.Button;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
@@ -8,7 +10,6 @@ import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
-import com.engine.util.Color;
 import com.engine.util.Image;
 
 public class Main {

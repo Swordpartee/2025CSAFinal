@@ -1,6 +1,9 @@
 package com.engine.util;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,18 +13,56 @@ public class Image {
     private final int scale;
     private int width;
     private int height;
-    private BufferedImage image;
+    private double angle = 0.0;
+    private BufferedImage originalImage;
+    private BufferedImage rotatedImage;
 
     public Image(String path, int scale) {
         this.scale = scale;
 
         getPixels(path);
+
+        updateImage();
+    }
+
+    public Image(String path, int scale, double angle) {
+        this(path, scale);
+        this.angle = angle;
+        updateImage();
     }
 
     public Image() {
         this.scale = 1;
 
-        this.image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        this.originalImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
+        updateImage();
+    }
+
+    private BufferedImage rotateImageByDegrees(BufferedImage img, double angle) {
+        double rads = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(rads)), cos = Math.abs(Math.cos(rads));
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = rotated.createGraphics();
+        AffineTransform at = new AffineTransform();
+        at.translate((newWidth - w) / 2, (newHeight - h) / 2);
+
+        int x = w / 2;
+        int y = h / 2;
+
+        at.rotate(rads, x, y);
+        g2d.setTransform(at);
+        g2d.drawImage(img, 0, 0, null);
+        // g2d.setColor(Color.RED);
+        // g2d.drawRect(0, 0, newWidth - 1, newHeight - 1);
+        g2d.dispose();
+
+        return rotated;
     }
     
     private void getPixels(String path) {
@@ -38,7 +79,7 @@ public class Image {
 
             width = Integer.parseInt(dimensions[0]);
             height = Integer.parseInt(dimensions[1]);
-            this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            this.originalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
             for (int i = 0; i < height; i++) {
                 String line = reader.readLine();
@@ -62,7 +103,7 @@ public class Image {
                             int g = Integer.parseInt(rgb[1]);
                             int b = Integer.parseInt(rgb[2]);
                             // pixels[j][i] = new Color(r, g, b);
-                            image.setRGB(j, i, (r << 16) | (g << 8) | b | 0xFF000000); // Set pixel color
+                            originalImage.setRGB(j, i, (r << 16) | (g << 8) | b | 0xFF000000); // Set pixel color
                         } catch (NumberFormatException e) {
                             throw new IOException(
                                     "Invalid color format at position [" + j + "," + i + "]: " + colorInfo);
@@ -75,12 +116,25 @@ public class Image {
         }
     }
 
+    private void updateImage() {
+        this.rotatedImage = rotateImageByDegrees(this.originalImage, angle);
+    }
+
     public double getWidth() {
         return width * scale;
     }
 
     public double getHeight() {
         return height * scale;
+    }
+
+    public double getRotation() {
+        return angle;
+    }
+
+    public void setRotation(double angle) {
+        this.angle = angle;
+        updateImage();
     }
     
     public void draw(Graphics graphic, double x, double y) {
@@ -89,18 +143,19 @@ public class Image {
         int topLeftY = (int) (y - (height * scale) / 2);
 
         // Draw the image at the calculated position
-        graphic.drawImage(image, topLeftX, topLeftY, width * scale, height * scale, null);
+        graphic.drawImage(rotatedImage, topLeftX, topLeftY, width * scale, height * scale, null);
     }
 
     public Image replaceColor(Color oldColor, Color newColor) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int pixelColor = image.getRGB(x, y);
+                int pixelColor = originalImage.getRGB(x, y);
                 if (pixelColor == oldColor.getRGB()) {
-                    image.setRGB(x, y, newColor.getRGB());
+                    originalImage.setRGB(x, y, newColor.getRGB());
                 }
             }
         }
+        updateImage();
         return this;
     }
 }

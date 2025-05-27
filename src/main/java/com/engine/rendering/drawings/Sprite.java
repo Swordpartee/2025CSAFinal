@@ -23,4 +23,7 @@ public class Sprite extends PointController implements Drawable {
         image.draw(graphic, getX(), getY());
     }
 
+    public Image getImage() {
+        return image;
+    }
 }

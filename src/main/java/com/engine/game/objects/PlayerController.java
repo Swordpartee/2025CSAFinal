@@ -1,5 +1,6 @@
 package com.engine.game.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,7 +19,6 @@ import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
-import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
@@ -154,6 +154,7 @@ public class PlayerController extends PointController implements GameObject {
                 projectile.sendSelf();
             } catch (Exception e) {}
         }
+        
 
         // Set velocity based on input
         if (RenderListener.isKeyPressed(EventCode.W)) {
