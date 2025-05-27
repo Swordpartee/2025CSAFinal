@@ -53,9 +53,9 @@ public class MultiplayerExample {
         // Create the login screen        
         DrawerText loginQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in your username\nand password below:", 40, "Arial", Color.BLACK);
         DrawerText usernameText = new DrawerText(new PointConfig(240, 200), "Username:", 30, "Arial", Color.BLACK);
-        Textbox usernameTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> { return false; });
+        Textbox usernameTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.BLACK, Color.WHITE, 30, "^[a-z0-9_]+$", (text) -> { return false; });
         DrawerText passwordText = new DrawerText(new PointConfig(240, 280), "Password:", 30, "Arial", Color.BLACK);
-        Textbox passwordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> {
+        Textbox passwordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.BLACK, Color.WHITE, 30, "^[a-z0-9_]+$", (text) -> {
             try {
                 Network.client.sendSessionPacketAndWait(loginOptionChosen == "login" ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (usernameTextbox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthSignup.value(), BaseHeader.AuthError.value()});
             } catch (Exception e) {
@@ -63,6 +63,8 @@ public class MultiplayerExample {
             }
             return true; 
         });
+        passwordTextbox.setSecret(true);
+
         Renderer.addUIElements(loginQuestionText, usernameText, usernameTextbox, passwordText, passwordTextbox);
 
         // Wait to go on until the client is connected
@@ -102,6 +104,8 @@ public class MultiplayerExample {
             }
             return true; 
         });
+        roomPasswordTextbox.setSecret(true);
+
         Renderer.addUIElements(roomQuestionText, roomNameText, roomNameTextbox, roomPasswordText, roomPasswordTextbox);
 
         while (!Network.client.roomSet()) { }
