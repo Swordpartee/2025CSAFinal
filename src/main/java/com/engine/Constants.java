@@ -8,40 +8,107 @@ public class Constants {
         public static final int PLAYER_SPRITE_SCALE = 7;
         public static final int PLAYER_WIDTH = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         public static final int PLAYER_HEIGHT = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
-
-        public static final Image PLAYER_FRONT_SPRITE = new Image("src/main/resources/front1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_FRONT_WALK_SPRITE_ONE = new Image("src/main/resources/frontwalk1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_FRONT_WALK_SPRITE_TWO = new Image("src/main/resources/frontwalk2.spr", PLAYER_SPRITE_SCALE);
-
-        public static final Image PLAYER_BACK_SPRITE = new Image("src/main/resources/back1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_BACK_WALK_SPRITE_ONE = new Image("src/main/resources/backwalk1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_BACK_WALK_SPRITE_TWO = new Image("src/main/resources/backwalk2.spr", PLAYER_SPRITE_SCALE);
-
-        public static final Image PLAYER_LEFT_SPRITE = new Image("src/main/resources/left1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_LEFT_WALK_SPRITE = new Image("src/main/resources/leftwalk1.spr", PLAYER_SPRITE_SCALE);
-
-        public static final Image PLAYER_RIGHT_SPRITE = new Image("src/main/resources/right1.spr", PLAYER_SPRITE_SCALE);
-        public static final Image PLAYER_RIGHT_WALK_SPRITE = new Image("src/main/resources/rightwalk1.spr", PLAYER_SPRITE_SCALE);
         
+        public static Image getBlank() {
+            return new Image();
+        }
+
+        public static Image getPlayerFrontWalkOne() {
+            return new Image("src/main/resources/playerfrontwalk1.spr", PLAYER_SPRITE_SCALE);
+        }
+
+        public static Image getPlayerFrontWalkTwo() {
+            return new Image("src/main/resources/playerfrontwalk2.spr", PLAYER_SPRITE_SCALE);
+        }
+
+        public static Image getPlayerBackWalkOne() {
+            return new Image("src/main/resources/playerbackwalk1.spr", PLAYER_SPRITE_SCALE);
+        }
+
+        public static Image getPlayerBackWalkTwo() {
+            return new Image("src/main/resources/playerbackwalk2.spr", PLAYER_SPRITE_SCALE);
+        }
+
+        public static Image getPlayerLeftWalkSprite() {
+            return new Image("src/main/resources/playerleftwalk.spr", PLAYER_SPRITE_SCALE);
+        }
+
+        public static Image getPlayerRightWalkSprite() {
+            return new Image("src/main/resources/playerrightwalk.spr", PLAYER_SPRITE_SCALE);
+        }
+
         public static Image getPlayerFrontSprite() {
-            return new Image("src/main/resources/front1.spr", PLAYER_SPRITE_SCALE);
+            return new Image("src/main/resources/playerfrontstand.spr", PLAYER_SPRITE_SCALE);
         }
         
         public static Image getPlayerBackSprite() {
-            return new Image("src/main/resources/back1.spr", PLAYER_SPRITE_SCALE);
+            return new Image("src/main/resources/playerbackstand.spr", PLAYER_SPRITE_SCALE);
         }
         
         public static Image getPlayerLeftSprite() {
-            return new Image("src/main/resources/left1.spr", PLAYER_SPRITE_SCALE);
+            return new Image("src/main/resources/playerleftstand.spr", PLAYER_SPRITE_SCALE);
         }
         
         public static Image getPlayerRightSprite() {
-            return new Image("src/main/resources/right1.spr", PLAYER_SPRITE_SCALE);
+            return new Image("src/main/resources/playerrightstand.spr", PLAYER_SPRITE_SCALE);
         }
 
         public static final double PLAYER_ACCELERATION = 0.5;
         public static final double PLAYER_MAX_SPEED = 3;
         public static final double PLAYER_FRICTION = 0.8;
+    }
+
+    public static class WeaponConstants {
+        public static final int WEAPON_PIXEL_SIZE = 16;
+        public static final int WEAPON_SPRITE_SCALE = 7;
+        public static final int WEAPON_WIDTH = WEAPON_SPRITE_SCALE * WEAPON_PIXEL_SIZE;
+        public static final int WEAPON_HEIGHT = WEAPON_SPRITE_SCALE * WEAPON_PIXEL_SIZE;
+
+        public static Image getBlank() {
+            return new Image();
+        }
+
+        public static Image getLeftSwing1() {
+            return new Image("src/main/resources/leftswing1.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getLeftSwing2() {
+            return new Image("src/main/resources/leftswing2.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getLeftSwing3() {
+            return new Image("src/main/resources/leftswing3.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getLeftSwing4() {
+            return new Image("src/main/resources/leftswing4.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getLeftSwing5() {
+            return new Image("src/main/resources/leftswing5.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getRightSwing1() {
+            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getRightSwing2() {
+            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getRightSwing3() {
+            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getRightSwing4() {
+            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        public static Image getRightSwing5() {
+            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE);
+        }
+
+        
     }
 
     public static class GameConstants {
