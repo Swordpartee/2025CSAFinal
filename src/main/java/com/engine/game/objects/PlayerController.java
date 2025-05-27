@@ -175,13 +175,13 @@ public class PlayerController extends PointController implements GameObject {
         moveX(velocity.getX());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
             moveX(-velocity.getX());
-            velocity.setX(0);
+            velocity.scaleX(0.2);
         }
 
         moveY(velocity.getY());
         if (Functions.collidingWithAny(collider, Renderer.getCollidables())) {
             moveY(-velocity.getY());
-            velocity.setY(0);
+            velocity.scaleY(0.2);
         }
 
         if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
