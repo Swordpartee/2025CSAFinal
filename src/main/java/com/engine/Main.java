@@ -2,12 +2,15 @@ package com.engine;
 
 import com.engine.game.UI.Button;
 import com.engine.game.objects.GameRect;
+import com.engine.game.objects.HealthDisplay;
 import com.engine.game.objects.PlayerController;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.Color;
 import com.engine.util.Image;
 
@@ -24,9 +27,27 @@ public class Main {
 
         Renderer.addGameObjects(player);
 
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
+            player.damage();
+        });
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.U, () -> {
+            player.heal();
+        });
+
         Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
             Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
-            Constants.PlayerConstants.getPlayerLeftSprite()));
+                Constants.PlayerConstants.getPlayerLeftSprite()));
+
+        HealthDisplay healthDisplay = new HealthDisplay(300, 300, 10);
+            
+        Renderer.addDrawables(healthDisplay);
+
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.J, () -> {
+            healthDisplay.damage();
+        });
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.K, () -> {
+            healthDisplay.heal();
+        });
 
         InstanceAnimateable swing = new InstanceAnimateable(200, 400, 5,
             new Image(),

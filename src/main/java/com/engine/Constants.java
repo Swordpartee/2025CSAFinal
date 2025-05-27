@@ -52,6 +52,13 @@ public class Constants {
         public static Image getRockSprite() {
             return new Image("src/main/resources/rock.spr", PlayerConstants.PLAYER_SPRITE_SCALE);
         }
+
+        public static final int HEALTH_SPRITE_SCALE = 3;
+
+        public static final Image HEART_SPRITE = new Image("src/main/resources/heart.spr",
+                HEALTH_SPRITE_SCALE);
+        public static final Image EMPTY_HEALTH_IMAGE = new Image("src/main/resources/emptyheart.spr",
+                HEALTH_SPRITE_SCALE);
     }
 
     public static class RendererConstants {

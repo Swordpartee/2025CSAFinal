@@ -60,6 +60,8 @@ public class PlayerController extends PointController implements GameObject {
     private final Drawable[] spriteStates;
     private SpriteState spriteState;
 
+    private final HealthDisplay healthDisplay;
+
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
 
@@ -110,7 +112,8 @@ public class PlayerController extends PointController implements GameObject {
         this.rightWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
         this.rightStop = new Sprite(getPoint(),
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
-           
+
+        this.healthDisplay = new HealthDisplay(new PointConfig(getPosition(), 23, -80), 3);
 
         this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH,
                 Constants.PlayerConstants.PLAYER_HEIGHT);
@@ -202,6 +205,15 @@ public class PlayerController extends PointController implements GameObject {
         spriteStates[spriteState.ordinal()].draw(g);
         leftSwing.draw(g);
         rightSwing.draw(g);
+        healthDisplay.draw(g);
+    }
+
+    public void damage() {
+        healthDisplay.damage();
+    }
+
+    public void heal() {
+        healthDisplay.heal();
     }
 
     @Override
