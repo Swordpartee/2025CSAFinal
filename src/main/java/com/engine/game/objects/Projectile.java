@@ -1,5 +1,6 @@
 package com.engine.game.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,7 +34,7 @@ public class Projectile extends PointController implements GameObject {
         super(position);
         this.velocity = new Point(0, 0);
         this.rad = rad;
-        this.drawable = new DrawerCircle(getPoint(), rad, filled);
+        this.drawable = new DrawerCircle(getPoint(), rad, filled, Color.BLUE);
     }
 
     public Projectile() {

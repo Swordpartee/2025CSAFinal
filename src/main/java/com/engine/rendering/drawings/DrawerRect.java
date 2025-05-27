@@ -8,10 +8,12 @@ import com.engine.util.Rect;
 
 public class DrawerRect extends Rect implements Drawable {
     private boolean filled;
-
-    public DrawerRect(PointConfig position, double width, double height, boolean filled) {
+    private Color color;
+    
+    public DrawerRect(PointConfig position, double width, double height, boolean filled, Color color) {
         super(position, width, height);
         this.filled = filled;
+        this.color = color;
     }
 
     /**
@@ -38,7 +40,7 @@ public class DrawerRect extends Rect implements Drawable {
         int width = (int) Math.round(this.getWidth());
         int height = (int) Math.round(this.getHeight());
         
-        graphic.setColor(Color.GRAY);
+        graphic.setColor(this.color);
 
         if(filled) {
             graphic.fillRect(x, y, width, height);
@@ -48,7 +50,5 @@ public class DrawerRect extends Rect implements Drawable {
                 graphic.drawRect(x + i, y + i, width - i * 2, height - i * 2);
             }
         }
-
-        graphic.setColor(Color.BLACK);
     }
 }

@@ -58,7 +58,9 @@ public class NetState<T extends INetObject> implements INetState<T> {
         ControlMode syncMode = ControlMode.from(dataInputStream.read());
 
         Class<?> clazz = Class.forName(className);
-        INetObject netObject = (INetObject) clazz.getDeclaredConstructor().newInstance();
+        INetObject netObject;
+        netObject = (INetObject) clazz.getDeclaredConstructor().newInstance();
+
         netObject.deserialize(dataInputStream);
 
         NetState<?> netState = new NetState<>(header, csm, netObject, uuid);

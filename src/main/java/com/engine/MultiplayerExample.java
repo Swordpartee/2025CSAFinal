@@ -1,5 +1,6 @@
 package com.engine;
 
+import java.awt.Color;
 import java.util.Scanner;
 
 import com.engine.game.UI.Button;
@@ -15,7 +16,6 @@ import com.engine.network.states.INetState;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.DrawerText;
-import com.engine.util.Functions;
 import com.engine.util.PointConfig;
 
 public class MultiplayerExample {
@@ -24,6 +24,7 @@ public class MultiplayerExample {
     public static double lastTime = 0;
 
     public static volatile String loginOptionChosen = "";
+    public static volatile String roomOptionChosen = "";
     //
     //  THIS IS THE ONLY FUNCTION THAT DOES NOT USE STATES, SO PLEASE ASK IF YOU HAVE QUESITIONS ABOUT IT
     //  dont worry about it for now, I can explain it on Monday, or whenever you want to start making the login screen
@@ -31,71 +32,87 @@ public class MultiplayerExample {
     public static void loginAndJoinRoom() throws Exception {
 
         // Let the user choose between login and signup
-        GameRect buttonRect = new GameRect(25, 12.5, 75, 25, true);
-        Button button = new Button(buttonRect, () -> {
+        GameRect loginButtonRect = new GameRect(320, 200, 150, 50, true, Color.BLACK);
+        Button loginButton = new Button(loginButtonRect, () -> {
             loginOptionChosen = "login";
         });
-        DrawerText buttonText = new DrawerText(new PointConfig(5, 17), "Login", 10, "Arial");
+        DrawerText loginButtonText = new DrawerText(new PointConfig(320, 200), "Login", 30, "Arial", Color.WHITE);
 
-        GameRect button2Rect = new GameRect(25, 50, 75, 25, true);
-        Button button2 = new Button(button2Rect, () -> {
+        GameRect signupButtonRect = new GameRect(320, 280, 150, 50, true, Color.BLACK);
+        Button signupButton = new Button(signupButtonRect, () -> {
             loginOptionChosen = "signup";
         });
-        DrawerText button2Text = new DrawerText(new PointConfig(5, 55), "Sign Up", 10, "Arial");
+        DrawerText signupButtonText = new DrawerText(new PointConfig(320, 280), "Sign Up", 30, "Arial", Color.WHITE);
 
-        Renderer.addUIElements(button, buttonText, button2, button2Text);
+        Renderer.addUIElements(loginButton, loginButtonText, signupButton, signupButtonText);
 
         while (loginOptionChosen.length() == 0) { }
 
-        Renderer.removeUIElements(button, buttonText, button2, button2Text);
+        Renderer.removeUIElements(loginButton, loginButtonText, signupButton, signupButtonText);
         
         // Create the login screen        
-        DrawerText drawText = new DrawerText(new PointConfig(0, 10), "Please enter in your username and password below:", 10, "Arial");
-        DrawerText drawText2 = new DrawerText(new PointConfig(0, 30), "Username:", 10, "Arial");
-        Textbox textBox = new Textbox(new PointConfig(110, 25), 100, 20, (text) -> { return false; });
-        DrawerText drawText3 = new DrawerText(new PointConfig(0, 50), "Password:", 10, "Arial");
-        Textbox textBox2 = new Textbox(new PointConfig(110, 45), 100, 20, (text) -> {
+        DrawerText loginQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in your username\nand password below:", 40, "Arial", Color.BLACK);
+        DrawerText usernameText = new DrawerText(new PointConfig(240, 200), "Username:", 30, "Arial", Color.BLACK);
+        Textbox usernameTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> { return false; });
+        DrawerText passwordText = new DrawerText(new PointConfig(240, 280), "Password:", 30, "Arial", Color.BLACK);
+        Textbox passwordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> {
             try {
-                Network.client.sendSessionPacketAndWait(loginOptionChosen == "login" ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (textBox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthError.value()});
+                Network.client.sendSessionPacketAndWait(loginOptionChosen == "login" ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (usernameTextbox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthSignup.value(), BaseHeader.AuthError.value()});
             } catch (Exception e) {
                 return false;
             }
             return true; 
         });
-        Renderer.addUIElements(drawText, drawText2, textBox, drawText3, textBox2);
+        Renderer.addUIElements(loginQuestionText, usernameText, usernameTextbox, passwordText, passwordTextbox);
 
         // Wait to go on until the client is connected
 		while (!Network.client.loggedIn()) { }
 
-        Renderer.removeUIElements(drawText, drawText2, textBox, drawText3, textBox2);
+        Renderer.removeUIElements(loginQuestionText, usernameText, usernameTextbox, passwordText, passwordTextbox);
 
-        Scanner scan = new Scanner(System.in);
+        // Create the room screen
+        GameRect createButtonRect = new GameRect(320, 200, 220, 50, true, Color.BLACK);
+        Button createButton = new Button(createButtonRect, () -> {
+            roomOptionChosen = "create";
+        });
+        DrawerText createButtonText = new DrawerText(new PointConfig(320, 200), "Create Room", 30, "Arial", Color.WHITE);
 
-		// Wait to go on until the client is in a room.
-		while (!Network.client.roomSet()) {
-			System.out.println("Do you want to create or join room? (c/j)");
-			String choice = scan.nextLine();
-			if (choice.equals("c")) {
-				System.out.println("Enter the room you want to create: (room name:room password)");
-				Network.client.sendSessionPacketAndWait(BaseHeader.CreateRoom.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.CreateRoom.value(), BaseHeader.RoomError.value()});
-			} else if (choice.equals("j")) {
-				System.out.println("Enter the room you want to join: (room name:room password)");
-				Network.client.sendSessionPacketAndWait(BaseHeader.JoinRoom.value(), scan.nextLine().getBytes(), new byte[][] {BaseHeader.JoinRoom.value(), BaseHeader.RoomError.value()});
-			} else {
-				System.out.println("Invalid choice. Please enter 'c' to create a room or 'j' to join a room.");
-			}
-		}
+        GameRect joinButtonRect = new GameRect(320, 280, 220, 50, true, Color.BLACK);
+        Button joinButton = new Button(joinButtonRect, () -> {
+            roomOptionChosen = "join";
+        });
+        DrawerText joinButtonText = new DrawerText(new PointConfig(320, 280), "Join Room", 30, "Arial", Color.WHITE);
 
-        Renderer.removeUIElements(textBox);
-        // Renderer.removeDrawables(text, textBox);
-        // Renderer.removeProcesses(loginRunnable);
-        scan.close();
+        Renderer.addUIElements(createButton, createButtonText, joinButton, joinButtonText);
+
+        while (roomOptionChosen.length() == 0) { }
+
+        Renderer.removeUIElements(createButton, createButtonText, joinButton, joinButtonText);
+        
+        // Create the room screen        
+        DrawerText roomQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in the room's\nname and password:", 40, "Arial", Color.BLACK);
+        DrawerText roomNameText = new DrawerText(new PointConfig(240, 200), "Name:", 30, "Arial", Color.BLACK);
+        Textbox roomNameTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> { return false; });
+        DrawerText roomPasswordText = new DrawerText(new PointConfig(240, 280), "Password:", 30, "Arial", Color.BLACK);
+        Textbox roomPasswordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.BLACK, Color.WHITE, 30, (text) -> {
+            try {
+                Network.client.sendSessionPacketAndWait(roomOptionChosen == "join" ? BaseHeader.JoinRoom.value() : BaseHeader.CreateRoom.value(), (roomNameTextbox.getText() + (text.length() > 0 ? ":" : "") + text).getBytes(), new byte[][] {BaseHeader.JoinRoom.value(), BaseHeader.CreateRoom.value() ,BaseHeader.RoomError.value()});
+            } catch (Exception e) {
+                return false;
+            }
+            return true; 
+        });
+        Renderer.addUIElements(roomQuestionText, roomNameText, roomNameTextbox, roomPasswordText, roomPasswordTextbox);
+
+        while (!Network.client.roomSet()) { }
+
+        Renderer.removeUIElements(roomQuestionText, roomNameText, roomNameTextbox, roomPasswordText, roomPasswordTextbox);
     }
 
     public static void main(String[] args) throws Exception {
         Network.connect();
 
-        text = new DrawerText(10, 10, "Hello World", 10, "Arial");
+        text = new DrawerText(320, 10, "Hello World", 10, "Arial", Color.RED);
 
         // Create the game window
         Renderer.start();
@@ -110,8 +127,6 @@ public class MultiplayerExample {
         // Add the player to the Renderer (Nothing server related, just for the client)
         Renderer.addGameObjects(playerState.value);
         Renderer.addDrawables(text);
-
-        lastTime = Functions.getTime();
 
         Network.addStateSender(Header.PlayerState, 0);
         Network.addStateSender(Header.ProjectileState, 1000);

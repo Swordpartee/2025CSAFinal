@@ -24,8 +24,6 @@ import com.engine.rendering.io.RenderListener;
 import com.engine.util.Clickable;
 import com.engine.util.Updateable;
 
-import javafx.scene.text.Text;
-
 public class Renderer {
     private static final Frame frame = new Frame();
     private static final Canvas canvas = new Canvas();

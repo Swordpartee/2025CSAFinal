@@ -1,10 +1,11 @@
 package com.engine.game.UI;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
-
 import com.engine.game.objects.GameRect;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
@@ -41,11 +42,16 @@ public class Textbox extends Button {
     private String text = "";
     private int cursorPosition = 0; 
 
+    private Color textColor = Color.WHITE;
+    private final Font font;
+
     private final SubmitAction submitAction;
 
-    public Textbox(PointConfig pointConf, double width, double height, SubmitAction action) {
-        super(new GameRect(pointConf, width, height, false), () -> {});
+    public Textbox(PointConfig pointConf, double width, double height, Color bgColor, Color textColor, int fontSize, SubmitAction action) {
+        super(new GameRect(pointConf, width, height, true, bgColor), () -> {});
         this.submitAction = action;
+        this.textColor = textColor;
+        this.font = new Font("Arial", Font.PLAIN, fontSize);
     }
     
     @Override
@@ -69,9 +75,12 @@ public class Textbox extends Button {
         int width = (int) object.getCollider().getWidth();
         int height = (int) object.getCollider().getHeight();
         
+        graphic.setFont(font);
+
         // Store the original clip to restore later
         Shape originalClip = graphic.getClip();
         
+
         // Set clipping region to the bounds of the GameRect
         graphic.setClip((int) object.getX() - (width / 2), (int) object.getY() - (height / 2), 
                         width, height);
@@ -84,11 +93,14 @@ public class Textbox extends Button {
         // Get font metrics to properly position text vertically
         FontMetrics fm = graphic.getFontMetrics();
         
+
+        int textBaselineY = (int) object.getY() + (fm.getAscent() - fm.getDescent()) / 2;
+
         // Get cursor draw info
         String textToCursor = text.substring(0, Math.min(cursorPosition, text.length()));
         int cursorX = textX + fm.stringWidth(textToCursor);
-        int cursorTopY = textY - fm.getAscent();
-        int cursorBottomY = textY + fm.getDescent();
+        int cursorTopY = textBaselineY - fm.getAscent();
+        int cursorBottomY = textBaselineY + fm.getDescent();
         
         if (cursorX > textX + width - padding * 2) {
             cursorX = textX + width - padding * 2;
@@ -99,7 +111,9 @@ public class Textbox extends Button {
         }
         
         // Draw the text - it will be clipped to the rectangle bounds
-        graphic.drawString(text, textX, textY);
+        graphic.setColor(textColor);
+        // Center the text vertically at object.getY()
+        graphic.drawString(text, textX, textBaselineY);
         if (instance == this) { graphic.drawLine(cursorX, cursorTopY, cursorX, cursorBottomY); }
 
         // Restore the original clipping region
