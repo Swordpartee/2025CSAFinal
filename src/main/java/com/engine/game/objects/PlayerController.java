@@ -21,7 +21,6 @@ import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Functions;
-import com.engine.util.Image;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
@@ -73,20 +72,21 @@ public class PlayerController extends PointController implements GameObject {
         this.velocity = new Point(0, 0);
 
         this.rightSwing = new InstanceAnimateable(new PointConfig(getPosition(), 105, 0), 5,
-                new Image(),
-                new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+                Constants.WeaponConstants.getBlank(),
+                Constants.WeaponConstants.getRightSwing1(),
+                Constants.WeaponConstants.getRightSwing2(),
+                Constants.WeaponConstants.getRightSwing3(),
+                Constants.WeaponConstants.getRightSwing4(),
+                Constants.WeaponConstants.getRightSwing5());
+
 
         this.leftSwing = new InstanceAnimateable(new PointConfig(getPosition(), -105, 0), 5,
-                new Image(),
-                new Image("src/main/resources/leftswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/leftswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/leftswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/leftswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-                new Image("src/main/resources/leftswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+                Constants.WeaponConstants.getBlank(),
+                Constants.WeaponConstants.getLeftSwing1(),
+                Constants.WeaponConstants.getLeftSwing2(),
+                Constants.WeaponConstants.getLeftSwing3(),
+                Constants.WeaponConstants.getLeftSwing4(),
+                Constants.WeaponConstants.getLeftSwing5());
 
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             if (velocity.getX() < -0.1) {
@@ -96,29 +96,33 @@ public class PlayerController extends PointController implements GameObject {
             }
         });
 
-        this.frontWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_FRONT_WALK_SPRITE_TWO);
+        this.frontWalk = new CycleAnimateable(getPoint(), 25,
+                Constants.PlayerConstants.getPlayerFrontWalkOne().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2),
+                Constants.PlayerConstants.getPlayerFrontWalkTwo().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
         this.frontStop = new Sprite(getPoint(),
                 Constants.PlayerConstants.getPlayerFrontSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.backWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_ONE, Constants.PlayerConstants.PLAYER_BACK_WALK_SPRITE_TWO);
+        this.backWalk = new CycleAnimateable(getPoint(), 25,
+                Constants.PlayerConstants.getPlayerBackWalkOne().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2),
+                Constants.PlayerConstants.getPlayerBackWalkTwo().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
         this.backStop = new Sprite(getPoint(),
                 Constants.PlayerConstants.getPlayerBackSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.leftWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_LEFT_SPRITE, Constants.PlayerConstants.PLAYER_LEFT_WALK_SPRITE);
+        this.leftWalk = new CycleAnimateable(getPoint(), 25,
+                Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2),
+                Constants.PlayerConstants.getPlayerLeftWalkSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
         this.leftStop = new Sprite(getPoint(),
                 Constants.PlayerConstants.getPlayerLeftSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
 
-        this.rightWalk = new CycleAnimateable(getPoint(), 25, Constants.PlayerConstants.PLAYER_RIGHT_SPRITE, Constants.PlayerConstants.PLAYER_RIGHT_WALK_SPRITE);
+        this.rightWalk = new CycleAnimateable(getPoint(), 25,
+                Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2),
+                Constants.PlayerConstants.getPlayerRightWalkSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
         this.rightStop = new Sprite(getPoint(),
                 Constants.PlayerConstants.getPlayerRightSprite().replaceColor(Color.WHITE, color1).replaceColor(Color.BLACK, color2));
            
-
         this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH,
                 Constants.PlayerConstants.PLAYER_HEIGHT);
-        
-        // System.out.println("PlayerController: " + this.collider.getWidth() + " " + this.collider.getHeight());
 
-        // joes problem
         this.spriteStates = new Drawable[] {
                 this.frontStop,
                 this.backStop,
