@@ -29,11 +29,11 @@ public class Constants {
             return new Image("src/main/resources/playerbackwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerLeftWalkSprite() {
+        public static Image getPlayerLeftWalkOne() {
             return new Image("src/main/resources/playerleftwalk.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerRightWalkSprite() {
+        public static Image getPlayerRightWalkOne() {
             return new Image("src/main/resources/playerrightwalk.spr", PLAYER_SPRITE_SCALE);
         }
 

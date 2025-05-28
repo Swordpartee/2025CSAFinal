@@ -54,16 +54,13 @@ public class HealthDisplay extends PointController implements GameObject {
 
     @Override
     public void draw(Graphics graphic) {
-        // Calculate dimensions once outside the loop
-        int iconWidth = GameConstants.HEALTH_SPRITE_SCALE * 16;
-        int totalWidth = maxHealth * iconWidth;
-        // Calculate starting X position to center the health bar
-        int startX = (int)(getX() - totalWidth / 2.0);
+        // Draw the health bar centered at position
+        int heartWidth = 16 * 3;
+        int totalWidth = maxHealth * heartWidth;
+        int startX = (int)(getX() - totalWidth * 2 / maxHealth);
 
-        // Draw each heart
         for (int i = 0; i < maxHealth; i++) {
-            int currentX = startX + i * iconWidth;
-            
+            int currentX = startX + (i * heartWidth);
             if (i < health) {
                 GameConstants.HEART_SPRITE.draw(graphic, currentX, getY());
             } else {
