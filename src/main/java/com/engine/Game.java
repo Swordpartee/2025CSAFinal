@@ -5,7 +5,6 @@ import java.awt.Color;
 import com.engine.Constants.PlayerConstants;
 import com.engine.game.UI.Button;
 import com.engine.game.UI.Textbox;
-import com.engine.game.objects.GameObject;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
 import com.engine.network.Network;
