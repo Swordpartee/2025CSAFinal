@@ -160,6 +160,14 @@ public class Renderer {
     }
 
     /**
+     * Removes a collidable object to be checked for collisions
+     * @param cs collidables to remove
+     */
+    public static void removeCollidables(Collider... cs) {
+        collidables.addAll(Arrays.asList(cs));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */

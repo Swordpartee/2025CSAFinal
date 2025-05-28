@@ -7,9 +7,15 @@ import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
 public abstract class Animateable extends PointController implements Drawable {
+    interface AnimateableFrameChange {
+        void onFrameChange(int frame);
+    }
+
     private final Sprite[] frames;
 
     private int frame = 0;
+
+    private AnimateableFrameChange frameChangeListener;
 
     public Animateable(PointConfig position, Image... Frames) {
         super(position);
@@ -20,8 +26,16 @@ public abstract class Animateable extends PointController implements Drawable {
         }
     }
 
+    public void setFrameChangeListener(AnimateableFrameChange listener) {
+        this.frameChangeListener = listener;
+    }
+
     public int getFrames() {
         return frames.length;
+    }
+
+    public int getFrame() {
+        return frame;
     }
 
     public void reset() {
@@ -30,6 +44,7 @@ public abstract class Animateable extends PointController implements Drawable {
 
     public void nextFrame() {
         frame++;
+        frameChangeListener.onFrameChange(frame);
         frame %= frames.length;
     }
 

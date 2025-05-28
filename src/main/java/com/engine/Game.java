@@ -127,19 +127,17 @@ public class Game {
          * Creating the states here:
          *   - The player state is a networked state that will be synchronized across clients.
          */
-        NetState<PlayerController> player = new NetState<>(Header.PlayerState, Network.stateManager, new PlayerController(Color.cyan));
+        NetState<PlayerController> player = new NetState<>(Header.PlayerState, Network.stateManager, new PlayerController(Color.GREEN));
 
         /**
          * Creating the drawables and non-networked game objects:
          *   - The background is a drawable grid that will render behind everything.
          */
-        // Background background = new Background(Constants.GameConstants.getRockSprite());
 
         /**
          * Adding the drawables and game objects to the renderer:
          *   - Not much to say here
          */
-        // Renderer.addDrawables(background); // Add bg first so it renders behind everything
         Renderer.addGameObjects(player.getValue());
 
 
