@@ -68,17 +68,17 @@ public class Game {
         Renderer.removeUIElements(loginQuestionText, usernameText, usernameTextbox, passwordText, passwordTextbox);
 
         // Create the room screen
-        GameRect createButtonRect = new GameRect(320, 200, 220, 50, true, Color.DARK_GRAY);
+        GameRect createButtonRect = new GameRect(322, 196, 252, 56, true, Color.DARK_GRAY);
         Button createButton = new Button(createButtonRect, () -> {
             roomOptionChosen = "create";
         });
-        DrawerText createButtonText = new DrawerText(new PointConfig(320, 200), "Create Room", 30, "Arial", Color.WHITE);
+        DrawerText createButtonText = new DrawerText(new PointConfig(322, 196), "Create Room", 30, "Arial", Color.WHITE);
 
-        GameRect joinButtonRect = new GameRect(320, 280, 220, 50, true, Color.DARK_GRAY);
+        GameRect joinButtonRect = new GameRect(322, 280, 252, 56, true, Color.DARK_GRAY);
         Button joinButton = new Button(joinButtonRect, () -> {
             roomOptionChosen = "join";
         });
-        DrawerText joinButtonText = new DrawerText(new PointConfig(320, 280), "Join Room", 30, "Arial", Color.WHITE);
+        DrawerText joinButtonText = new DrawerText(new PointConfig(322, 280), "Join Room", 30, "Arial", Color.WHITE);
 
         Renderer.addUIElements(createButton, createButtonText, joinButton, joinButtonText);
 
@@ -110,6 +110,10 @@ public class Game {
     }
 
     public static void main(String[] args) throws Exception {
+
+        Background background = new Background(Constants.GameConstants.getRockSprite());
+        Renderer.addDrawables(background);
+
         /**
          * Initializing the game and its necessary components:
          *   - Sets up the network connection to the server.
@@ -130,13 +134,13 @@ public class Game {
          * Creating the drawables and non-networked game objects:
          *   - The background is a drawable grid that will render behind everything.
          */
-        Background background = new Background(Constants.GameConstants.getRockSprite());
+        // Background background = new Background(Constants.GameConstants.getRockSprite());
 
         /**
          * Adding the drawables and game objects to the renderer:
          *   - Not much to say here
          */
-        Renderer.addDrawables(background); // Add bg first so it renders behind everything
+        // Renderer.addDrawables(background); // Add bg first so it renders behind everything
         Renderer.addGameObjects(player.getValue());
 
 
