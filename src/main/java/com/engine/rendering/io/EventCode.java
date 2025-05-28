@@ -16,6 +16,8 @@ public enum EventCode {
     ESC(27, ListenerType.KEY), 
     SPACE(32, ListenerType.KEY), 
     SHIFT(16, ListenerType.KEY),
+    BACKSPACE(8, ListenerType.KEY),
+    ENTER(10, ListenerType.KEY),
     LEFT_MOUSE(1, ListenerType.MOUSE), 
     RIGHT_MOUSE(3, ListenerType.MOUSE),
     MOUSE_MOVED(0, ListenerType.MOUSE);

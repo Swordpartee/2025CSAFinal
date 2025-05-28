@@ -1,5 +1,7 @@
 package com.engine;
 
+import java.awt.Color;
+
 import com.engine.game.UI.Button;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.PlayerController;
@@ -8,17 +10,16 @@ import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
-import com.engine.util.Color;
 import com.engine.util.Image;
 
 public class Main {
     public static void main(String[] args) {
         Renderer.addDrawables(new Background(Constants.GameConstants.getRockSprite()));
 
-        Renderer.addUIElements(new Button(new GameRect(500, 75, 50, 50, true),
+        Renderer.addUIElements(new Button(new GameRect(500, 75, 50, 50, true, Color.BLACK),
             () -> System.out.println("Button Clicked!")));
         
-        Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false));
+        Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false, Color.BLACK));
 
         PlayerController player = new PlayerController(Color.RED);
 

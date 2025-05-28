@@ -1,5 +1,6 @@
 package com.engine.game.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,6 +10,7 @@ import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.network.Network;
 import com.engine.network.headers.Header;
+import com.engine.network.states.INetObject;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Animateable;
@@ -18,7 +20,6 @@ import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
-import com.engine.util.Color;
 import com.engine.util.Functions;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
@@ -261,5 +262,4 @@ public class PlayerController extends PointController implements GameObject {
     public void onNetworkDestroy() throws Exception {
         Renderer.removeDrawables(this);
     }
-    
 }
