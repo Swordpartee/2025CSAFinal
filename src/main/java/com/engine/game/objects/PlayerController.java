@@ -44,6 +44,8 @@ public class PlayerController extends PointController implements GameObject {
         }
     }
 
+    private String lastButton = "";
+
     private final Animateable frontWalk;
     private final Sprite frontStop;
 
@@ -61,6 +63,8 @@ public class PlayerController extends PointController implements GameObject {
 
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
+    private final InstanceAnimateable upSwing;
+    private final InstanceAnimateable downSwing;
 
     private final Point velocity;
 
@@ -78,7 +82,6 @@ public class PlayerController extends PointController implements GameObject {
                 Constants.WeaponConstants.getRightSwing4(),
                 Constants.WeaponConstants.getRightSwing5());
 
-
         this.leftSwing = new InstanceAnimateable(new PointConfig(getPosition(), -105, 0), 5,
                 Constants.WeaponConstants.getBlank(),
                 Constants.WeaponConstants.getLeftSwing1(),
@@ -86,12 +89,32 @@ public class PlayerController extends PointController implements GameObject {
                 Constants.WeaponConstants.getLeftSwing3(),
                 Constants.WeaponConstants.getLeftSwing4(),
                 Constants.WeaponConstants.getLeftSwing5());
+        
+        this.upSwing = new InstanceAnimateable(new PointConfig(getPosition(), 0, -105), 5,
+                Constants.WeaponConstants.getBlank(),
+                Constants.WeaponConstants.getUpSwing1(),
+                Constants.WeaponConstants.getUpSwing2(),
+                Constants.WeaponConstants.getUpSwing3(),
+                Constants.WeaponConstants.getUpSwing4(),
+                Constants.WeaponConstants.getUpSwing5());
+        
+        this.downSwing = new InstanceAnimateable(new PointConfig(getPosition(), 0, 105), 5,
+                Constants.WeaponConstants.getBlank(),
+                Constants.WeaponConstants.getDownSwing1(),
+                Constants.WeaponConstants.getDownSwing2(),
+                Constants.WeaponConstants.getDownSwing3(),
+                Constants.WeaponConstants.getDownSwing4(),
+                Constants.WeaponConstants.getDownSwing5());
 
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
-            if (velocity.getX() < -0.1) {
+            if (velocity.getX() < -0.1 || lastButton.equals("A")) {
                 leftSwing.run();
-            } else if (velocity.getX() > 0.1) {
+            } else if (velocity.getX() > 0.1 || lastButton.equals("D")) {
                 rightSwing.run();
+            } else if (velocity.getY() < -0.1 || lastButton.equals("W")) {
+                upSwing.run();
+            } else if (velocity.getY() > 0.1 || lastButton.equals("S")) {
+                downSwing.run();
             }
         });
 
@@ -144,6 +167,40 @@ public class PlayerController extends PointController implements GameObject {
         this(color, Color.BLACK);
     }
 
+    private void setDirection() {
+        if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
+            spriteState = SpriteState.LEFT_WALK;
+            lastButton = "A";
+        } else if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
+            spriteState = SpriteState.RIGHT_WALK;
+            lastButton = "D";
+        } else if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
+            spriteState = SpriteState.BACK_WALK;
+            lastButton = "W";
+        } else if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
+            spriteState = SpriteState.FRONT_WALK;
+            lastButton = "S";
+        } else {
+            switch(lastButton) {
+                case "W":
+                    spriteState = SpriteState.BACK_STOP;
+                    break;
+                case "S":
+                    spriteState = SpriteState.FRONT_STOP;
+                    break;
+                case "A":
+                    spriteState = SpriteState.LEFT_STOP;
+                    break;
+                case "D":
+                    spriteState = SpriteState.RIGHT_STOP;
+                    break;
+                default:
+                    // No change
+                    break;
+            }
+        }
+    }
+
     @Override
     public void update() {
         if (RenderListener.isKeyPressed(EventCode.SPACE)) {
@@ -184,17 +241,8 @@ public class PlayerController extends PointController implements GameObject {
             velocity.scaleY(0.2);
         }
 
-        if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
-            spriteState = SpriteState.LEFT_WALK;
-        } else if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
-            spriteState = SpriteState.RIGHT_WALK;
-        } else if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            spriteState = SpriteState.BACK_WALK;
-        } else if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            spriteState = SpriteState.FRONT_WALK;
-        } else {
-            spriteState = SpriteState.FRONT_STOP;
-        }
+        // Update player sprite position
+        setDirection();
 
         // Ensure player stays within screen bounds (considering position is the center)
         setX(Functions.clamp(getX(), Constants.PlayerConstants.PLAYER_WIDTH / 2, Renderer.getWidth() - Constants.PlayerConstants.PLAYER_WIDTH / 2));
@@ -206,6 +254,8 @@ public class PlayerController extends PointController implements GameObject {
         spriteStates[spriteState.ordinal()].draw(g);
         leftSwing.draw(g);
         rightSwing.draw(g);
+        upSwing.draw(g);
+        downSwing.draw(g);
     }
 
     @Override

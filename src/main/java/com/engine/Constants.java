@@ -69,23 +69,23 @@ public class Constants {
         }
 
         public static Image getLeftSwing1() {
-            return new Image("src/main/resources/leftswing1.spr", WEAPON_SPRITE_SCALE);
+            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, -180);
         }
 
         public static Image getLeftSwing2() {
-            return new Image("src/main/resources/leftswing2.spr", WEAPON_SPRITE_SCALE);
+            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, -180);
         }
 
         public static Image getLeftSwing3() {
-            return new Image("src/main/resources/leftswing3.spr", WEAPON_SPRITE_SCALE);
+            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, -180);
         }
 
         public static Image getLeftSwing4() {
-            return new Image("src/main/resources/leftswing4.spr", WEAPON_SPRITE_SCALE);
+            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, -180);
         }
 
         public static Image getLeftSwing5() {
-            return new Image("src/main/resources/leftswing5.spr", WEAPON_SPRITE_SCALE);
+            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, -180);
         }
 
         public static Image getRightSwing1() {
@@ -108,6 +108,45 @@ public class Constants {
             return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE);
         }
 
+        public static Image getUpSwing1() {
+            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, -90);
+        }
+
+        public static Image getUpSwing2() {
+            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, -90);
+        }
+
+        public static Image getUpSwing3() {
+            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, -90);
+        }
+
+        public static Image getUpSwing4() {
+            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, -90);
+        }
+
+        public static Image getUpSwing5() {
+            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, -90);
+        }
+
+        public static Image getDownSwing1() {
+            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, 90);
+        }
+
+        public static Image getDownSwing2() {
+            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, 90);
+        }
+
+        public static Image getDownSwing3() {
+            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, 90);
+        }
+
+        public static Image getDownSwing4() {
+            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, 90);
+        }
+
+        public static Image getDownSwing5() {
+            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, 90);
+        }
         
     }
 
