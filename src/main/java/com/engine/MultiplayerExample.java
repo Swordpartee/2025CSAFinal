@@ -1,8 +1,6 @@
 package com.engine;
 
 import java.awt.Color;
-import java.util.Scanner;
-
 import com.engine.game.UI.Button;
 import com.engine.game.UI.Textbox;
 import com.engine.game.objects.GameRect;
@@ -129,7 +127,7 @@ public class MultiplayerExample {
         // NetState<Projectile> projectileState = new NetState<>(Header.ProjectileState, Network.stateManager, new Projectile(Math.random() * 100, Math.random() * 100, 10, true));
 
         // Add the player to the Renderer (Nothing server related, just for the client)
-        Renderer.addGameObjects(playerState.value);
+        Renderer.addGameObjects(playerState.getValue());
         Renderer.addDrawables(text);
 
         Network.addStateSender(Header.PlayerState, 0);

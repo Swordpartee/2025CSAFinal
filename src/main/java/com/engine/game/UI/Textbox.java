@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Pattern;
 
 import com.engine.game.objects.GameRect;
+import com.engine.rendering.drawings.Drawable;
+import com.engine.rendering.drawings.DrawerRect;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.rendering.io.RenderListener.KeyTypedListener;
@@ -49,6 +51,8 @@ public class Textbox extends Button {
 
     private final SubmitAction submitAction;
 
+    private final Drawable drawable;
+
     private String regex = "[^a-zA-Z0-9 ]"; // Only allow alphanumeric characters and spaces
 
     private boolean isSecret = false;
@@ -57,6 +61,7 @@ public class Textbox extends Button {
 
     public Textbox(PointConfig pointConf, double width, double height, Color bgColor, Color textColor, int fontSize, String regex, SubmitAction action) {
         super(new GameRect(pointConf, width, height, true, bgColor), () -> {});
+        this.drawable = new DrawerRect(new PointConfig(pointConf.getX(), pointConf.getY() + height / 2), width, 5, true, bgColor);
         this.submitAction = action;
         this.textColor = textColor;
         this.font = new Font("Arial", Font.PLAIN, fontSize);
@@ -83,7 +88,7 @@ public class Textbox extends Button {
 
     @Override
     public void draw(Graphics graphic) {
-        super.draw(graphic);
+        this.drawable.draw(graphic);
         GameRect object = (GameRect) getObject();
         int width = (int) object.getCollider().getWidth();
         int height = (int) object.getCollider().getHeight();
