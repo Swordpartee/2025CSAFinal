@@ -10,6 +10,7 @@ import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.network.Network;
 import com.engine.network.headers.Header;
+import com.engine.network.states.INetObject;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Animateable;
@@ -262,5 +263,4 @@ public class PlayerController extends PointController implements GameObject {
     public void onNetworkDestroy() throws Exception {
         Renderer.removeDrawables(this);
     }
-    
 }

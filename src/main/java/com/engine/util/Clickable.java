@@ -1,7 +1,7 @@
 package com.engine.util;
 
 public interface Clickable {
-    default public void onClick(Point point) {
-        
+    default public boolean onClick(Point point) {
+        return false;
     };
 }
