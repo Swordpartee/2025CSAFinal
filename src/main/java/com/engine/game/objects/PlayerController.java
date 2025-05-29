@@ -74,37 +74,13 @@ public class PlayerController extends PointController implements GameObject {
         super(new PointConfig(0, 0));
         this.velocity = new Point(0, 0);
 
-        this.rightSwing = new InstanceAnimateable(new PointConfig(getPosition(), 105, 0), 5,
-                Constants.WeaponConstants.getBlank(),
-                Constants.WeaponConstants.getRightSwing1(),
-                Constants.WeaponConstants.getRightSwing2(),
-                Constants.WeaponConstants.getRightSwing3(),
-                Constants.WeaponConstants.getRightSwing4(),
-                Constants.WeaponConstants.getRightSwing5());
+        this.rightSwing = Constants.WeaponConstants.getSwing(105, 0, 0);
 
-        this.leftSwing = new InstanceAnimateable(new PointConfig(getPosition(), -105, 0), 5,
-                Constants.WeaponConstants.getBlank(),
-                Constants.WeaponConstants.getLeftSwing1(),
-                Constants.WeaponConstants.getLeftSwing2(),
-                Constants.WeaponConstants.getLeftSwing3(),
-                Constants.WeaponConstants.getLeftSwing4(),
-                Constants.WeaponConstants.getLeftSwing5());
-        
-        this.upSwing = new InstanceAnimateable(new PointConfig(getPosition(), 0, -105), 5,
-                Constants.WeaponConstants.getBlank(),
-                Constants.WeaponConstants.getUpSwing1(),
-                Constants.WeaponConstants.getUpSwing2(),
-                Constants.WeaponConstants.getUpSwing3(),
-                Constants.WeaponConstants.getUpSwing4(),
-                Constants.WeaponConstants.getUpSwing5());
-        
-        this.downSwing = new InstanceAnimateable(new PointConfig(getPosition(), 0, 105), 5,
-                Constants.WeaponConstants.getBlank(),
-                Constants.WeaponConstants.getDownSwing1(),
-                Constants.WeaponConstants.getDownSwing2(),
-                Constants.WeaponConstants.getDownSwing3(),
-                Constants.WeaponConstants.getDownSwing4(),
-                Constants.WeaponConstants.getDownSwing5());
+        this.leftSwing = Constants.WeaponConstants.getSwing(-105, 0, -180);
+
+        this.upSwing = Constants.WeaponConstants.getSwing(0, -105, -90);
+
+        this.downSwing = Constants.WeaponConstants.getSwing(0, 105, 90);
 
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             if (velocity.getX() < -0.1 || lastButton.equals("A")) {
@@ -183,7 +159,7 @@ public class PlayerController extends PointController implements GameObject {
         } else {
             switch(lastButton) {
                 case "W":
-                    spriteState = SpriteState.BACK_STOP;
+                    spriteState = SpriteState.BACK_STOP;    
                     break;
                 case "S":
                     spriteState = SpriteState.FRONT_STOP;

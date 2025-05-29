@@ -1,5 +1,7 @@
 package com.engine;
 
+import com.engine.rendering.drawings.Animateable;
+import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.util.Image;
 
 public class Constants {
@@ -68,86 +70,14 @@ public class Constants {
             return new Image();
         }
 
-        public static Image getLeftSwing1() {
-            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, -180);
+        public static InstanceAnimateable getSwing(double x, double y, int angle) {
+            return new InstanceAnimateable(x, y, 5, getBlank(),
+                new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, angle));
         }
-
-        public static Image getLeftSwing2() {
-            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, -180);
-        }
-
-        public static Image getLeftSwing3() {
-            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, -180);
-        }
-
-        public static Image getLeftSwing4() {
-            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, -180);
-        }
-
-        public static Image getLeftSwing5() {
-            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, -180);
-        }
-
-        public static Image getRightSwing1() {
-            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing2() {
-            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing3() {
-            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing4() {
-            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing5() {
-            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getUpSwing1() {
-            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, -90);
-        }
-
-        public static Image getUpSwing2() {
-            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, -90);
-        }
-
-        public static Image getUpSwing3() {
-            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, -90);
-        }
-
-        public static Image getUpSwing4() {
-            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, -90);
-        }
-
-        public static Image getUpSwing5() {
-            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, -90);
-        }
-
-        public static Image getDownSwing1() {
-            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, 90);
-        }
-
-        public static Image getDownSwing2() {
-            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, 90);
-        }
-
-        public static Image getDownSwing3() {
-            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, 90);
-        }
-
-        public static Image getDownSwing4() {
-            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, 90);
-        }
-
-        public static Image getDownSwing5() {
-            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, 90);
-        }
-        
     }
 
     public static class GameConstants {
