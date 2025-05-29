@@ -21,9 +21,15 @@ public class Button implements UIElement {
     }
 
     @Override
-    public void onClick(Point point) {
+    public boolean onClick(Point point) {
         if (object.colliding(point)) {
             action.run();
+            return true;
         }
+        return false;
+    }
+
+    public GameObject getObject() {
+        return object;
     }
 }
