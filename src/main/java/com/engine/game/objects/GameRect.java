@@ -1,5 +1,6 @@
 package com.engine.game.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,14 +16,14 @@ public class GameRect extends PointController implements GameObject {
     private final DrawerRect drawable;
     private final RectCollider collider;
 
-    public GameRect(PointConfig position, double width, double height, boolean filled) {
+    public GameRect(PointConfig position, double width, double height, boolean filled, Color color) {
         super(position);
-        this.drawable = new DrawerRect(position, width, height, filled);
+        this.drawable = new DrawerRect(position, width, height, filled, color);
         this.collider = new RectCollider(position, width, height);
     }
 
-    public GameRect(double x, double y, double width, double height, boolean filled) {
-        this(new PointConfig(x, y), width, height, filled);
+    public GameRect(double x, double y, double width, double height, boolean filled, Color color) {
+        this(new PointConfig(x, y), width, height, filled, color);
     }
 
     @Override

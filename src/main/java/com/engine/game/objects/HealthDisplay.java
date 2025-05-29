@@ -27,9 +27,11 @@ public class HealthDisplay extends PointController implements GameObject {
         this.health = Math.max(0, Math.min(health, maxHealth));
     }
 
-    public void damage() {
-        if (health > 0) {
-            health--;
+    public void damage(int damage) {
+        if (health - damage >= 0) {
+            health -= damage;
+        } else {
+            health = 0;
         }
     }
 

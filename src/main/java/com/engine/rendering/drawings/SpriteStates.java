@@ -1,7 +1,6 @@
 package com.engine.rendering.drawings;
 
 import java.awt.Graphics;
-import java.util.HashMap;
 
 import com.engine.util.Tuple;
 

@@ -40,6 +40,7 @@ public class PlayerController extends PointController implements Updateable, Col
             } catch (Exception e) {
             }
         }
+        
 
         // Set velocity based on input
         if (RenderListener.isKeyPressed(EventCode.W)) {
