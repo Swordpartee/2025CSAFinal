@@ -25,10 +25,13 @@ public class PointConfig {
         this.offset = offset;
     }
 
-    public PointConfig setOffset(int x, int y) {
+    public void setOffset(int x, int y) {
         this.offset.setX(x);
         this.offset.setY(y);
-        return this;
+    }
+
+    public PointConfig createOffset(int x, int y) {
+        return new PointConfig(position, new Point(x, y));
     }
 
     public Point getOffset() {

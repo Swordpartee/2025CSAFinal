@@ -109,7 +109,6 @@ public class Textbox extends Button {
         // Add some padding so text doesn't touch the edges
         int padding = 5;
         int textX = (int) object.getX() - (width / 2) + padding;
-        int textY = (int) object.getY() + padding;
         
         // Get font metrics to properly position text vertically
         FontMetrics fm = graphic.getFontMetrics();
@@ -167,28 +166,29 @@ public class Textbox extends Button {
     public void updateText(java.awt.event.KeyEvent e) {
         char keyChar = e.getKeyChar();
         
-        if (keyChar == KeyEvent.VK_BACK_SPACE) {
-            if (cursorPosition > 0) {
-                text = text.substring(0, cursorPosition - 1) + text.substring(cursorPosition);
-                cursorPosition--;
+        switch (keyChar) {
+            case KeyEvent.VK_BACK_SPACE -> {
+                if (cursorPosition > 0) {
+                    text = text.substring(0, cursorPosition - 1) + text.substring(cursorPosition);
+                    cursorPosition--;
+                }
             }
-        }
-        else if (keyChar == KeyEvent.VK_ENTER) {
-            if (submitAction.onSubmit(text)) {    
-                // Reset the textbox or perform any other action
-                text = "";
-                cursorPosition = 0;
+            case KeyEvent.VK_ENTER -> {
+                if (submitAction.onSubmit(text)) {
+                    // Reset the textbox or perform any other action
+                    text = "";
+                    cursorPosition = 0;
+                }
             }
-        }
-        else {
-            if (!Pattern.matches(regex, String.valueOf(keyChar))) {
-                // Ignore characters that do not match the regex
-                return;
-            }
-            // Only add printable characters
-            if (Character.isDefined(keyChar) && !Character.isISOControl(keyChar)) {
-                text = text.substring(0, cursorPosition) + keyChar + text.substring(cursorPosition);
-                cursorPosition++;
+            default -> {
+                if (!Pattern.matches(regex, String.valueOf(keyChar))) {
+                    // Ignore characters that do not match the regex
+                    return;
+                }   // Only add printable characters
+                if (Character.isDefined(keyChar) && !Character.isISOControl(keyChar)) {
+                    text = text.substring(0, cursorPosition) + keyChar + text.substring(cursorPosition);
+                    cursorPosition++;
+                }
             }
         }
     }
