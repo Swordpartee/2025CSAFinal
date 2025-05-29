@@ -15,7 +15,7 @@ import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Image;
 
-public class Main {
+public class Debug {
     public static void main(String[] args) {
         Renderer.addDrawables(new Background(Constants.GameConstants.getRockSprite()));
 
