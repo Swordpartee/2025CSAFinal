@@ -44,8 +44,9 @@ public class Main {
         Renderer.addDrawables(healthDisplay);
 
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.J, () -> {
-            healthDisplay.damage();
+            healthDisplay.damage(1);
         });
+        
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.K, () -> {
             healthDisplay.heal();
         });

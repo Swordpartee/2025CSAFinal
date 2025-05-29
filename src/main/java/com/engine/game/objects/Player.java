@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import com.engine.Constants;
+import com.engine.game.collision.Damageable;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
@@ -12,7 +13,7 @@ import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 import com.engine.util.Tuple;
 
-public class Player extends PointController implements GameObject {
+public class Player extends PointController implements GameObject, Damageable {
     private final PlayerController controller;
     private final HealthDisplay healthDisplay;
 
@@ -23,29 +24,32 @@ public class Player extends PointController implements GameObject {
         super(new PointConfig());
 
         this.controller = new PlayerController(getPoint());
-        healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);        
+        healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);
 
         sprite = new SpriteStates(
                 new Tuple<>("Front", new CycleAnimateable(getPoint(), 25,
-                    Constants.PlayerConstants.getPlayerFrontWalkOne(),
-                    Constants.PlayerConstants.getPlayerFrontWalkTwo())),
+                        Constants.PlayerConstants.getPlayerFrontWalkOne(),
+                        Constants.PlayerConstants.getPlayerFrontWalkTwo())),
                 new Tuple<>("Back", new CycleAnimateable(getPoint(), 25,
-                    Constants.PlayerConstants.getPlayerBackWalkOne(),
+                        Constants.PlayerConstants.getPlayerBackWalkOne(),
                         Constants.PlayerConstants.getPlayerBackWalkTwo())),
                 new Tuple<>("Left", new CycleAnimateable(getPoint(), 25,
-                    Constants.PlayerConstants.getPlayerLeftWalkOne(),
-                    Constants.PlayerConstants.getPlayerLeftSprite())),
+                        Constants.PlayerConstants.getPlayerLeftWalkOne(),
+                        Constants.PlayerConstants.getPlayerLeftSprite())),
                 new Tuple<>("Right", new CycleAnimateable(getPoint(), 25,
-                    Constants.PlayerConstants.getPlayerRightWalkOne(),
-                    Constants.PlayerConstants.getPlayerRightSprite()))
-            );
+                        Constants.PlayerConstants.getPlayerRightWalkOne(),
+                        Constants.PlayerConstants.getPlayerRightSprite())));
 
         idleSprites = new SpriteStates(
                 new Tuple<>("Front", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerFrontSprite())),
                 new Tuple<>("Back", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerBackSprite())),
                 new Tuple<>("Left", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerLeftSprite())),
-                new Tuple<>("Right", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerRightSprite()))
-        );
+                new Tuple<>("Right", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerRightSprite())));
+    }
+    
+    @Override
+    public void damage(int damage) {
+        healthDisplay.damage(damage);
     }
 
     @Override
@@ -84,10 +88,6 @@ public class Player extends PointController implements GameObject {
             idleSprites.draw(graphic);
         }
 
-    }
-    
-    public void damage() {
-        healthDisplay.damage();
     }
 
     public void heal() {
