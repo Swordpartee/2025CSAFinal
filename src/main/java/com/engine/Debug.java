@@ -24,18 +24,18 @@ public class Debug {
         
         Renderer.addGameObjects(new GameRect(200, 200, 50, 50, false, Color.BLACK));
 
-        // PlayerController player = new PlayerController(Color.RED);
+        Player player = new Player();
 
         // Renderer.addGameObjects(player);
 
-        // RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.U, () -> {
-        //     player.damage();
-        // });
-        // RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
-        //     player.heal();
-        // });
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.U, () -> {
+            player.damage(1);
+        });
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
+            player.heal(1);
+        });
 
-        Renderer.addGameObjects(new Player());
+        Renderer.addGameObjects(player);
 
         Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
             Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
@@ -50,7 +50,7 @@ public class Debug {
         });
         
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.K, () -> {
-            healthDisplay.heal();
+            healthDisplay.heal(1);
         });
 
         InstanceAnimateable swing = new InstanceAnimateable(200, 400, 5,
@@ -61,7 +61,20 @@ public class Debug {
             new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
+        CycleAnimateable fireball = new CycleAnimateable(100, 100, 5,
+            new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
         Renderer.addDrawables(swing);
+        Renderer.addDrawables(fireball);
         
         // Renderer.addUIElements(new Button(player, () -> {
         //     swing.run();

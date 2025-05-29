@@ -35,9 +35,11 @@ public class HealthDisplay extends PointController implements GameObject {
         }
     }
 
-    public void heal() {
-        if (health < maxHealth) {
-            health++;
+    public void heal(int amount) {
+        if (health + amount <= maxHealth) {
+            health += amount;
+        } else {
+            health = maxHealth;
         }
     }
 
@@ -59,10 +61,10 @@ public class HealthDisplay extends PointController implements GameObject {
         // Draw the health bar centered at position
         int heartWidth = 16 * 3;
         int totalWidth = maxHealth * heartWidth;
-        int startX = (int)(getX() - totalWidth * 2 / maxHealth);
+        int startX = (int)(getX() - totalWidth * 2 / maxHealth) - (8 * (maxHealth /2));
 
         for (int i = 0; i < maxHealth; i++) {
-            int currentX = startX + (i * heartWidth);
+            int currentX = startX + (i * heartWidth) + (8 * i);
             if (i < health) {
                 GameConstants.HEART_SPRITE.draw(graphic, currentX, getY());
             } else {
