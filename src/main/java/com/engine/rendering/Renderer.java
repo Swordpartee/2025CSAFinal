@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.engine.Constants;
+import com.engine.game.UI.Textbox;
 import com.engine.game.UI.UIElement;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.Damageable;
@@ -117,6 +118,8 @@ public class Renderer {
     }
 
     public static void addListener() {
+        RenderListener.addKeyTypedListener(Textbox.getKeyTypedListener());
+        
         frame.addKeyListener(RenderListener.getKeyListener());
         frame.addMouseListener(RenderListener.getMouseListener());
         frame.addMouseMotionListener(RenderListener.getMouseListener());
@@ -161,6 +164,14 @@ public class Renderer {
     }
 
     /**
+     * Removes a collidable object to be checked for collisions
+     * @param cs collidables to remove
+     */
+    public static void removeCollidables(Collider... cs) {
+        collidables.addAll(Arrays.asList(cs));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
@@ -197,6 +208,15 @@ public class Renderer {
 
     public static ArrayList<Damageable> getDamageables() {
         return damageables;
+    }
+
+    /**
+     * Removes ui elements from the renderer
+     * @param us : ui elements to remove
+     */
+    public static void removeUIElements(UIElement... us) {
+        removeDrawables(us);
+        clickables.removeAll(Arrays.asList(us));
     }
 
     /**

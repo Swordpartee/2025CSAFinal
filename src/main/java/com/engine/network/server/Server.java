@@ -269,6 +269,8 @@ public class Server {
             String username = data.msgStr.split(":", 2)[0];
             String password = data.msgStr.split(":", 2)[1];
 
+            System.out.println("Signup: " + username + ":" + password);
+
             if (!username.matches("^[a-z0-9_]+$")) {
                 sendSessionPacket(BaseHeader.AuthError.value(),
                         "Invalid username. Must contain only lowercase letters, numbers, or underscores.".getBytes(),
@@ -277,7 +279,7 @@ public class Server {
             }
 
             if (password.length() < 6 || password.indexOf(" ") != -1) {
-                sendSessionPacket(BaseHeader.AuthError.value(), "Invalid password. Must not contain spaces.".getBytes(),
+                sendSessionPacket(BaseHeader.AuthError.value(), "Invalid password. Must not contain spaces and must be more than 5 characters long.".getBytes(),
                         data.sessionInfo);
                 return true;
             }

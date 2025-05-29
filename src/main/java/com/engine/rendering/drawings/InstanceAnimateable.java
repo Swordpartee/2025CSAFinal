@@ -28,6 +28,10 @@ public class InstanceAnimateable extends Animateable {
         this(new PointConfig(x, y), period, defaultSprite, frames);
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void run() {
         running = true;
     }

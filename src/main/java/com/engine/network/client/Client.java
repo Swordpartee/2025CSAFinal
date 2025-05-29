@@ -318,6 +318,15 @@ public class Client {
             return;
         }
 
+        if (BaseHeader.AuthSignup.compare(data.header)) {
+            String[] msgData = data.msgStr.split(":");
+            System.out.println("Signup Success: " + msgData[2]);
+            sessionKey = msgData[0];
+            username = msgData[1];
+            loggedIn = true;
+            return;
+        }
+
         if (BaseHeader.AuthError.compare(data.header)) {
             System.out.println("Auth Error: " + data.msgStr);
             return;
