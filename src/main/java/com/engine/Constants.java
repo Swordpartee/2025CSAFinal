@@ -31,11 +31,11 @@ public class Constants {
             return new Image("src/main/resources/playerbackwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerLeftWalkSprite() {
+        public static Image getPlayerLeftWalkOne() {
             return new Image("src/main/resources/playerleftwalk.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerRightWalkSprite() {
+        public static Image getPlayerRightWalkOne() {
             return new Image("src/main/resources/playerrightwalk.spr", PLAYER_SPRITE_SCALE);
         }
 
@@ -88,6 +88,13 @@ public class Constants {
         public static Image getRockSprite() {
             return new Image("src/main/resources/rock.spr", PlayerConstants.PLAYER_SPRITE_SCALE);
         }
+
+        public static final int HEALTH_SPRITE_SCALE = 3;
+
+        public static final Image HEART_SPRITE = new Image("src/main/resources/heart.spr",
+                HEALTH_SPRITE_SCALE);
+        public static final Image EMPTY_HEALTH_IMAGE = new Image("src/main/resources/emptyheart.spr",
+                HEALTH_SPRITE_SCALE);
     }
 
     public static class RendererConstants {

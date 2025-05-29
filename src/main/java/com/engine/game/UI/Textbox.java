@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Pattern;
 
 import com.engine.game.objects.GameRect;
+import com.engine.rendering.drawings.Drawable;
+import com.engine.rendering.drawings.DrawerRect;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.rendering.io.RenderListener.KeyTypedListener;
@@ -49,6 +51,8 @@ public class Textbox extends Button {
 
     private final SubmitAction submitAction;
 
+    private final Drawable drawable;
+
     private String regex = "[^a-zA-Z0-9 ]"; // Only allow alphanumeric characters and spaces
 
     private boolean isSecret = false;
@@ -57,6 +61,7 @@ public class Textbox extends Button {
 
     public Textbox(PointConfig pointConf, double width, double height, Color bgColor, Color textColor, int fontSize, String regex, SubmitAction action) {
         super(new GameRect(pointConf, width, height, true, bgColor), () -> {});
+        this.drawable = new DrawerRect(new PointConfig(pointConf.getX(), pointConf.getY() + height / 2), width, 5, true, bgColor);
         this.submitAction = action;
         this.textColor = textColor;
         this.font = new Font("Arial", Font.PLAIN, fontSize);
@@ -83,7 +88,7 @@ public class Textbox extends Button {
 
     @Override
     public void draw(Graphics graphic) {
-        super.draw(graphic);
+        this.drawable.draw(graphic);
         GameRect object = (GameRect) getObject();
         int width = (int) object.getCollider().getWidth();
         int height = (int) object.getCollider().getHeight();
@@ -104,7 +109,6 @@ public class Textbox extends Button {
         // Add some padding so text doesn't touch the edges
         int padding = 5;
         int textX = (int) object.getX() - (width / 2) + padding;
-        int textY = (int) object.getY() + padding;
         
         // Get font metrics to properly position text vertically
         FontMetrics fm = graphic.getFontMetrics();
@@ -162,28 +166,29 @@ public class Textbox extends Button {
     public void updateText(java.awt.event.KeyEvent e) {
         char keyChar = e.getKeyChar();
         
-        if (keyChar == KeyEvent.VK_BACK_SPACE) {
-            if (cursorPosition > 0) {
-                text = text.substring(0, cursorPosition - 1) + text.substring(cursorPosition);
-                cursorPosition--;
+        switch (keyChar) {
+            case KeyEvent.VK_BACK_SPACE -> {
+                if (cursorPosition > 0) {
+                    text = text.substring(0, cursorPosition - 1) + text.substring(cursorPosition);
+                    cursorPosition--;
+                }
             }
-        }
-        else if (keyChar == KeyEvent.VK_ENTER) {
-            if (submitAction.onSubmit(text)) {    
-                // Reset the textbox or perform any other action
-                text = "";
-                cursorPosition = 0;
+            case KeyEvent.VK_ENTER -> {
+                if (submitAction.onSubmit(text)) {
+                    // Reset the textbox or perform any other action
+                    text = "";
+                    cursorPosition = 0;
+                }
             }
-        }
-        else {
-            if (!Pattern.matches(regex, String.valueOf(keyChar))) {
-                // Ignore characters that do not match the regex
-                return;
-            }
-            // Only add printable characters
-            if (Character.isDefined(keyChar) && !Character.isISOControl(keyChar)) {
-                text = text.substring(0, cursorPosition) + keyChar + text.substring(cursorPosition);
-                cursorPosition++;
+            default -> {
+                if (!Pattern.matches(regex, String.valueOf(keyChar))) {
+                    // Ignore characters that do not match the regex
+                    return;
+                }   // Only add printable characters
+                if (Character.isDefined(keyChar) && !Character.isISOControl(keyChar)) {
+                    text = text.substring(0, cursorPosition) + keyChar + text.substring(cursorPosition);
+                    cursorPosition++;
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ import com.engine.Constants;
 import com.engine.game.UI.Textbox;
 import com.engine.game.UI.UIElement;
 import com.engine.game.collision.Collider;
+import com.engine.game.collision.Damageable;
 import com.engine.game.objects.GameObject;
 import com.engine.rendering.drawings.Drawable;
 import com.engine.rendering.io.EventCode;
@@ -37,6 +38,9 @@ public class Renderer {
     private static final ArrayList<Runnable> processes = new ArrayList<>();
 
     private static final ArrayList<Clickable> clickables = new ArrayList<>();
+
+    private static final ArrayList<Damageable> damageables = new ArrayList<>();
+
 
     private static int width = Constants.GameConstants.GAME_WIDTH;
     private static int height = Constants.GameConstants.GAME_HEIGHT;
@@ -160,6 +164,14 @@ public class Renderer {
     }
 
     /**
+     * Removes a collidable object to be checked for collisions
+     * @param cs collidables to remove
+     */
+    public static void removeCollidables(Collider... cs) {
+        collidables.addAll(Arrays.asList(cs));
+    }
+
+    /**
      * Adds a drawable element to be drawn
      * @param ds drawables to add
      */
@@ -188,6 +200,14 @@ public class Renderer {
     public static void addUIElements(UIElement... us) {
         addDrawables(us);
         addClickables(us);
+    }
+
+    public static void addDamageable(Damageable... ds) {
+        damageables.addAll(Arrays.asList(ds));
+    }
+
+    public static ArrayList<Damageable> getDamageables() {
+        return damageables;
     }
 
     /**

@@ -22,6 +22,7 @@ public class Network {
     public static void processRecv(ClientPacketData data) throws Exception {
         stateManager.tryReceiveStates(data);
     }
+    
     public static void connect() throws Exception {
         client = new Client(Network::processRecv);
         client.connect(SERVER_ADDRESS, PORT);

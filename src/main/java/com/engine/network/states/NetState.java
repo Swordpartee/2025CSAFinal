@@ -15,7 +15,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
     private ControlMode controlMode = ControlMode.CLIENT;
     private ClientStateManager stateManager;
 
-    public T value;
+    private T value;
 
     public static class NanoId {
         private static final Random random = new SecureRandom();
