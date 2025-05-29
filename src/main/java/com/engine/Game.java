@@ -7,7 +7,6 @@ import com.engine.game.UI.Button;
 import com.engine.game.UI.Textbox;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.Player;
-import com.engine.game.objects.PlayerController;
 import com.engine.network.Network;
 import com.engine.network.headers.BaseHeader;
 import com.engine.network.headers.Header;

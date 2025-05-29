@@ -73,8 +73,15 @@ public class Debug {
             new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
+        CycleAnimateable arrow = new CycleAnimateable(200, 200, 10,
+            new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
         Renderer.addDrawables(swing);
         Renderer.addDrawables(fireball);
+        Renderer.addDrawables(arrow);
         
         // Renderer.addUIElements(new Button(player, () -> {
         //     swing.run();
