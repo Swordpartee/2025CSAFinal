@@ -28,40 +28,6 @@ public class PlayerController extends PointController implements Updateable, Col
         this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
     }
 
-    private void setDirection() {
-        if (velocity.getX() < -0.1 && RenderListener.isKeyPressed(EventCode.A)) {
-            spriteState = SpriteState.LEFT_WALK;
-            lastButton = "A";
-        } else if (velocity.getX() > 0.1 && RenderListener.isKeyPressed(EventCode.D)) {
-            spriteState = SpriteState.RIGHT_WALK;
-            lastButton = "D";
-        } else if (velocity.getY() < -0.1 && RenderListener.isKeyPressed(EventCode.W)) {
-            spriteState = SpriteState.BACK_WALK;
-            lastButton = "W";
-        } else if (velocity.getY() > 0.1 && RenderListener.isKeyPressed(EventCode.S)) {
-            spriteState = SpriteState.FRONT_WALK;
-            lastButton = "S";
-        } else {
-            switch(lastButton) {
-                case "W":
-                    spriteState = SpriteState.BACK_STOP;    
-                    break;
-                case "S":
-                    spriteState = SpriteState.FRONT_STOP;
-                    break;
-                case "A":
-                    spriteState = SpriteState.LEFT_STOP;
-                    break;
-                case "D":
-                    spriteState = SpriteState.RIGHT_STOP;
-                    break;
-                default:
-                    // No change
-                    break;
-            }
-        }
-    }
-
     @Override
     public void update() {
         if (RenderListener.isKeyPressed(EventCode.SPACE)) {
