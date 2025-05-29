@@ -10,7 +10,6 @@ import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
 import com.engine.network.Network;
 import com.engine.network.headers.Header;
-import com.engine.network.states.INetObject;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Animateable;
@@ -59,6 +58,7 @@ public class PlayerController extends PointController implements GameObject {
 
     private final Drawable[] spriteStates;
     private SpriteState spriteState;
+    private int sendSwing = 0; // 0 = no swing, 1 = left swing, 2 = right swing
 
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
@@ -91,8 +91,10 @@ public class PlayerController extends PointController implements GameObject {
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             if (velocity.getX() < -0.1) {
                 leftSwing.run();
+                sendSwing = 1;
             } else if (velocity.getX() > 0.1) {
                 rightSwing.run();
+                sendSwing = 2;
             }
         });
 
@@ -155,6 +157,7 @@ public class PlayerController extends PointController implements GameObject {
                 projectile.sendSelf();
             } catch (Exception e) {}
         }
+        
 
         // Set velocity based on input
         if (RenderListener.isKeyPressed(EventCode.W)) {
@@ -234,6 +237,13 @@ public class PlayerController extends PointController implements GameObject {
         this.velocity.setX(dataSegments.readInt());
         this.velocity.setY(dataSegments.readInt());
         this.spriteState = SpriteState.from(dataSegments.read());
+        int swing = dataSegments.read();
+        if (swing == 1) {
+            leftSwing.run();
+        } else if (swing == 2) {
+            rightSwing.run();
+        }
+    
     }
 
     @Override
@@ -243,6 +253,8 @@ public class PlayerController extends PointController implements GameObject {
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
         dataSegments.write(spriteState.value());
+        dataSegments.write(sendSwing);
+        this.sendSwing = 0;
     }
 
     @Override
