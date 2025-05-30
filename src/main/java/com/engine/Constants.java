@@ -81,6 +81,13 @@ public class Constants {
                 new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, angle),
                 new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, angle));
         }
+
+        public static InstanceAnimateable getIdle(PointConfig anchor, int angle) {
+            return new InstanceAnimateable(anchor, 5, getBlank(),
+                new Image("src/main/resources/weaponexample1.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/weaponexample2.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/weaponexample3.spr", WEAPON_SPRITE_SCALE, angle));
+        }
     }
 
     public static class GameConstants {
