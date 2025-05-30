@@ -51,7 +51,7 @@ public class Server {
     public Server(RecvFunc recv) throws Exception {
         this.recv = recv;
         
-        socket = new DatagramSocket(4445);
+        socket = new DatagramSocket(8888);
         KeyPair keyPair = Encryption.generateRSAOAEPKeyPair();
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();

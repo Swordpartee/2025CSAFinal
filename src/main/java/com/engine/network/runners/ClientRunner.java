@@ -33,9 +33,9 @@ public class ClientRunner {
 	// public static NetState<TestNetObject> intState = null;
 
 	public static void main(String[] args) throws Exception {
-		// Create a new client instance and connect to the server at "localhost:4445"
+		// Create a new client instance and connect to the server at "68.179.181.230:8888"
 		client = new Client(ClientRunner::processRecv);
-		client.connect("localhost", 4445);
+		client.connect("68.179.181.230", 8888);
 		stateManager = new ClientStateManager(client);
 
 		// intState = new NetState<TestNetObject>(Header.GameObjectState, stateManager, new TestNetObject("Cheese", 1000000));

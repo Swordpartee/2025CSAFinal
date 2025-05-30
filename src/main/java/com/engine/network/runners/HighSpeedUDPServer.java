@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class HighSpeedUDPServer {
 
-    private static final int PORT = 4445;
+    private static final int PORT = 8888;
     private static final int BUFFER_SIZE = 128;
 
     public static void main(String[] args) throws IOException {
