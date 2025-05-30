@@ -13,8 +13,8 @@ import com.engine.rendering.Renderer;
 import com.engine.util.Functions;
 
 public class Network {
-    public static final int PORT = 4445;
-    public static final String SERVER_ADDRESS = "localhost";
+    public static final int PORT = 8888;
+    public static final String SERVER_ADDRESS = "68.179.181.230";
     public static ClientStateManager stateManager;
     public static Client client;
     private static final HashMap<TimeKeeper, Header> stateSenders = new HashMap<>();
