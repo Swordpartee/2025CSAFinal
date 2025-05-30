@@ -11,6 +11,8 @@ import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 import com.engine.util.Tuple;
@@ -22,6 +24,8 @@ public class Player extends PointController implements GameObject, Damageable {
     private final SpriteStates sprite;
     private final SpriteStates idleSprites;
 
+    private WeaponController weaponController;
+
     public Player() {
         super(new PointConfig());
 
@@ -29,12 +33,12 @@ public class Player extends PointController implements GameObject, Damageable {
         healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);
 
         sprite = new SpriteStates(
-                new Tuple<>("Front", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerFrontWalkOne(),
-                        Constants.PlayerConstants.getPlayerFrontWalkTwo())),
-                new Tuple<>("Back", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerBackWalkOne(),
-                        Constants.PlayerConstants.getPlayerBackWalkTwo())),
+                new Tuple<>("Down", new CycleAnimateable(getPoint(), 25,
+                        Constants.PlayerConstants.getPlayerDownWalkOne(),
+                        Constants.PlayerConstants.getPlayerDownWalkTwo())),
+                new Tuple<>("Up", new CycleAnimateable(getPoint(), 25,
+                        Constants.PlayerConstants.getPlayerUpWalkOne(),
+                        Constants.PlayerConstants.getPlayerUpWalkTwo())),
                 new Tuple<>("Left", new CycleAnimateable(getPoint(), 25,
                         Constants.PlayerConstants.getPlayerLeftWalkOne(),
                         Constants.PlayerConstants.getPlayerLeftSprite())),
@@ -43,10 +47,12 @@ public class Player extends PointController implements GameObject, Damageable {
                         Constants.PlayerConstants.getPlayerRightSprite())));
 
         idleSprites = new SpriteStates(
-                new Tuple<>("Front", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerFrontSprite())),
-                new Tuple<>("Back", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerBackSprite())),
+                new Tuple<>("Down", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerDownSprite())),
+                new Tuple<>("Up", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerUpSprite())),
                 new Tuple<>("Left", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerLeftSprite())),
                 new Tuple<>("Right", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerRightSprite())));
+        
+        this.weaponController = new WeaponController(super.getPoint(), sprite, idleSprites);
     }
     
     @Override
@@ -62,11 +68,11 @@ public class Player extends PointController implements GameObject, Damageable {
             if ((int) controller.getVelocity().getX() == 0) {
                 // Moving vertically
                 if (controller.getVelocity().getY() > 0) {
-                    sprite.setCurrentState("Front");
-                    idleSprites.setCurrentState("Front");
+                    sprite.setCurrentState("Down");
+                    idleSprites.setCurrentState("Down");
                 } else {
-                    sprite.setCurrentState("Back");
-                    idleSprites.setCurrentState("Back");
+                    sprite.setCurrentState("Up");
+                    idleSprites.setCurrentState("Up");
                 }
             } else {
                 // Moving horizontally
@@ -79,6 +85,10 @@ public class Player extends PointController implements GameObject, Damageable {
                 }
             }
         }
+
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
+            weaponController.swing();
+        });
     }
 
     @Override
@@ -89,7 +99,6 @@ public class Player extends PointController implements GameObject, Damageable {
         } else {
             idleSprites.draw(graphic);
         }
-
     }
 
     public void heal(int amount) {
