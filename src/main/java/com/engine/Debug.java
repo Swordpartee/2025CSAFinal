@@ -37,8 +37,8 @@ public class Debug {
 
         Renderer.addGameObjects(new Player());
 
-        Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
-            Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
+        Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerUpSprite(),
+            Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerDownSprite(),
                 Constants.PlayerConstants.getPlayerLeftSprite()));
 
         HealthDisplay healthDisplay = new HealthDisplay(300, 300, 10);

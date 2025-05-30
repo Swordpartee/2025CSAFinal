@@ -15,20 +15,20 @@ public class Constants {
             return new Image();
         }
 
-        public static Image getPlayerFrontWalkOne() {
-            return new Image("src/main/resources/playerfrontwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownWalkOne() {
+            return new Image("src/main/resources/playerdownwalk1.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerFrontWalkTwo() {
-            return new Image("src/main/resources/playerfrontwalk2.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownWalkTwo() {
+            return new Image("src/main/resources/playerdownwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerBackWalkOne() {
-            return new Image("src/main/resources/playerbackwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpWalkOne() {
+            return new Image("src/main/resources/playerupwalk1.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerBackWalkTwo() {
-            return new Image("src/main/resources/playerbackwalk2.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpWalkTwo() {
+            return new Image("src/main/resources/playerupwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
         public static Image getPlayerLeftWalkOne() {
@@ -39,12 +39,12 @@ public class Constants {
             return new Image("src/main/resources/playerrightwalk.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerFrontSprite() {
-            return new Image("src/main/resources/playerfrontstand.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownSprite() {
+            return new Image("src/main/resources/playerdownstand.spr", PLAYER_SPRITE_SCALE);
         }
         
-        public static Image getPlayerBackSprite() {
-            return new Image("src/main/resources/playerbackstand.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpSprite() {
+            return new Image("src/main/resources/playerupstand.spr", PLAYER_SPRITE_SCALE);
         }
         
         public static Image getPlayerLeftSprite() {
