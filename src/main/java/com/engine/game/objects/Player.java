@@ -84,9 +84,9 @@ public class Player extends PointController implements GameObject, Damageable {
             }
         }
 
-        if (RenderListener.isKeyPressed(EventCode.E)) {
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.E, () -> {
             weaponController.swing();
-        }
+        });
     }
 
     @Override

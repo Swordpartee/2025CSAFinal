@@ -1,8 +1,11 @@
 package com.engine;
 
+import java.awt.Point;
+
 import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.util.Image;
+import com.engine.util.PointConfig;
 
 public class Constants {
     public static class PlayerConstants {
@@ -70,8 +73,8 @@ public class Constants {
             return new Image();
         }
 
-        public static InstanceAnimateable getSwing(double x, double y, int angle) {
-            return new InstanceAnimateable(x, y, 5, getBlank(),
+        public static InstanceAnimateable getSwing(PointConfig anchor, int angle) {
+            return new InstanceAnimateable(anchor, 5, getBlank(),
                 new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, angle),
                 new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, angle),
                 new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, angle),

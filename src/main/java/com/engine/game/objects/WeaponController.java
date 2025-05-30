@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import com.engine.Constants;
+import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
@@ -33,26 +34,28 @@ public class WeaponController extends PointController implements GameObject {
 
         this.velocity = velocity;
 
-        this.downSwing = Constants.WeaponConstants.getSwing(0, 105, 90);
-        this.upSwing = Constants.WeaponConstants.getSwing(0, -105, -90);
-        this.leftSwing = Constants.WeaponConstants.getSwing(-105, 0, -180);
-        this.rightSwing = Constants.WeaponConstants.getSwing(105, 0, 0);
+        this.downSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0.0, 105.0), 90);
+        this.upSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0, -105), -90);
+        this.leftSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), -105, 0), -180);
+        this.rightSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 105, 0), 0);
+
+        Renderer.addDrawables(downSwing, upSwing, leftSwing, rightSwing);
     }
 
     /**
      * Sets the current animation state based on the velocity of the player.
      */
     public void swing() {
-        if (velocity.getY() < 0) {
+        if (velocity.getY() > 0.1) {
             downSwing.run();
             currentSwingDirection = "Down";
-        } else if (velocity.getY() > 0) {
+        } else if (velocity.getY() < -0.1) {
             upSwing.run();
             currentSwingDirection = "Up";
-        } else if (velocity.getX() < 0) {
+        } else if (velocity.getX() < -0.1) {
             leftSwing.run();
             currentSwingDirection = "Left";
-        } else if (velocity.getX() > 0) {
+        } else if (velocity.getX() > 0.1) {
             rightSwing.run();
             currentSwingDirection = "Right";
         } else {
@@ -69,7 +72,8 @@ public class WeaponController extends PointController implements GameObject {
                 case "Right":
                     rightSwing.run();
                     break;
-                default:    
+                default:  
+                    
                     // No swing direction set, do nothing
                     return;
             }
