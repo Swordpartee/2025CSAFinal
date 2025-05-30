@@ -1,11 +1,13 @@
 package com.engine.game.objects;
 
 import java.awt.Graphics;
+import java.awt.image.renderable.RenderContext;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import com.engine.Constants;
 import com.engine.game.collision.Damageable;
+import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
@@ -99,28 +101,31 @@ public class Player extends PointController implements GameObject, Damageable {
         }
     }
 
-    public void heal() {
-        healthDisplay.heal();
+    public void heal(int amount) {
+        healthDisplay.heal(amount);
     }
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        controller.setPosition(dataSegments.readInt(), dataSegments.readInt());
+        // throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dataSegments.writeInt((int) getX());
+        dataSegments.writeInt((int) getY());
+        // throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void onNetworkCreate() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Renderer.addDrawables(this);
     }
 
     @Override
     public void onNetworkDestroy() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Renderer.removeDrawables(this);
     }
 
 }

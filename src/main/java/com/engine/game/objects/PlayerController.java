@@ -1,5 +1,7 @@
 package com.engine.game.objects;
 
+import java.util.ArrayList;
+
 import com.engine.Constants;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
@@ -31,16 +33,29 @@ public class PlayerController extends PointController implements Updateable, Col
 
     @Override
     public void update() {
-        if (RenderListener.isKeyPressed(EventCode.SPACE)) {
-            NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
-                    new Projectile(getPoint().copy(), 10, true));
-            Renderer.addGameObjects(projectile.getValue());
-            projectile.getValue().getVelocity().setX(1);
-            try {
-                projectile.sendSelf();
-            } catch (Exception e) {
-            }
-        }
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
+            ArrayList<Projectile> projectiles = new ArrayList<>();
+
+            int numProjectiles = 3; // Number of projectiles to fire
+            for (int i = 0; i < numProjectiles; i++) {
+                NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
+                    new Projectile(getPoint().copy(), true));
+                projectile.getValue().getVelocity().setX(10);
+                // Evenly space projectiles around the player's Y center
+                double spacing = 50; // pixels between projectiles
+                double centerY = getPoint().getY();
+                double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
+                projectile.getValue().getPosition().setY(centerY + offset);
+                try {
+                    projectile.sendSelf();
+                    projectiles.add(projectile.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } 
+
+            Renderer.addGameObjects(projectiles.toArray(GameObject[]::new));
+        });
         
 
         // Set velocity based on input
