@@ -52,7 +52,7 @@ public class Player extends PointController implements GameObject, Damageable {
                 new Tuple<>("Left", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerLeftSprite())),
                 new Tuple<>("Right", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerRightSprite())));
         
-        this.weaponController = new WeaponController(super.getPoint(), controller.getVelocity());
+        this.weaponController = new WeaponController(super.getPoint(), sprite, idleSprites);
     }
     
     @Override

@@ -14,25 +14,21 @@ import com.engine.util.PointController;
 import com.engine.util.Tuple;
 
 public class WeaponController extends PointController implements GameObject {
-    private Point velocity;
-
     private final InstanceAnimateable downSwing;
     private final InstanceAnimateable upSwing;
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
 
-    private String currentSwingDirection = "";
+    private SpriteStates currentPlayerWalk;
+    private SpriteStates currentPlayerIdle;
 
     /**
      * Creates a WeaponController that manages the weapon's swing and idle animations.
      * It's meant to be used in conjunction with the player to handle.
      * @param pointConfig the set up position of the weapon
-     * @param velocity the velocity point from the player to be used for swing direction
      */
-    public WeaponController(PointConfig pointConfig, Point velocity) {
+    public WeaponController(PointConfig pointConfig, SpriteStates pWalk, SpriteStates pIdle) {
         super(pointConfig);
-
-        this.velocity = velocity;
 
         this.downSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0.0, 105.0), 90);
         this.upSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0, -105), -90);
@@ -40,43 +36,23 @@ public class WeaponController extends PointController implements GameObject {
         this.rightSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 105, 0), 0);
 
         Renderer.addDrawables(downSwing, upSwing, leftSwing, rightSwing);
+
+        this.currentPlayerWalk = pWalk;
+        this.currentPlayerIdle = pIdle;
     }
 
     /**
      * Sets the current animation state based on the velocity of the player.
      */
     public void swing() {
-        if (velocity.getY() > 0.1) {
+        if (currentPlayerWalk.getCurrentState().equals("Down") || currentPlayerWalk.getCurrentState().equals("Donw")) {
             downSwing.run();
-            currentSwingDirection = "Down";
-        } else if (velocity.getY() < -0.1) {
+        } else if (currentPlayerWalk.getCurrentState().equals("Up") || currentPlayerWalk.getCurrentState().equals("Up")) {
             upSwing.run();
-            currentSwingDirection = "Up";
-        } else if (velocity.getX() < -0.1) {
+        } else if (currentPlayerWalk.getCurrentState().equals("Left") || currentPlayerWalk.getCurrentState().equals("Left")) {
             leftSwing.run();
-            currentSwingDirection = "Left";
-        } else if (velocity.getX() > 0.1) {
+        } else if (currentPlayerWalk.getCurrentState().equals("Right") || currentPlayerWalk.getCurrentState().equals("Right")) {
             rightSwing.run();
-            currentSwingDirection = "Right";
-        } else {
-            switch (currentSwingDirection) {
-                case "Up":
-                    upSwing.run();
-                    break;
-                case "Down":
-                    downSwing.run();
-                    break;
-                case "Left":
-                    leftSwing.run();
-                    break;
-                case "Right":
-                    rightSwing.run();
-                    break;
-                default:  
-                    
-                    // No swing direction set, do nothing
-                    return;
-            }
         }
     }
 
