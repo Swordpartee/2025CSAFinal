@@ -27,8 +27,6 @@ public class Debug {
 
         Player player = new Player();
 
-        // Renderer.addGameObjects(player);
-
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.U, () -> {
             player.damage(1);
         });
@@ -36,7 +34,18 @@ public class Debug {
             player.heal(1);
         });
 
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
+            player.swing();
+        });
+
         Renderer.addGameObjects(player);
+
+        Player player1 = new Player();
+
+        player1.setPosition(300, 300);
+
+        Renderer.addDrawables(player1);
+        Renderer.addDamageable(player1);
 
         Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerUpSprite(),
             Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerDownSprite(),

@@ -1,28 +1,21 @@
 package com.engine.game.objects;
 
 import java.awt.Graphics;
-import java.awt.image.renderable.RenderContext;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import com.engine.Constants;
+import com.engine.game.collision.Collider;
 import com.engine.game.collision.Damageable;
 import com.engine.rendering.Renderer;
-import com.engine.rendering.drawings.CycleAnimateable;
-import com.engine.rendering.drawings.Sprite;
-import com.engine.rendering.drawings.SpriteStates;
-import com.engine.rendering.io.EventCode;
-import com.engine.rendering.io.RenderListener;
+import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
-import com.engine.util.Tuple;
 
 public class Player extends PointController implements GameObject, Damageable {
     private final PlayerController controller;
     private final HealthDisplay healthDisplay;
     private final PlayerRenderer sprite;
-
-    private WeaponController weaponController;
+    private final WeaponController weaponController;
 
     public Player() {
         super(new PointConfig());
@@ -30,6 +23,7 @@ public class Player extends PointController implements GameObject, Damageable {
         controller = new PlayerController(getPoint());
         healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);
         sprite = new PlayerRenderer(getPoint(), controller.getVelocity());
+        weaponController = new WeaponController(getPoint(), controller.getVelocity());
 
     }
 
@@ -48,11 +42,16 @@ public class Player extends PointController implements GameObject, Damageable {
     @Override
     public void draw(Graphics graphic) {
         healthDisplay.draw(graphic);
-        sprite.draw(graphic);    
+        sprite.draw(graphic);
+        weaponController.draw(graphic);
     }
 
     public void heal(int amount) {
         healthDisplay.heal(amount);
+    }
+
+    public void swing() {
+        weaponController.swing();
     }
 
     @Override
@@ -75,6 +74,24 @@ public class Player extends PointController implements GameObject, Damageable {
     @Override
     public void onNetworkDestroy() throws Exception {
         Renderer.removeDrawables(this);
+    }
+
+    @Override
+    public boolean colliding(Collider other) {
+        if (other == null) {
+            return false;
+        }
+
+        return controller.colliding(other);
+    }
+
+    @Override
+    public boolean colliding(Point point) {
+        if (point == null) {
+            return false;
+        }
+
+        return controller.colliding(point);
     }
 
 }
