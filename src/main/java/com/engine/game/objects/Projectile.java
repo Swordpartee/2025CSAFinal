@@ -34,22 +34,22 @@ public class Projectile extends PointController implements GameObject {
     public Projectile(PointConfig position, boolean filled) {
         super(position);
         this.velocity = new Point(0, 0);
-        this.drawable = new CycleAnimateable(position, 10,
-            new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
-        // this.drawable = new CycleAnimateable(position, 5,
-        //     new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-        //     new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        // this.drawable = new CycleAnimateable(position, 10,
+        //     new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        this.drawable = new CycleAnimateable(position, 5,
+            new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
     }
 
     public Projectile() {
