@@ -11,6 +11,8 @@ import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 import com.engine.util.Tuple;
@@ -18,37 +20,19 @@ import com.engine.util.Tuple;
 public class Player extends PointController implements GameObject, Damageable {
     private final PlayerController controller;
     private final HealthDisplay healthDisplay;
+    private final PlayerRenderer sprite;
 
-    private final SpriteStates sprite;
-    private final SpriteStates idleSprites;
+    private WeaponController weaponController;
 
     public Player() {
         super(new PointConfig());
 
-        this.controller = new PlayerController(getPoint());
+        controller = new PlayerController(getPoint());
         healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);
+        sprite = new PlayerRenderer(getPoint(), controller.getVelocity());
 
-        sprite = new SpriteStates(
-                new Tuple<>("Front", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerFrontWalkOne(),
-                        Constants.PlayerConstants.getPlayerFrontWalkTwo())),
-                new Tuple<>("Back", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerBackWalkOne(),
-                        Constants.PlayerConstants.getPlayerBackWalkTwo())),
-                new Tuple<>("Left", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerLeftWalkOne(),
-                        Constants.PlayerConstants.getPlayerLeftSprite())),
-                new Tuple<>("Right", new CycleAnimateable(getPoint(), 25,
-                        Constants.PlayerConstants.getPlayerRightWalkOne(),
-                        Constants.PlayerConstants.getPlayerRightSprite())));
-
-        idleSprites = new SpriteStates(
-                new Tuple<>("Front", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerFrontSprite())),
-                new Tuple<>("Back", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerBackSprite())),
-                new Tuple<>("Left", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerLeftSprite())),
-                new Tuple<>("Right", new Sprite(super.getPoint(), Constants.PlayerConstants.getPlayerRightSprite())));
     }
-    
+
     @Override
     public void damage(int damage) {
         healthDisplay.damage(damage);
@@ -58,38 +42,13 @@ public class Player extends PointController implements GameObject, Damageable {
     public void update() {
         controller.update();
         healthDisplay.update();
-        if ((int) controller.getVelocity().getX() != 0 || (int) controller.getVelocity().getY() != 0) {
-            if ((int) controller.getVelocity().getX() == 0) {
-                // Moving vertically
-                if (controller.getVelocity().getY() > 0) {
-                    sprite.setCurrentState("Front");
-                    idleSprites.setCurrentState("Front");
-                } else {
-                    sprite.setCurrentState("Back");
-                    idleSprites.setCurrentState("Back");
-                }
-            } else {
-                // Moving horizontally
-                if (controller.getVelocity().getX() < 0) {
-                    sprite.setCurrentState("Left");
-                    idleSprites.setCurrentState("Left");
-                } else {
-                    sprite.setCurrentState("Right");
-                    idleSprites.setCurrentState("Right");
-                }
-            }
-        }
+        sprite.update();
     }
 
     @Override
     public void draw(Graphics graphic) {
         healthDisplay.draw(graphic);
-        if ((int) controller.getVelocity().getX() != 0 || (int) controller.getVelocity().getY() != 0) {
-            sprite.draw(graphic);
-        } else {
-            idleSprites.draw(graphic);
-        }
-
+        sprite.draw(graphic);    
     }
 
     public void heal(int amount) {
@@ -98,7 +57,6 @@ public class Player extends PointController implements GameObject, Damageable {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        controller.setPosition(dataSegments.readInt(), dataSegments.readInt());
         // throw new UnsupportedOperationException("Not supported yet.");
     }
 

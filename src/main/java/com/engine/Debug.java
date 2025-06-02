@@ -7,6 +7,7 @@ import com.engine.game.objects.GameRect;
 import com.engine.game.objects.HealthDisplay;
 import com.engine.game.objects.Player;
 import com.engine.rendering.Renderer;
+import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
@@ -37,8 +38,8 @@ public class Debug {
 
         Renderer.addGameObjects(player);
 
-        Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerBackSprite(),
-            Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerFrontSprite(),
+        Renderer.addDrawables(new CycleAnimateable(400, 400, 12, Constants.PlayerConstants.getPlayerUpSprite(),
+            Constants.PlayerConstants.getPlayerRightSprite(), Constants.PlayerConstants.getPlayerDownSprite(),
                 Constants.PlayerConstants.getPlayerLeftSprite()));
 
         HealthDisplay healthDisplay = new HealthDisplay(300, 300, 10);
@@ -151,13 +152,12 @@ public class Debug {
         //     swing.run();
         // }));
 
-        Renderer.addDrawables(new Sprite(50, 400, new Image("src/main/resources/leftswing.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
-
-        Renderer.addDrawables(new CycleAnimateable(300, 100, 3, new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)));
+        
+        Renderer.addDrawables(new CycleAnimateable(150, 100, 3, new Image("src/main/resources/rightswing1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE, -90),
+            new Image("src/main/resources/rightswing2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE, -90),
+            new Image("src/main/resources/rightswing3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE, -90),
+            new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE, -90),
+            new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE, -90)));
 
         Renderer.start();
     }
