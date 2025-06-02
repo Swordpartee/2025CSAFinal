@@ -205,6 +205,9 @@ public class Renderer {
     public static void addDamageable(Damageable... ds) {
         damageables.addAll(Arrays.asList(ds));
     }
+    public static void removeDamageable(Damageable... ds) {
+        damageables.removeAll(Arrays.asList(ds));
+    }
 
     public static ArrayList<Damageable> getDamageables() {
         return damageables;

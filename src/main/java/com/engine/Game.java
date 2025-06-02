@@ -14,6 +14,8 @@ import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.DrawerText;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.Image;
 import com.engine.util.PointConfig;
 
@@ -119,9 +121,9 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        // Network.connect();
+        Network.connect();
         Renderer.start();
-        // loginAndJoinRoom();
+        loginAndJoinRoom();
 
         /** 
          * Creating the states here:
@@ -139,14 +141,20 @@ public class Game {
          *   - Not much to say here
          */
         Renderer.addGameObjects(player.getValue());
+        Renderer.addDamageable(player.getValue());
+
+         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
+            player.getValue().swing();
+        });
+
 
 
         /**
          * Adding the state senders:
          *   - These are the states that will be sent to the server at regular intervals (of your choice).
          */
-        // Network.addStateSender(Header.PlayerState, 0);
-        // Network.addStateSender(Header.ProjectileState, 1000);
+        Network.addStateSender(Header.PlayerState, 0);
+        Network.addStateSender(Header.ProjectileState, 1000);
         
         /**
          * On game close callback:
@@ -154,7 +162,7 @@ public class Game {
          */
         Renderer.setOnGameClose(() -> {
             try {
-                // Network.disconnect(); // Disconnect from the server
+                Network.disconnect(); // Disconnect from the server
             } catch (Exception e) {
                 e.printStackTrace();
             }
