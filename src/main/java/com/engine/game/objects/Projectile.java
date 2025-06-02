@@ -1,21 +1,22 @@
 package com.engine.game.objects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+import com.engine.Constants;
 import com.engine.network.Network;
 import com.engine.rendering.Renderer;
-import com.engine.rendering.drawings.DrawerCircle;
+import com.engine.rendering.drawings.CycleAnimateable;
+import com.engine.rendering.drawings.Drawable;
+import com.engine.util.Image;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 
 public class Projectile extends PointController implements GameObject {
 
-    private final DrawerCircle drawable;
-    private double rad;
+    private final Drawable drawable;
     private final Point velocity;
 
     public Point getVelocity() {
@@ -30,15 +31,29 @@ public class Projectile extends PointController implements GameObject {
      * @param height The height of the projectile.
      * @param filled Indicates if the projectile is filled or not.
      */
-    public Projectile(PointConfig position, double rad, boolean filled) {
+    public Projectile(PointConfig position, boolean filled) {
         super(position);
         this.velocity = new Point(0, 0);
-        this.rad = rad;
-        this.drawable = new DrawerCircle(getPoint(), rad, filled, Color.BLUE);
+        this.drawable = new CycleAnimateable(position, 10,
+            new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        // this.drawable = new CycleAnimateable(position, 5,
+        //     new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+        //     new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
     }
 
     public Projectile() {
-        this(new PointConfig(0, 0), 10, true);
+        this(new PointConfig(0, 0), true);
     }
 
     @Override
@@ -66,8 +81,6 @@ public class Projectile extends PointController implements GameObject {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        this.rad = dataSegments.readInt();
-        this.drawable.setRadius(rad);
         this.setX(dataSegments.readInt());
         this.setY(dataSegments.readInt());
         this.velocity.setX(dataSegments.readInt());
@@ -76,7 +89,6 @@ public class Projectile extends PointController implements GameObject {
 
     @Override
     public void serialize(DataOutputStream dataSegments) throws Exception {
-        dataSegments.writeInt((int) rad);
         dataSegments.writeInt((int) getX());
         dataSegments.writeInt((int) getY());
         dataSegments.writeInt((int) velocity.getX());
@@ -97,7 +109,6 @@ public class Projectile extends PointController implements GameObject {
     public String toString() {
         return "Projectile{" +
                 "position=" + getPosition() +
-                ", rad=" + rad +
                 ", velocity=" + velocity +
                 '}';
     }
