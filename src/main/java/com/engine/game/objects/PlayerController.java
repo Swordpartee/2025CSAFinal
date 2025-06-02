@@ -33,7 +33,7 @@ public class PlayerController extends PointController implements Updateable, Col
 
     @Override
     public void update() {
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
             ArrayList<Projectile> projectiles = new ArrayList<>();
 
             int numProjectiles = 3; // Number of projectiles to fire
