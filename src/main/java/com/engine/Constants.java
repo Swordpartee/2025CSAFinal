@@ -1,6 +1,11 @@
 package com.engine;
 
+import java.awt.Point;
+
+import com.engine.rendering.drawings.Animateable;
+import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.util.Image;
+import com.engine.util.PointConfig;
 
 public class Constants {
     public static class PlayerConstants {
@@ -13,20 +18,20 @@ public class Constants {
             return new Image();
         }
 
-        public static Image getPlayerFrontWalkOne() {
-            return new Image("src/main/resources/playerfrontwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownWalkOne() {
+            return new Image("src/main/resources/playerdownwalk1.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerFrontWalkTwo() {
-            return new Image("src/main/resources/playerfrontwalk2.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownWalkTwo() {
+            return new Image("src/main/resources/playerdownwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerBackWalkOne() {
-            return new Image("src/main/resources/playerbackwalk1.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpWalkOne() {
+            return new Image("src/main/resources/playerupwalk1.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerBackWalkTwo() {
-            return new Image("src/main/resources/playerbackwalk2.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpWalkTwo() {
+            return new Image("src/main/resources/playerupwalk2.spr", PLAYER_SPRITE_SCALE);
         }
 
         public static Image getPlayerLeftWalkOne() {
@@ -37,12 +42,12 @@ public class Constants {
             return new Image("src/main/resources/playerrightwalk.spr", PLAYER_SPRITE_SCALE);
         }
 
-        public static Image getPlayerFrontSprite() {
-            return new Image("src/main/resources/playerfrontstand.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerDownSprite() {
+            return new Image("src/main/resources/playerdownstand.spr", PLAYER_SPRITE_SCALE);
         }
         
-        public static Image getPlayerBackSprite() {
-            return new Image("src/main/resources/playerbackstand.spr", PLAYER_SPRITE_SCALE);
+        public static Image getPlayerUpSprite() {
+            return new Image("src/main/resources/playerupstand.spr", PLAYER_SPRITE_SCALE);
         }
         
         public static Image getPlayerLeftSprite() {
@@ -68,47 +73,14 @@ public class Constants {
             return new Image();
         }
 
-        public static Image getLeftSwing1() {
-            return new Image("src/main/resources/leftswing1.spr", WEAPON_SPRITE_SCALE);
+        public static InstanceAnimateable getSwing(PointConfig anchor, int angle) {
+            return new InstanceAnimateable(anchor, 5, getBlank(),
+                new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE, angle),
+                new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE, angle));
         }
-
-        public static Image getLeftSwing2() {
-            return new Image("src/main/resources/leftswing2.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getLeftSwing3() {
-            return new Image("src/main/resources/leftswing3.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getLeftSwing4() {
-            return new Image("src/main/resources/leftswing4.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getLeftSwing5() {
-            return new Image("src/main/resources/leftswing5.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing1() {
-            return new Image("src/main/resources/rightswing1.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing2() {
-            return new Image("src/main/resources/rightswing2.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing3() {
-            return new Image("src/main/resources/rightswing3.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing4() {
-            return new Image("src/main/resources/rightswing4.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        public static Image getRightSwing5() {
-            return new Image("src/main/resources/rightswing5.spr", WEAPON_SPRITE_SCALE);
-        }
-
-        
     }
 
     public static class GameConstants {

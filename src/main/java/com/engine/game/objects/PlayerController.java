@@ -25,6 +25,7 @@ public class PlayerController extends PointController implements Updateable, Col
 
     public PlayerController(PointConfig position) {
         super(position);
+
         this.velocity = new Point(0, 0);
 
         this.collider = new RectCollider(getPoint(), Constants.PlayerConstants.PLAYER_WIDTH, Constants.PlayerConstants.PLAYER_HEIGHT);
