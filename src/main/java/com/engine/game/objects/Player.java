@@ -11,6 +11,8 @@ import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.drawings.SpriteStates;
+import com.engine.rendering.io.EventCode;
+import com.engine.rendering.io.RenderListener;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
 import com.engine.util.Tuple;
@@ -19,6 +21,8 @@ public class Player extends PointController implements GameObject, Damageable {
     private final PlayerController controller;
     private final HealthDisplay healthDisplay;
     private final PlayerRenderer sprite;
+
+    private WeaponController weaponController;
 
     public Player() {
         super(new PointConfig());
@@ -44,8 +48,7 @@ public class Player extends PointController implements GameObject, Damageable {
     @Override
     public void draw(Graphics graphic) {
         healthDisplay.draw(graphic);
-        sprite.draw(graphic);
-        
+        sprite.draw(graphic);    
     }
 
     public void heal(int amount) {
@@ -54,7 +57,6 @@ public class Player extends PointController implements GameObject, Damageable {
 
     @Override
     public void deserialize(DataInputStream dataSegments) throws Exception {
-        controller.setPosition(dataSegments.readInt(), dataSegments.readInt());
         // throw new UnsupportedOperationException("Not supported yet.");
     }
 
