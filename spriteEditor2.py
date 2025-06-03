@@ -2,6 +2,8 @@ import pygame as py
 from tkinter import Tk, filedialog
 from tkinter import Tk, filedialog
 import os
+import numpy as np
+from PIL import Image
 
 py.init()
 py.font.init()
@@ -52,6 +54,33 @@ class PixelGrid:
                             r, g, b = pixel
                             row_data.append(f"({r},{g},{b})")
                     file.write(":".join(row_data) + "\n")
+                    
+    def save_as_png(self):
+        root = Tk()
+        root.withdraw()
+        # Set default directory to the current working directory or a specific path
+        default_dir = os.path.join(os.path.dirname(__file__), "src/sprites")  # Uses the directory of the current script
+        file_path = filedialog.asksaveasfilename(
+            initialdir=default_dir,
+            defaultextension=".png",
+            filetypes=[("Image files", "*.png"), ("All files", "*.*")]
+        )
+        root.destroy()
+            
+        if file_path:
+            # Create an array for the image (RGBA)
+            img_array = np.zeros((self.height, self.width, 4), dtype=np.uint8)
+            for y in range(self.height):
+                for x in range(self.width):
+                    pixel = self.grid[y][x]
+                    if pixel is None:
+                        img_array[y, x] = [0, 0, 0, 0]  # Transparent
+                    else:
+                        r, g, b = pixel
+                        img_array[y, x] = [r, g, b, 255]  # Opaque
+
+            img = Image.fromarray(img_array, 'RGBA')
+            img.save(file_path)
                 
     def load_sprite(self):
         root = Tk()
@@ -230,6 +259,8 @@ class Sidebar:
         # Draw save/load buttons
         current_y = self._draw_button(screen, x, current_y, "Save", (220, 220, 220), grid.save_sprite)
         current_y = self._draw_button(screen, x, current_y, "Load", (220, 220, 220), grid.load_sprite)
+
+        current_y = self._draw_button(screen, x, current_y, "To png", (220, 220, 220), grid.save_as_png)
 
     def _draw_section(self, screen, x, y, title, draw_func):
         """Draw a section with a title and content"""
