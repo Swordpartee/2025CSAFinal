@@ -1,8 +1,5 @@
 package com.engine;
 
-import java.awt.Point;
-
-import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
 import com.engine.util.Image;
 import com.engine.util.PointConfig;
