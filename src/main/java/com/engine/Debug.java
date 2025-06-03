@@ -7,11 +7,9 @@ import com.engine.game.objects.GameRect;
 import com.engine.game.objects.HealthDisplay;
 import com.engine.game.objects.Player;
 import com.engine.rendering.Renderer;
-import com.engine.rendering.drawings.Animateable;
 import com.engine.rendering.drawings.Background;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.InstanceAnimateable;
-import com.engine.rendering.drawings.Sprite;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Image;
@@ -71,26 +69,90 @@ public class Debug {
             new Image("src/main/resources/rightswing4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/rightswing5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
-        CycleAnimateable fireball = new CycleAnimateable(100, 100, 5,
-            new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/fireball/fireball10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+        // CycleAnimateable bow = new CycleAnimateable(100, 100, 1,
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
 
-        CycleAnimateable arrow = new CycleAnimateable(200, 200, 10,
+        //     new Image("src/main/resources/bow/bowpull1.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull1.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull1.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull1.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull2.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull2.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull2.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull2.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull3.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull3.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull3.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull3.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull4.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull4.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull4.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull4.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull5.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull5.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull5.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull5.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull6.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+
+        //     new Image("src/main/resources/bow/bowpull7.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bowpull8.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     // new Image("src/main/resources/bow/bowpull9.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     // new Image("src/main/resources/bow/bowpull10.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     // new Image("src/main/resources/bow/bowpull11.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE),
+        //     new Image("src/main/resources/bow/bow.spr", Constants.WeaponConstants.WEAPON_SPRITE_SCALE)
+        // );
+
+        CycleAnimateable explosion = new CycleAnimateable(200, 200, 1,
+            new Image("src/main/resources/explosion/explosion1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion4.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion5.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion6.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion7.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion8.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion9.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion10.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion11.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion12.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion13.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion14.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
+            new Image("src/main/resources/explosion/explosion15.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE)
+        );
+
+        CycleAnimateable arrow = new CycleAnimateable(100, 100, 10,
             new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
 
         Renderer.addDrawables(swing);
-        Renderer.addDrawables(fireball);
+        Renderer.addDrawables(explosion);
         Renderer.addDrawables(arrow);
         
         // Renderer.addUIElements(new Button(player, () -> {

@@ -10,61 +10,101 @@ import com.engine.game.collision.Damageable;
 import com.engine.game.collision.RectCollider;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.InstanceAnimateable;
-import com.engine.rendering.drawings.Sprite;
-import com.engine.rendering.drawings.SpriteStates;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.PointController;
-import com.engine.util.Tuple;
 
 public class WeaponController extends PointController implements GameObject {
-    private final Point velocity;
+    public enum SwingDirection {
+        UP, DOWN, LEFT, RIGHT;
+
+        public static SwingDirection fromVelo(Point point) {
+            if (point.getY() < -0.1) {
+                // System.out.println("Swinging UP");
+                return UP;
+            } else if (point.getY() > 0.1) {
+                // System.out.println("Swinging DOWN");
+                return DOWN;
+            } else if (point.getX() < -0.1) {
+                // System.out.println("Swinging LEFT");
+                return LEFT;
+            } else {
+                // System.out.println("Swinging RIGHT");
+                return RIGHT;
+            }
+        }
+
+        public static SwingDirection fromInt(int direction) {
+            switch (direction) {
+                case 0:
+                    // System.out.println("Swinging UP");
+                    return UP;
+                case 1:
+                    // System.out.println("Swinging DOWN");
+                    return DOWN;
+                case 2:
+                    // System.out.println("Swinging LEFT");
+                    return LEFT;
+                case 3:
+                    // System.out.println("Swinging RIGHT");
+                    return RIGHT;
+                default:
+                    throw new IllegalArgumentException("Invalid direction: " + direction);
+            }
+
+        }
+    }
 
     private final InstanceAnimateable downSwing;
     private final InstanceAnimateable upSwing;
     private final InstanceAnimateable leftSwing;
     private final InstanceAnimateable rightSwing;
 
+    private final Damageable ignore; // Damageable to ignore when swinging
+
     /**
      * Creates a WeaponController that manages the weapon's swing and idle animations.
      * It's meant to be used in conjunction with the player to handle.
      * @param pointConfig the set up position of the weapon
      */
-    public WeaponController(PointConfig pointConfig, Point velocity) {
+    public WeaponController(PointConfig pointConfig, Damageable ignore) {
         super(pointConfig);
-
-        this.velocity = velocity;
 
         this.downSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0.0, 105.0), 90);
         this.upSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0, -105), -90);
         this.leftSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), -105, 0), -180);
         this.rightSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 105, 0), 0);
 
+        this.ignore = ignore;
     }
 
     /**
      * Sets the current animation state based on the velocity of the player.
      */
-    public void swing() {
-        Collider collider = new Collider() {
-        };
+    public void swing(SwingDirection direction) {
+        Collider collider = null;
         
-        if ((int) velocity.getY() > 0) {
+        if (downSwing.isRunning() || upSwing.isRunning() || leftSwing.isRunning() || rightSwing.isRunning()) {
+            // If any swing is already running, do not initiate a new swing
+            return;
+        }
+
+        if (direction == SwingDirection.DOWN) {
             downSwing.run();
             collider = new RectCollider(getPoint().createOffset(0, 105), 112, 112);
-        } else if ((int) velocity.getY() < 0) {
+        } else if (direction == SwingDirection.UP) {
             upSwing.run();
             collider = new RectCollider(getPoint().createOffset(0, -105), 112, 112);
-        } else if ((int) velocity.getX() < 0) {
+        } else if (direction == SwingDirection.LEFT) {
             leftSwing.run();
             collider = new RectCollider(getPoint().createOffset(-105, 0), 112, 112);
-        } else if ((int) velocity.getX() > 0) {
+        } else if (direction == SwingDirection.RIGHT) {
             rightSwing.run();
             collider = new RectCollider(getPoint().createOffset(105, 0), 112, 112);
         }
 
         for (Damageable c : Renderer.getDamageables()) {
-            if (c.colliding(collider) ) {
+            if (c != this.ignore && c.colliding(collider) ) {
                 c.damage(1);
             }
         }

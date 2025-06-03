@@ -207,6 +207,21 @@ public class ClientStateManager {
             }
         }
     }
+    
+    /**
+     * Sends a state to the server to be deleted by a value given
+     * @param state : The state to delete.
+     * @throws Exception
+     */
+    public <T> void sendStateByValue(T value) throws Exception {
+        INetState<?>[] states = getStatesOfType(value.getClass());
+        for (INetState<?> s : states) {
+            if (s.getControlMode() != ControlMode.SERVER && s.getValue().equals(value)) {
+                sendState(s);
+                return;
+            }
+        }
+    }
 
     /**
      * Sends an array of states to the server to be deleted with dense session packets.

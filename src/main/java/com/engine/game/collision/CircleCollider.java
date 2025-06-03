@@ -1,16 +1,29 @@
 package com.engine.game.collision;
 
+import java.awt.Color;
+
+import com.engine.rendering.drawings.Drawable;
+import com.engine.rendering.drawings.DrawerCircle;
 import com.engine.util.Circle;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 
 public class CircleCollider extends Circle implements Collider {
+    
+    private final Drawable debugDrawable;
+
     /**
      * Creates a new circle collider
      * @param circle the circle to use as the collider
      */
     public CircleCollider(PointConfig center, double radius) {
         super(center, radius);
+        this.debugDrawable = new DrawerCircle(center, radius, false, Color.RED);
+    }
+
+    @Override
+    public Drawable getDebugDrawable() {
+        return debugDrawable;
     }
 
     @Override

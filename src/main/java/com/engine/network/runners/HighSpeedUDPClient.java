@@ -6,8 +6,8 @@ import java.net.*;
 public class HighSpeedUDPClient {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        String serverIp = "127.0.0.1"; // Change to your server's IP
-        int serverPort = 4445;
+        String serverIp = "68.179.181.230"; // Change to your server's IP
+        int serverPort = 8888;
         int payloadSize = 128; // bytes per packet
         int totalPackets = 1_000_000_000; // total number of packets to send
         byte[] payload = new byte[payloadSize];

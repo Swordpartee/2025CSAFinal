@@ -21,6 +21,16 @@ public class UserManager {
     private final String CONFIG_PATH = System.getenv("APPDATA") + "\\Java Server\\config.json";
     private final SecretKey CONFIG_KEY = new SecretKeySpec(Base64.getDecoder().decode(System.getenv("AES_ECLIPSE_SECRET_KEY")), "AES");
 
+    private String getConfigContent() throws Exception {
+        String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
+        if (content.isEmpty()) {
+            System.out.println("No users found!");
+            content = "{\"users\": {}}"; // Create an empty users object if the file is empty
+            Files.write(Paths.get(CONFIG_PATH), Encryption.encryptAES(content.getBytes(), CONFIG_KEY), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        return content;
+    }
+
     /**
      * Get a list of all of the users stored in the server's config file.
      * @param adminPassword
@@ -31,7 +41,8 @@ public class UserManager {
      */
     public String[] getUsers(String adminPassword, boolean sorted) throws Exception {
         if (authenticateUser("admin", adminPassword)) {
-            String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
+            String content = getConfigContent();
+            
             JSONObject json = new JSONObject(content);
             JSONObject users = json.getJSONObject("users");
 
@@ -63,7 +74,8 @@ public class UserManager {
         }
 
         if (authenticateUser("admin", password) || authenticateUser(username, password)) {
-            String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
+            String content = getConfigContent();
+            
             JSONObject json = new JSONObject(content);
             JSONObject users = json.getJSONObject("users");
 
@@ -86,7 +98,8 @@ public class UserManager {
      * @throws Exception
      */
     public boolean authenticateUser(String username, String password) throws Exception {
-        String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
+        String content = getConfigContent();
+
         JSONObject json = new JSONObject(content);
         JSONObject users = json.getJSONObject("users");
 
@@ -114,7 +127,8 @@ public class UserManager {
      */
     public boolean addUser(String username, String password) throws Exception {
         try {
-            String content = new String(Encryption.decryptAES(Files.readAllBytes(Paths.get(CONFIG_PATH)), CONFIG_KEY));
+            String content = getConfigContent();
+            
             JSONObject json = new JSONObject(content);
             JSONObject users = json.getJSONObject("users");
 

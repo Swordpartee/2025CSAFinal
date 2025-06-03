@@ -1,13 +1,25 @@
 package com.engine.game.collision;
 
+import java.awt.Color;
+
+import com.engine.rendering.drawings.Drawable;
+import com.engine.rendering.drawings.DrawerRect;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
 import com.engine.util.Rect;
 
 public class RectCollider extends Rect implements Collider {
 
+    private final Drawable debugDrawable;
+
     public RectCollider(PointConfig center, double width, double height) {
         super(center, width, height);
+        this.debugDrawable = new DrawerRect(center, width, height, false, Color.RED); // Initialize with no debug drawable
+    }
+
+    @Override
+    public Drawable getDebugDrawable() {
+        return debugDrawable;
     }
 
     @Override

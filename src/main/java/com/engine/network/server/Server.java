@@ -45,18 +45,26 @@ public class Server {
 
     /**
      * Creates a new server instance, and starts listening for incoming packets.
+     * 
+     * Steps to make sure the server runs on your machine: 
+     * 1. Make sure you have the environment variable "AES_ECLIPSE_SECRET_KEY" set to a base64 encoded AES key.
+     * 2. Make sure you have a folder at %APPDATA%\Java Server\ with an empty config.json file.
+     * 3. Run server
+     * 
      * @param recv
      * @throws Exception
      */
     public Server(RecvFunc recv) throws Exception {
         this.recv = recv;
         
-        socket = new DatagramSocket(4445);
+        socket = new DatagramSocket(8888);
         KeyPair keyPair = Encryption.generateRSAOAEPKeyPair();
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();
 
-        System.out.println(Arrays.toString(userManager.getUsers("9*A#awjd893E*jf37ug$h", false)));
+        System.out.println("Server started on port 8888...");
+
+        // System.out.println(Arrays.toString(userManager.getUsers("9*A#awjd893E*jf37ug$h", false)));
     }
 
     /**
