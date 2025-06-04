@@ -52,8 +52,6 @@ public class Game {
         Renderer.removeUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
 
 
-
-
         // Let the user choose between login and signup
         GameRect loginButtonRect = new GameRect(322, 196, 140, 56, true, Color.DARK_GRAY);
         Button loginButton = new Button(loginButtonRect, () -> {
@@ -148,7 +146,7 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        Network.connect();
+        // Network.connect("localhost", 8888);
         Renderer.start();
         loginAndJoinRoom();
 
@@ -174,6 +172,35 @@ public class Game {
             player.getValue().swing();
         });
 
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
+            player.getValue().heal(1);
+        });
+
+        // TEMP SHOOT PROJECTILES - put it somewhere else later, idk, just make it more organized
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
+            ArrayList<Projectile> projectiles = new ArrayList<>();
+
+            int numProjectiles = 3; // Number of projectiles to fire
+            for (int i = 0; i < numProjectiles; i++) {
+                NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
+                    new Projectile(player.getValue().getPoint().copy(), player.getValue()));
+                projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
+                projectile.getValue().getVelocity().setX(5);
+                // Evenly space projectiles around the player's Y center
+                double spacing = 50; // pixels between projectiles
+                double centerY = player.getValue().getPoint().getY();
+                double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
+                projectile.getValue().getPosition().setY(centerY + offset);
+                try {
+                    projectile.sendSelf();
+                    projectiles.add(projectile.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } 
+
+            Renderer.addGameObjects(projectiles.toArray(GameObject[]::new));
+        });
 
 
         /**
