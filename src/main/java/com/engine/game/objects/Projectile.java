@@ -23,6 +23,11 @@ public class Projectile extends PointController implements GameObject {
     private final Drawable drawable;
     private final Point velocity;
 
+    private boolean isSelf = true;
+    public boolean isSelf() {
+        return isSelf;
+    }
+
     private final Damageable ignore;
 
     public Point getVelocity() {
@@ -48,6 +53,7 @@ public class Projectile extends PointController implements GameObject {
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
         // this.drawable = new CycleAnimateable(position, 5,
         //     new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
         //     new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
@@ -65,6 +71,7 @@ public class Projectile extends PointController implements GameObject {
 
     public Projectile() {
         this(new PointConfig(0, 0), null);
+        this.isSelf = false;
     }
 
     @Override

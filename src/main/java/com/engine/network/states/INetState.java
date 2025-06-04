@@ -48,6 +48,12 @@ public interface INetState<T extends INetObject> {
   void setId(String id);
 
   /**
+   * Check if the state is itself, and not from the server
+   * @return True if the state is itself, false if it is from the server
+   */
+  boolean isSelf();
+
+  /**
    * Get the data to send to the server
    * @return The byte[] of data to send to the server
    * @throws Exception

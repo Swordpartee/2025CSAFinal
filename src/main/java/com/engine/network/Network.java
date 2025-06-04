@@ -44,7 +44,9 @@ public class Network {
                     if (state == null) { continue; }
 
                     try {
-                        state.sendSelf();
+                        if (state.isSelf()) {
+                            state.sendSelf();
+                        }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

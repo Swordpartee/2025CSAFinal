@@ -15,6 +15,10 @@ public class NetState<T extends INetObject> implements INetState<T> {
     private ControlMode controlMode = ControlMode.CLIENT;
     private ClientStateManager stateManager;
 
+    private boolean isSelf = true;
+    public boolean isSelf() { return isSelf; }
+    public void setSelf(boolean isSelf) { this.isSelf = isSelf; }
+
     private T value;
 
     public static class NanoId {
@@ -65,6 +69,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
         NetState<?> netState = new NetState<>(header, csm, netObject, uuid);
         netState.setControlMode(syncMode == ControlMode.CLIENT ? ControlMode.SERVER : ControlMode.BOTH);
+        netState.setSelf(false); // This is not the state that was created by this client, so it is not self.
         
         return netState;
     }
@@ -94,6 +99,7 @@ public class NetState<T extends INetObject> implements INetState<T> {
 
         NetState<T> netState = new NetState<>(header, csm, netObject, uuid);
         netState.setControlMode(syncMode == ControlMode.CLIENT ? ControlMode.SERVER : ControlMode.BOTH);
+        netState.setSelf(false); // This is not the state that was created by this client, so it is not self.
 
         return netState;
     }
