@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.engine.util.Point;
 
@@ -28,6 +29,10 @@ public class RenderListener {
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            if (e == null || e.getButton() < 0 || e.getButton() >= mouseEvents.length) {
+                return; // Invalid button index
+            }
+
             mouseEvents[e.getButton()] = null;
 
             callBinding(EventCode.EventType.MOUSE_RELEASED, e.getButton());

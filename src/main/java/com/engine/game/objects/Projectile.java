@@ -124,7 +124,7 @@ public class Projectile extends PointController implements GameObject {
 
     @Override
     public void onNetworkDestroy() {
-        System.out.println("Destroying projectile: " + this);
+        // System.out.println("Destroying projectile: " + this);
         Renderer.removeGameObjects(this);
     }
 

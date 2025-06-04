@@ -168,22 +168,33 @@ public class Client {
      * @throws Exception
      */
     private void recvPacket() throws Exception {
-        recvBuffer = new byte[1024];
-        recvPacket = new DatagramPacket(recvBuffer, recvBuffer.length);
-        socket.receive(recvPacket);
+        if (socket == null || socket.isClosed()) {
+            return; // If the socket is closed, do not attempt to receive packets
+        }
 
-        ClientPacketData data = new ClientPacketData(recvPacket, aesSessionStarted, aesKey);
+        try {
+            recvBuffer = new byte[1024];
+            recvPacket = new DatagramPacket(recvBuffer, recvBuffer.length);
+            socket.receive(recvPacket);
 
-        processPacketData(data);
-        recv.run(data);
+            ClientPacketData data = new ClientPacketData(recvPacket, aesSessionStarted, aesKey);
 
-        // If the header a request was wait for is received, set the flag to true
-        if (waitForHeaders != null) {
-            recievedWaitForHeader = Arrays.stream(waitForHeaders)
-                .anyMatch(header -> Arrays.equals(header, data.header));
-            if (recievedWaitForHeader) {
-                waitForHeaders = null;
+            processPacketData(data);
+            recv.run(data);
+
+            // If the header a request was wait for is received, set the flag to true
+            if (waitForHeaders != null) {
+                recievedWaitForHeader = Arrays.stream(waitForHeaders)
+                    .anyMatch(header -> Arrays.equals(header, data.header));
+                if (recievedWaitForHeader) {
+                    waitForHeaders = null;
+                }
             }
+        } catch (Exception e) {
+            if (socket.isClosed()) {
+                return; // If the socket is closed, do not attempt to receive packets
+            }
+            System.err.println("Error receiving packet: " + e.getMessage());
         }
     }
 
@@ -223,6 +234,10 @@ public class Client {
      * @throws Exception
      */
     public void sendSessionPacket(byte[] header, byte[] msg) throws Exception {
+        if (socket == null || socket.isClosed()) {
+            return; // If the socket is closed, do not attempt to send packets
+        }
+
         if (loggedIn && sessionKey != null) {
             long time = (long) (Functions.getTime() / 1000);
             byte[] hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
@@ -258,43 +273,6 @@ public class Client {
         while (!recievedWaitForHeader) {
             Thread.sleep(100);
         }
-    }
-
-    /**
-     * Sends a dense session packet (a packet with multiple msgs for a single header) to the server.
-     * This packet is encrypted with AES, and uses an HMAC token if you have already logged in to ensure the server still knows it's you.
-     * @param header : the header of the packet
-     * @param msgs : the messages to send
-     * @throws Exception
-     */
-    public void sendDenseSessionPacket(byte[] header, byte[][] msgs) throws Exception {
-        byte[] concatenatedMsgs = new byte[0];
-        for (byte[] msg : msgs) {
-            byte[] lengthPrefix = new byte[] { (byte) msg.length };
-            concatenatedMsgs = Encryption.concatBytes(concatenatedMsgs, lengthPrefix, msg);
-        }
-
-        byte[] hmacInfo = new byte[0];
-        if (loggedIn && sessionKey != null) {
-            long time = (long) (Functions.getTime() / 1000);
-            byte[] hmac = HMACAuthenticator.generateHMACToken(sessionKey, username, time);
-            byte[] timeBytes = Convert.ltob(time);
-            hmacInfo = Encryption.concatBytes(new byte[] { (byte) timeBytes.length }, timeBytes, new byte[] { (byte) hmac.length }, hmac);
-        }
-
-        // Partition the concatenated messages into smaller segments (at the most 1024 bytes each)
-        int maxPacketSize = 1024 - hmacInfo.length;
-        int totalLength = concatenatedMsgs.length;
-        int offset = 0;
-        while (offset < totalLength) {
-            int length = Math.min(maxPacketSize, totalLength - offset);
-            byte[] segment = Encryption.concatBytes(hmacInfo, Arrays.copyOfRange(concatenatedMsgs, offset, offset + length));
-            byte[] encryptedSegment = Encryption.encryptAES(Encryption.concatBytes(header, segment), aesKey);
-            DatagramPacket sendPacket = new DatagramPacket(encryptedSegment, encryptedSegment.length, address, this.port);
-            socket.send(sendPacket);
-            offset += length;
-        }
-        return;
     }
 
     /**
@@ -361,6 +339,12 @@ public class Client {
         if (executor != null) {
             executor.shutdown();
         }
+
+        while (!executor.isShutdown()) {
+            // Wait for the executor to finish
+            Thread.sleep(100);
+        }
+
         socket.close();
     }
 }

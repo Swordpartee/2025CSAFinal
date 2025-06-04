@@ -19,6 +19,10 @@ public class PlayerRenderer extends PointController implements Drawable, Updatea
     private final SpriteStates sprite;
     private final SpriteStates idleSprites;
 
+    private boolean idle = true;
+    public void setIdle(boolean idle) { this.idle = idle; }
+    public boolean isIdle() { return idle; }
+
     public PlayerRenderer(PointConfig position, Point velocity) {
         super(position);
         this.velocity = velocity;
@@ -67,14 +71,20 @@ public class PlayerRenderer extends PointController implements Drawable, Updatea
                 }
             }
         }
+
+        idle = !(((int) velocity.getX() != 0 || (int) velocity.getY() != 0));
     }
 
     @Override
     public void draw(Graphics graphic) {
-        if ((int) velocity.getX() != 0 || (int) velocity.getY() != 0) {
-            sprite.draw(graphic);
-        } else {
+        if (idle) {
             idleSprites.draw(graphic);
+        } else {
+            sprite.draw(graphic);
         }
+    }
+
+    public SpriteStates getSpriteState() {
+        return idle ? idleSprites : sprite;
     }
 }

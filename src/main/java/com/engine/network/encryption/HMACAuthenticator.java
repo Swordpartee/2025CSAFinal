@@ -22,26 +22,31 @@ public class HMACAuthenticator {
    * @param timestamp : Current timestamp
    * @return Base64 encoded HMAC token
    */
-  public static byte[] generateHMACToken(String sessionKey, String username, long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
-    // Create the message to sign (username + timestamp)
-    String message = username + ":" + timestamp;
-    
-    // Create secret key specification
-    SecretKeySpec secretKeySpec = new SecretKeySpec(
-        sessionKey.getBytes(), 
-        HMAC_ALGORITHM
-    );
-    
-    // Initialize HMAC with the secret key
-    Mac mac = Mac.getInstance(HMAC_ALGORITHM);
-    mac.init(secretKeySpec);
-    
-    // Generate the HMAC
-    byte[] hmacBytes = mac.doFinal(message.getBytes());
+  public static byte[] generateHMACToken(String sessionKey, String username, long timestamp) {
+    try {
+      // Create the message to sign (username + timestamp)
+      String message = username + ":" + timestamp;
+      
+      // Create secret key specification
+      SecretKeySpec secretKeySpec = new SecretKeySpec(
+          sessionKey.getBytes(), 
+          HMAC_ALGORITHM
+      );
+      
+      // Initialize HMAC with the secret key
+      Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+      mac.init(secretKeySpec);
+      
+      // Generate the HMAC
+      byte[] hmacBytes = mac.doFinal(message.getBytes());
 
-    byte[] truncated = new byte[10];
-    System.arraycopy(hmacBytes, 0, truncated, 0, 10);
-    return truncated;
+      byte[] truncated = new byte[10];
+      System.arraycopy(hmacBytes, 0, truncated, 0, 10);
+      return truncated;
+    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+      System.err.println("Error generating HMAC: " + e.getMessage());
+      return null; // Return null if there was an error generating the HMAC 
+    }
   }
 
   /**

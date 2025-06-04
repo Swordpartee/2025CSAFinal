@@ -27,19 +27,29 @@ public class ClientPacketData {
 	 * @param aesKey
 	 * @throws Exception
 	 */
-	public ClientPacketData(DatagramPacket pkt, boolean aesSessionStarted, SecretKey aesKey) throws Exception {
+	public ClientPacketData(DatagramPacket pkt, boolean aesSessionStarted, SecretKey aesKey) {
 		// Store the actual packet just in case.
 		this.pkt = pkt;
 		this.address = pkt.getSocketAddress();
 		
 		// If the user is in an AES Session with the server
 		if (aesSessionStarted) {
-			rawPktData = Encryption.decryptAES(Encryption.getPacketBytes(pkt), aesKey);
+			try {
+				rawPktData = Encryption.decryptAES(Encryption.getPacketBytes(pkt), aesKey);
+			} catch (Exception e) {
+				System.err.println("Error decrypting AES packet: " + e.getMessage());
+				return;
+			}
 		} else {
 			// Otherwise, just try to get the packet data as bytes.
 			rawPktData = Encryption.getPacketBytes(pkt);
 		}
 		
+		if (rawPktData.length < 3) {
+			System.err.println("Received packet with insufficient data length: " + rawPktData.length);
+			return;
+		}
+
 		header = Arrays.copyOfRange(rawPktData, 0, 2);
 		msg = Arrays.copyOfRange(rawPktData, 3, rawPktData.length);
 		msgs = Encryption.desegmentPacket(rawPktData);

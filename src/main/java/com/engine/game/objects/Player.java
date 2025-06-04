@@ -48,32 +48,6 @@ public class Player extends PointController implements GameObject, Damageable {
         healthDisplay.update();
         sprite.update();
 
-        // TEMP SHOOT PROJECTILES - put it somewhere else later, idk, just make it more organized
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
-            ArrayList<Projectile> projectiles = new ArrayList<>();
-
-            int numProjectiles = 3; // Number of projectiles to fire
-            for (int i = 0; i < numProjectiles; i++) {
-                NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
-                    new Projectile(getPoint().copy(), this));
-                projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
-                projectile.getValue().getVelocity().setX(5);
-                // Evenly space projectiles around the player's Y center
-                double spacing = 50; // pixels between projectiles
-                double centerY = getPoint().getY();
-                double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
-                projectile.getValue().getPosition().setY(centerY + offset);
-                try {
-                    projectile.sendSelf();
-                    projectiles.add(projectile.getValue());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } 
-
-            Renderer.addGameObjects(projectiles.toArray(GameObject[]::new));
-        });
-
         if (shouldSwing) {
             weaponController.swing(SwingDirection.fromVelo(controller.getVelocity()));
             shouldSwing = false; // Reset the swing flag after swinging
@@ -106,6 +80,12 @@ public class Player extends PointController implements GameObject, Damageable {
         setX(dataSegments.readInt());
         setY(dataSegments.readInt());
 
+        // Deserialize sprite state
+        boolean isIdle = dataSegments.readBoolean();
+        sprite.setIdle(isIdle);
+        String spriteState = dataSegments.readUTF();
+        sprite.getSpriteState().setCurrentState(spriteState);;
+
         // Deserialize health
         healthDisplay.setHealth(dataSegments.readInt());
 
@@ -121,6 +101,10 @@ public class Player extends PointController implements GameObject, Damageable {
         // Serialize position
         dataSegments.writeInt((int) getX());
         dataSegments.writeInt((int) getY());
+
+        // Serialize sprite state
+        dataSegments.writeBoolean(sprite.isIdle());
+        dataSegments.writeUTF(sprite.getSpriteState().getCurrentState());
 
         // Serialize health
         dataSegments.writeInt(healthDisplay.getHealth());

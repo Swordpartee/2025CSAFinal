@@ -30,9 +30,13 @@ public class ClientStateManager {
      * @return An array of states with the given header.
      */
     public INetState<?>[] getStatesOfHeader(Header lookupHeader) {
-        INetState<?>[] states = Arrays.stream(stateIDMap.values().toArray(new INetState<?>[0]))
-            .filter(state -> state != null && state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER).toArray(INetState<?>[]::new);
-        return states;
+        ArrayList<INetState<?>> statesCopy;
+        synchronized (stateIDMap) {
+            statesCopy = new ArrayList<>(stateIDMap.values());
+        }
+        return statesCopy.stream()
+            .filter(state -> state != null && state.getHeader().compare(lookupHeader) && state.getControlMode() != ControlMode.SERVER)
+            .toArray(INetState<?>[]::new);
     }
 
     /**
@@ -93,96 +97,6 @@ public class ClientStateManager {
     }
 
     /**
-     * Sends an array of states to the server with dense session packets.
-     * @param states : The array of states to send.
-     * @throws Exception
-     */
-    public <T> void multiSend(INetState<?>[] states) throws Exception {
-        HashMap<Header, ArrayList<INetState<?>>> stateHeaderMap = new HashMap<>();
-
-        for (INetState<?> state : states) {
-            if (state == null) {
-                continue;
-            }
-            Header stateHeader = state.getHeader();
-            if (!stateHeaderMap.containsKey(stateHeader)) {
-                stateHeaderMap.put(stateHeader, new ArrayList<INetState<?>>());
-            }
-            stateHeaderMap.get(stateHeader).add(state);
-        }
-
-        for (Header stateHeader : stateHeaderMap.keySet()) {
-            ArrayList<INetState<?>> stateArr = stateHeaderMap.get(stateHeader);
-
-            byte[][] msgs = new byte[stateArr.size()][];
-            msgs = Arrays.stream(stateArr.toArray())
-                    .map(s -> {
-                        try {
-                            return ((INetState<?>) s).getSendData();
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        return null;
-                    })
-                    .toArray(byte[][]::new);
-
-            client.sendDenseSessionPacket(stateHeader.value(), msgs);
-        }
-    }
-
-    /**
-     * Sends an array of states to the server with dense session packets.
-     * @param ids : The IDs of the states to send.
-     * @throws Exception
-     */
-    public <T> void multiSend(String[] ids) throws Exception {
-        INetState<?>[] states = Arrays.stream(ids)
-                .map(stateIDMap::get)
-                .filter(state -> state != null)
-                .toArray(INetState<?>[]::new);
-
-        multiSend(states);
-    }
-
-    /**
-     * Sends an array of states to the server with dense session packets.
-     * @param states : An ArrayList of states to send.
-     * @throws Exception
-     */
-    public <T> void multiSend(ArrayList<INetState<?>> states) throws Exception {
-        INetState<?>[] stateArr = states.toArray(new INetState<?>[0]);
-        multiSend(stateArr);
-    }
-
-    /**
-     * Sends all of the states with a certain header to the server.
-     * @param header : The header of the states to send.
-     * @throws Exception
-     */
-    public <T> void sendStatesWithHeader(Header header) throws Exception {
-        INetState<?>[] states = getStatesOfHeader(header);
-        if (states.length == 0) {
-            return;
-        }
-
-        byte[][] msgs = new byte[states.length][];
-        msgs = Arrays.stream(states).map(s -> {
-            try {
-                return s.getSendData();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }).toArray(byte[][]::new);
-
-        // System.out.println("Sending " + states.length + " states with header: " + header);
-
-        client.sendDenseSessionPacket(header.value(), msgs);
-    }
-
-    /**
      * Sends a state to the server to be deleted.
      * @param state : The state to delete.
      * @throws Exception
@@ -221,78 +135,6 @@ public class ClientStateManager {
                 return;
             }
         }
-    }
-
-    /**
-     * Sends an array of states to the server to be deleted with dense session packets.
-     * @param states : The array of states to delete.
-     * @throws Exception
-     */
-    public <T> void multiSendStateDelete(INetState<?>[] states) throws Exception {
-        HashMap<Header, ArrayList<INetState<?>>> stateHeaderMap = new HashMap<>();
-
-        for (INetState<?> state : states) {
-            if (state == null) {
-                continue;
-            }
-            Header stateHeader = state.getHeader();
-            if (!stateHeaderMap.containsKey(stateHeader)) {
-                stateHeaderMap.put(stateHeader, new ArrayList<INetState<?>>());
-            }
-            stateHeaderMap.get(stateHeader).add(state);
-        }
-
-        for (Header stateHeader : stateHeaderMap.keySet()) {
-            ArrayList<INetState<?>> stateArr = stateHeaderMap.get(stateHeader);
-
-            byte[][] msgs = new byte[stateArr.size()][];
-            msgs = Arrays.stream(stateArr.toArray())
-                    .map(s -> ((INetState<?>) s).getId().getBytes())
-                    .toArray(byte[][]::new);
-
-            client.sendDenseSessionPacket(Header.DeleteState.value(), msgs);
-        }
-    }
-
-    /**
-     * Sends an array of states to the server to be deleted with dense session packets.
-     * @param ids : The IDs of the states to deletes.
-     * @throws Exception
-     */
-    public <T> void multiSendStateDelete(String[] ids) throws Exception {
-        INetState<?>[] states = Arrays.stream(ids)
-                .map(stateIDMap::get)
-                .filter(state -> state != null)
-                .toArray(INetState<?>[]::new);
-
-        multiSendStateDelete(states);
-    }
-
-    /**
-     * Sends an array of states to the server to be deleted with dense session packets.
-     * @param states : An ArrayList of states to delete.
-     * @throws Exception
-     */
-    public <T> void multiSendStateDelete(ArrayList<INetState<?>> states) throws Exception {
-        INetState<?>[] stateArr = states.toArray(new INetState<?>[0]);
-        multiSendStateDelete(stateArr);
-    }
-
-    /**
-     * Sends all of the states with a certain header to the server to be deleted.
-     * @param header : The header of the states to delete.
-     * @throws Exception
-     */
-    public <T> void sendStateDeleteWithHeader(Header header) throws Exception {
-        INetState<?>[] states = getStatesOfHeader(header);
-        if (states.length == 0) {
-            return;
-        }
-
-        byte[][] msgs = new byte[states.length][];
-        msgs = Arrays.stream(states).map(s -> s.getId().getBytes()).toArray(byte[][]::new);
-
-        client.sendDenseSessionPacket(Header.DeleteState.value(), msgs);
     }
 
     /**
@@ -359,6 +201,9 @@ public class ClientStateManager {
     private <T> void recvStateDelete(Header header, ClientPacketData data) throws Exception {
         // System.out.println("Delete State: " + Convert.btos(data.msg));
 
+        if (header.compare(Header.PlayerState)) {
+            System.out.println("Player state deleted: " + Convert.btos(data.msg));
+        }
 
         INetState<?> state = stateIDMap.get(Convert.btos(data.msg));
 
@@ -366,8 +211,12 @@ public class ClientStateManager {
 
         if (state != null) {
             ((INetObject) state.getValue()).onNetworkDestroy(); // Call the onNetworkDestroy function for this state
-        } else {
-            System.out.println("State not found: " + Convert.btos(data.msg));
-        }
+        } //else {
+            // System.out.println("State not found: " + Convert.btos(data.msg));
+        // }
+    }
+
+    public void close() {
+        stateIDMap.clear();
     }
 }

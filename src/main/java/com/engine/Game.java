@@ -1,15 +1,19 @@
 package com.engine;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.engine.Constants.PlayerConstants;
 import com.engine.game.UI.Button;
 import com.engine.game.UI.Textbox;
+import com.engine.game.objects.GameObject;
 import com.engine.game.objects.GameRect;
 import com.engine.game.objects.Player;
+import com.engine.game.objects.Projectile;
 import com.engine.network.Network;
 import com.engine.network.headers.BaseHeader;
 import com.engine.network.headers.Header;
+import com.engine.network.states.ControlMode;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.Background;
@@ -26,6 +30,29 @@ public class Game {
     public static void loginAndJoinRoom() {
         Background background = new Background(new Image("src/main/resources/tilebg.spr", PlayerConstants.PLAYER_SPRITE_SCALE));
         Renderer.addDrawables(background);
+
+        // Let the user choose the server information
+        DrawerText serverIPPortQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in your username\nand password below:", 40, "Arial", Color.DARK_GRAY);
+        DrawerText ipText = new DrawerText(new PointConfig(240, 200), "IP:", 30, "Arial", Color.DARK_GRAY);
+        Textbox ipTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> { return false; });
+        DrawerText portText = new DrawerText(new PointConfig(240, 280), "Port:", 30, "Arial", Color.DARK_GRAY);
+        Textbox portTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> {
+            try {
+                Network.connect(ipTextbox.getText(), Integer.parseInt(text));
+            } catch (Exception e) {
+                return false;
+            }
+            return true; 
+        });
+
+        Renderer.addUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
+        
+        while (!Network.isConnected()) {}
+
+        Renderer.removeUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
+
+
+
 
         // Let the user choose between login and signup
         GameRect loginButtonRect = new GameRect(322, 196, 140, 56, true, Color.DARK_GRAY);
@@ -121,7 +148,7 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        Network.connect();
+        Network.connect("localhost", 8888);
         Renderer.start();
         loginAndJoinRoom();
 
@@ -143,10 +170,39 @@ public class Game {
         Renderer.addGameObjects(player.getValue());
         Renderer.addDamageable(player.getValue());
 
-         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
             player.getValue().swing();
         });
 
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
+            player.getValue().heal(1);
+        });
+
+        // TEMP SHOOT PROJECTILES - put it somewhere else later, idk, just make it more organized
+        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
+            ArrayList<Projectile> projectiles = new ArrayList<>();
+
+            int numProjectiles = 3; // Number of projectiles to fire
+            for (int i = 0; i < numProjectiles; i++) {
+                NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
+                    new Projectile(player.getValue().getPoint().copy(), player.getValue()));
+                projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
+                projectile.getValue().getVelocity().setX(5);
+                // Evenly space projectiles around the player's Y center
+                double spacing = 50; // pixels between projectiles
+                double centerY = player.getValue().getPoint().getY();
+                double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
+                projectile.getValue().getPosition().setY(centerY + offset);
+                try {
+                    projectile.sendSelf();
+                    projectiles.add(projectile.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } 
+
+            Renderer.addGameObjects(projectiles.toArray(GameObject[]::new));
+        });
 
 
         /**
@@ -163,7 +219,9 @@ public class Game {
         Renderer.setOnGameClose(() -> {
             try {
                 Network.disconnect(); // Disconnect from the server
+                // System.out.println("OIAJWJDAOIJWDJAOIWJDOIAJWIODJIOAJWDOIJAOIWJDOIJ");
             } catch (Exception e) {
+                System.out.println("Error while disconnecting from the server:\n\n\n\n\n");
                 e.printStackTrace();
             }
         });

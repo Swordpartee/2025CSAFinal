@@ -2,6 +2,7 @@ package com.engine.network;
 
 import java.util.HashMap;
 
+import com.engine.game.objects.Player;
 import com.engine.game.objects.PlayerController;
 import com.engine.game.objects.Projectile;
 import com.engine.network.client.Client;
@@ -19,15 +20,22 @@ public class Network {
     public static Client client;
     private static final HashMap<TimeKeeper, Header> stateSenders = new HashMap<>();
 
+    private static volatile boolean connected = false;
+    public static boolean isConnected() {
+        return connected;
+    }
+
     public static void processRecv(ClientPacketData data) throws Exception {
         stateManager.tryReceiveStates(data);
     }
     
-    public static void connect() throws Exception {
+    public static void connect(String addr, int port) throws Exception {
         client = new Client(Network::processRecv);
-        client.connect(SERVER_ADDRESS, PORT);
+        client.connect(addr, port);
 
         stateManager = new ClientStateManager(client);
+
+        connected = true;
 
         Renderer.addProcesses(() -> {
             for (HashMap.Entry<TimeKeeper, Header> entry : stateSenders.entrySet()) {
@@ -49,15 +57,16 @@ public class Network {
         });
     }
     public static void disconnect() throws Exception {
-        INetState<?>[] playerStates = stateManager.getStatesOfType(PlayerController.class);
+        INetState<?>[] playerStates = stateManager.getStatesOfHeader(Header.PlayerState);
         for (INetState<?> state : playerStates) {
             state.deleteSelf();
         }
-        INetState<?>[] projectiles = stateManager.getStatesOfType(Projectile.class);
+        INetState<?>[] projectiles = stateManager.getStatesOfHeader(Header.ProjectileState);
         for (INetState<?> state : projectiles) {
             state.deleteSelf();
         }
 
+        stateSenders.clear();
         client.close();
     }
 
