@@ -148,7 +148,7 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        // Network.connect("localhost", 8888);
+        Network.connect();
         Renderer.start();
         loginAndJoinRoom();
 
@@ -174,35 +174,6 @@ public class Game {
             player.getValue().swing();
         });
 
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
-            player.getValue().heal(1);
-        });
-
-        // TEMP SHOOT PROJECTILES - put it somewhere else later, idk, just make it more organized
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
-            ArrayList<Projectile> projectiles = new ArrayList<>();
-
-            int numProjectiles = 100; // Number of projectiles to fire
-            for (int i = 0; i < numProjectiles; i++) {
-                NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
-                    new Projectile(player.getValue().getPoint().copy(), player.getValue()));
-                projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
-                projectile.getValue().getVelocity().setX(5);
-                // Evenly space projectiles around the player's Y center
-                double spacing = 1; // pixels between projectiles
-                double centerY = player.getValue().getPoint().getY();
-                double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
-                projectile.getValue().getPosition().setY(centerY + offset);
-                try {
-                    projectile.sendSelf();
-                    projectiles.add(projectile.getValue());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } 
-
-            Renderer.addGameObjects(projectiles.toArray(GameObject[]::new));
-        });
 
 
         /**
