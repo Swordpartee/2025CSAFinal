@@ -1,6 +1,5 @@
 package com.engine.game.objects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +12,6 @@ import com.engine.network.Network;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Drawable;
-import com.engine.rendering.drawings.DrawerRect;
 import com.engine.util.Image;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;

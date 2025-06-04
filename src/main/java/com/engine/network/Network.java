@@ -2,9 +2,6 @@ package com.engine.network;
 
 import java.util.HashMap;
 
-import com.engine.game.objects.Player;
-import com.engine.game.objects.PlayerController;
-import com.engine.game.objects.Projectile;
 import com.engine.network.client.Client;
 import com.engine.network.client.ClientPacketData;
 import com.engine.network.headers.Header;
