@@ -228,11 +228,21 @@ public class Renderer {
      */
     public static void removeGameObjects(GameObject... ds) {
         try {
-            drawables.removeAll(Arrays.asList(ds));
-            updateables.removeAll(Arrays.asList(ds));
-            collidables.removeAll(Arrays.asList(ds));
+            if (ds == null || ds.length == 0) {
+                return;
+            }
+            for (GameObject obj : ds) {
+                if (!drawables.contains(obj) && !updateables.contains(obj) && !collidables.contains(obj)) {
+                    // Object does not exist in any list, skip or log if needed
+                    continue;
+                }
+                
+                drawables.remove(obj);
+                updateables.remove(obj);
+                collidables.remove(obj);
+            }
         } catch (Exception e) {
-            System.out.println("Tried to remove a game object that doesn't exist: " + e);
+            System.out.println("Error removing game objects: " + e.getMessage());
         }
     }
 
