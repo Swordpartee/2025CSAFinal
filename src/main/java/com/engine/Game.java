@@ -31,25 +31,25 @@ public class Game {
         Background background = new Background(new Image("src/main/resources/tilebg.spr", PlayerConstants.PLAYER_SPRITE_SCALE));
         Renderer.addDrawables(background);
 
-        // // Let the user choose the server information
-        // DrawerText serverIPPortQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in your username\nand password below:", 40, "Arial", Color.DARK_GRAY);
-        // DrawerText ipText = new DrawerText(new PointConfig(240, 200), "IP:", 30, "Arial", Color.DARK_GRAY);
-        // Textbox ipTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> { return false; });
-        // DrawerText portText = new DrawerText(new PointConfig(240, 280), "Port:", 30, "Arial", Color.DARK_GRAY);
-        // Textbox portTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> {
-        //     try {
-        //         Network.connect(ipTextbox.getText(), Integer.parseInt(text));
-        //     } catch (Exception e) {
-        //         return false;
-        //     }
-        //     return true; 
-        // });
+        // Let the user choose the server information
+        DrawerText serverIPPortQuestionText = new DrawerText(new PointConfig(320, 100), "Please enter in your username\nand password below:", 40, "Arial", Color.DARK_GRAY);
+        DrawerText ipText = new DrawerText(new PointConfig(240, 200), "IP:", 30, "Arial", Color.DARK_GRAY);
+        Textbox ipTextbox = new Textbox(new PointConfig(400, 200), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> { return false; });
+        DrawerText portText = new DrawerText(new PointConfig(240, 280), "Port:", 30, "Arial", Color.DARK_GRAY);
+        Textbox portTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> {
+            try {
+                Network.connect(ipTextbox.getText(), Integer.parseInt(text));
+            } catch (Exception e) {
+                return false;
+            }
+            return true; 
+        });
 
-        // Renderer.addUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
+        Renderer.addUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
         
-        // while (!Network.isConnected()) {}
+        while (!Network.isConnected()) {}
 
-        // Renderer.removeUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
+        Renderer.removeUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
 
 
 
