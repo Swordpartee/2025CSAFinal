@@ -2,15 +2,7 @@
     - weapons like swords, bow and arrows, etc.
     - defensive options like shields, armor, and magic
 
-• Upgradable abilities
-    - each win or loss gives a new power-up or upgrade
-    - different stats like strength, agility, and mana
-
 • Local servers for pvp
     - server rooms with passwords and custom accounts
     - encryption
     - low (enough) latency for active and responsive combat
-
-• Replayability
-    - custom accounts have stats like level and nametags
-    - customizable costumes and hats (hopefully)
