@@ -2,9 +2,6 @@ package com.engine.network;
 
 import java.util.HashMap;
 
-import com.engine.game.objects.Player;
-import com.engine.game.objects.PlayerController;
-import com.engine.game.objects.Projectile;
 import com.engine.network.client.Client;
 import com.engine.network.client.ClientPacketData;
 import com.engine.network.headers.Header;
@@ -47,7 +44,9 @@ public class Network {
                     if (state == null) { continue; }
 
                     try {
-                        state.sendSelf();
+                        if (state.isSelf()) {
+                            state.sendSelf();
+                        }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

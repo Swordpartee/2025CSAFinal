@@ -52,8 +52,6 @@ public class Game {
         Renderer.removeUIElements(serverIPPortQuestionText, ipText, ipTextbox, portText, portTextbox);
 
 
-
-
         // Let the user choose between login and signup
         GameRect loginButtonRect = new GameRect(322, 196, 140, 56, true, Color.DARK_GRAY);
         Button loginButton = new Button(loginButtonRect, () -> {

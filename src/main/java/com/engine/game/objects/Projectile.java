@@ -1,6 +1,5 @@
 package com.engine.game.objects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +12,6 @@ import com.engine.network.Network;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.drawings.CycleAnimateable;
 import com.engine.rendering.drawings.Drawable;
-import com.engine.rendering.drawings.DrawerRect;
 import com.engine.util.Image;
 import com.engine.util.Point;
 import com.engine.util.PointConfig;
@@ -24,6 +22,11 @@ public class Projectile extends PointController implements GameObject {
     private final Collider collider;
     private final Drawable drawable;
     private final Point velocity;
+
+    private boolean isSelf = true;
+    public boolean isSelf() {
+        return isSelf;
+    }
 
     private final Damageable ignore;
 
@@ -50,6 +53,7 @@ public class Projectile extends PointController implements GameObject {
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
             new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+
         // this.drawable = new CycleAnimateable(position, 5,
         //     new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
         //     new Image("src/main/resources/fireball/fireball2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
@@ -67,6 +71,7 @@ public class Projectile extends PointController implements GameObject {
 
     public Projectile() {
         this(new PointConfig(0, 0), null);
+        this.isSelf = false;
     }
 
     @Override

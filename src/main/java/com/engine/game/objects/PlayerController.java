@@ -1,13 +1,8 @@
 package com.engine.game.objects;
 
-import java.util.ArrayList;
-
 import com.engine.Constants;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.RectCollider;
-import com.engine.network.Network;
-import com.engine.network.headers.Header;
-import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
