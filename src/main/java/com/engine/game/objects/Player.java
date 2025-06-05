@@ -13,6 +13,7 @@ import com.engine.network.headers.Header;
 import com.engine.network.states.ControlMode;
 import com.engine.network.states.NetState;
 import com.engine.rendering.Renderer;
+import com.engine.rendering.drawings.SpriteStates;
 import com.engine.rendering.io.EventCode;
 import com.engine.rendering.io.RenderListener;
 import com.engine.util.Point;
@@ -49,7 +50,7 @@ public class Player extends PointController implements GameObject, Damageable {
         sprite.update();
 
         if (shouldSwing) {
-            weaponController.swing(SwingDirection.fromVelo(controller.getVelocity()));
+            weaponController.swing(SwingDirection.fromString(sprite.getSpriteState().getCurrentState()));
             shouldSwing = false; // Reset the swing flag after swinging
         }
     }
@@ -63,6 +64,10 @@ public class Player extends PointController implements GameObject, Damageable {
 
     public void heal(int amount) {
         healthDisplay.heal(amount);
+    }
+
+    public SpriteStates getSprite() {
+        return sprite.getSpriteState();
     }
 
     public void swing() {
@@ -113,7 +118,7 @@ public class Player extends PointController implements GameObject, Damageable {
         if (!shouldSwing) {
             dataSegments.write(0); // Bytes cannot be negative, so 0 for no swing
         } else {
-            dataSegments.write(SwingDirection.fromVelo(controller.getVelocity()).ordinal() + 1); // +1 to avoid -1 for no swing
+            dataSegments.write(SwingDirection.fromString(sprite.getSpriteState().getCurrentState()).ordinal() + 1); // +1 to avoid -1 for no swing
         }
     }
 

@@ -15,7 +15,7 @@ import com.engine.util.Functions;
 
 public class Network {
     public static final int PORT = 8888;
-    public static final String SERVER_ADDRESS = "localhost";
+    public static final String SERVER_ADDRESS = "10.168.106.254";
     public static ClientStateManager stateManager;
     public static Client client;
     private static final HashMap<TimeKeeper, Header> stateSenders = new HashMap<>();

@@ -148,7 +148,7 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        Network.connect("localhost", 8888);
+        Network.connect("10.168.106.254", 8888);
         Renderer.start();
         loginAndJoinRoom();
 
@@ -172,24 +172,39 @@ public class Game {
 
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.SPACE, () -> {
             player.getValue().swing();
-        });
-
-        RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
-            player.getValue().heal(1);
-        });
+         });
+        
+         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.I, () -> {
+            player.getValue().heal(10);
+         });
 
         // TEMP SHOOT PROJECTILES - put it somewhere else later, idk, just make it more organized
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
             ArrayList<Projectile> projectiles = new ArrayList<>();
 
-            int numProjectiles = 3; // Number of projectiles to fire
+            int numProjectiles = 50; // Number of projectiles to fire
             for (int i = 0; i < numProjectiles; i++) {
                 NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
                     new Projectile(player.getValue().getPoint().copy(), player.getValue()));
                 projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
-                projectile.getValue().getVelocity().setX(5);
+                // Set velocity based on player's direction
+                String direction = player.getValue().getSprite().getCurrentState();
+                double speed = 5.0; // Adjust speed as needed
+
+                if (direction.contains("Right")) {
+                    projectile.getValue().getVelocity().setPos(speed, 0);
+                } else if (direction.contains("Left")) {
+                    projectile.getValue().getVelocity().setPos(-speed, 0);
+                } else if (direction.contains("Up")) {
+                    projectile.getValue().getVelocity().setPos(0, -speed);
+                } else if (direction.contains("Down")) {
+                    projectile.getValue().getVelocity().setPos(0, speed);
+                } else {
+                    // Default direction (right) if no specific direction
+                    projectile.getValue().getVelocity().setPos(speed, 0);
+                }
                 // Evenly space projectiles around the player's Y center
-                double spacing = 50; // pixels between projectiles
+                double spacing = 2; // pixels between projectiles
                 double centerY = player.getValue().getPoint().getY();
                 double offset = (i - (numProjectiles - 1) / 2.0) * spacing;
                 projectile.getValue().getPosition().setY(centerY + offset);

@@ -6,8 +6,8 @@ import com.engine.util.PointConfig;
 
 public class Constants {
     public static class PlayerConstants {
-        public static final int PLAYER_PIXEL_SIZE = 16;
-        public static final int PLAYER_SPRITE_SCALE = 7;
+        public static final int PLAYER_PIXEL_SIZE = 1;
+        public static final int PLAYER_SPRITE_SCALE = 1;
         public static final int PLAYER_WIDTH = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         public static final int PLAYER_HEIGHT = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         

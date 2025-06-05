@@ -34,6 +34,25 @@ public class WeaponController extends PointController implements GameObject {
             }
         }
 
+        public static SwingDirection fromString(String direction) {
+            switch (direction.toUpperCase()) {
+                case "UP":
+                    // System.out.println("Swinging UP");
+                    return UP;
+                case "DOWN":
+                    // System.out.println("Swinging DOWN");
+                    return DOWN;
+                case "LEFT":
+                    // System.out.println("Swinging LEFT");
+                    return LEFT;
+                case "RIGHT":
+                    // System.out.println("Swinging RIGHT");
+                    return RIGHT;
+                default:
+                    throw new IllegalArgumentException("Invalid direction: " + direction);
+            }
+        }
+
         public static SwingDirection fromInt(int direction) {
             switch (direction) {
                 case 0:
