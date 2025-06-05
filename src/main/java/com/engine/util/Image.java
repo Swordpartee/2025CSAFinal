@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Image {
     private final int scale;
@@ -63,7 +64,7 @@ public class Image {
     }
     
     private void getPixels(String path) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader reader =  new BufferedReader(new InputStreamReader(ResourceLoader.getResourceAsStream(path)))) {
             String dimensionLine = reader.readLine();
             if (dimensionLine == null) {
                 throw new IOException("Sprite file is empty");
