@@ -68,7 +68,7 @@ public class Player extends PointController implements GameObject, Damageable {
         try {
             Network.stateManager.sendStateByValue(this);
         } catch (Exception e) {
-            System.err.println("Failed to send swing state: " + e.getMessage());
+            // System.err.println("Failed to send swing state: " + e.getMessage());
         }
     }
 
@@ -82,7 +82,7 @@ public class Player extends PointController implements GameObject, Damageable {
         boolean isIdle = dataSegments.readBoolean();
         sprite.setIdle(isIdle);
         String spriteState = dataSegments.readUTF();
-        sprite.getSpriteState().setCurrentState(spriteState);;
+        sprite.getSpriteState().setCurrentState(spriteState);
 
         // Deserialize health
         healthDisplay.setHealth(dataSegments.readInt());

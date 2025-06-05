@@ -49,7 +49,7 @@ public class Network {
                         }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        // e.printStackTrace();
                     }
                 }
             }
@@ -76,7 +76,7 @@ public class Network {
 
     public static class TimeKeeper {
         private double startTime;
-        private int delayms;
+        private final int delayms;
         public TimeKeeper(int delay) {
             this.delayms = delay;
             this.startTime = Functions.getTime();

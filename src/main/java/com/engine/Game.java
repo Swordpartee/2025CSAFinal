@@ -78,7 +78,7 @@ public class Game {
         DrawerText passwordText = new DrawerText(new PointConfig(240, 280), "Password:", 30, "Arial", Color.DARK_GRAY);
         Textbox passwordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, "^[a-z0-9_]+$", (text) -> {
             try {
-                Network.client.sendSessionPacketAndWait(loginOptionChosen == "login" ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (usernameTextbox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthSignup.value(), BaseHeader.AuthError.value()});
+                Network.client.sendSessionPacketAndWait("login".equals(loginOptionChosen) ? BaseHeader.AuthLogin.value() : BaseHeader.AuthSignup.value(), (usernameTextbox.getText() + ":" + text).getBytes(), new byte[][] {BaseHeader.AuthLogin.value(), BaseHeader.AuthSignup.value(), BaseHeader.AuthError.value()});
             } catch (Exception e) {
                 return false;
             }
@@ -119,7 +119,7 @@ public class Game {
         DrawerText roomPasswordText = new DrawerText(new PointConfig(240, 280), "Password:", 30, "Arial", Color.DARK_GRAY);
         Textbox roomPasswordTextbox = new Textbox(new PointConfig(400, 280), 150, 50, Color.DARK_GRAY, Color.DARK_GRAY, 30, (text) -> {
         try {
-                Network.client.sendSessionPacketAndWait(roomOptionChosen == "join" ? BaseHeader.JoinRoom.value() : BaseHeader.CreateRoom.value(), (roomNameTextbox.getText() + (text.length() > 0 ? ":" : "") + text).getBytes(), new byte[][] {BaseHeader.JoinRoom.value(), BaseHeader.CreateRoom.value() ,BaseHeader.RoomError.value()});
+                Network.client.sendSessionPacketAndWait("join".equals(roomOptionChosen) ? BaseHeader.JoinRoom.value() : BaseHeader.CreateRoom.value(), (roomNameTextbox.getText() + (text.length() > 0 ? ":" : "") + text).getBytes(), new byte[][] {BaseHeader.JoinRoom.value(), BaseHeader.CreateRoom.value() ,BaseHeader.RoomError.value()});
             } catch (Exception e) {
                 return false;
             }
@@ -210,7 +210,6 @@ public class Game {
                     projectile.sendSelf();
                     projectiles.add(projectile.getValue());
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
             } 
 
@@ -235,7 +234,6 @@ public class Game {
                 // System.out.println("OIAJWJDAOIJWDJAOIWJDOIAJWIODJIOAJWDOIJAOIWJDOIJ");
             } catch (Exception e) {
                 System.out.println("Error while disconnecting from the server:\n\n\n\n\n");
-                e.printStackTrace();
             }
         });
     }
