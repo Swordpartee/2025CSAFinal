@@ -89,10 +89,10 @@ public class WeaponController extends PointController implements GameObject {
     public WeaponController(PointConfig pointConfig, Damageable ignore) {
         super(pointConfig);
 
-        this.downSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0.0, 105.0), 90);
-        this.upSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0, -105), -90);
-        this.leftSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), -105, 0), -180);
-        this.rightSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 105, 0), 0);
+        this.downSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0.0, 32), 90);
+        this.upSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 0, -32), -90);
+        this.leftSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), -32, 0), -180);
+        this.rightSwing = Constants.WeaponConstants.getSwing(new PointConfig(getPoint().getPosition(), 32, 0), 0);
 
         this.ignore = ignore;
     }
@@ -110,16 +110,16 @@ public class WeaponController extends PointController implements GameObject {
 
         if (direction == SwingDirection.DOWN) {
             downSwing.run();
-            collider = new RectCollider(getPoint().createOffset(0, 105), 112, 112);
+            collider = new RectCollider(getPoint().createOffset(0, 32), 112, 112);
         } else if (direction == SwingDirection.UP) {
             upSwing.run();
-            collider = new RectCollider(getPoint().createOffset(0, -105), 112, 112);
+            collider = new RectCollider(getPoint().createOffset(0, -32), 112, 112);
         } else if (direction == SwingDirection.LEFT) {
             leftSwing.run();
-            collider = new RectCollider(getPoint().createOffset(-105, 0), 112, 112);
+            collider = new RectCollider(getPoint().createOffset(-32, 0), 112, 112);
         } else if (direction == SwingDirection.RIGHT) {
             rightSwing.run();
-            collider = new RectCollider(getPoint().createOffset(105, 0), 112, 112);
+            collider = new RectCollider(getPoint().createOffset(32, 0), 112, 112);
         }
 
         for (Damageable c : Renderer.getDamageables()) {

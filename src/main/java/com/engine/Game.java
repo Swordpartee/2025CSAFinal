@@ -146,7 +146,7 @@ public class Game {
          *   - Sets up the rendering engine and prepare it for drawing.
          *   - Shows a login menu to the user.
          */
-        Network.connect("10.168.106.254", 8888);
+        // Network.connect("10.168.106.254", 8888);
         Renderer.start();
         loginAndJoinRoom();
 
@@ -180,10 +180,20 @@ public class Game {
         RenderListener.addBinding(EventCode.EventType.KEY_PRESSED, EventCode.R, () -> {
             ArrayList<Projectile> projectiles = new ArrayList<>();
 
-            int numProjectiles = 50; // Number of projectiles to fire
+            int numProjectiles = 1; // Number of projectiles to fire
             for (int i = 0; i < numProjectiles; i++) {
+                double rotation = 0;
+                if (player.getValue().getSprite().getCurrentState().contains("Right")) {
+                    rotation = 0;
+                } else if (player.getValue().getSprite().getCurrentState().contains("Left")) {
+                    rotation = 180;
+                } else if (player.getValue().getSprite().getCurrentState().contains("Up")) {
+                    rotation = 270;
+                } else if (player.getValue().getSprite().getCurrentState().contains("Down")) {
+                    rotation = 90;
+                }
                 NetState<Projectile> projectile = new NetState<>(Header.ProjectileState, Network.stateManager,
-                    new Projectile(player.getValue().getPoint().copy(), player.getValue()));
+                    new Projectile(player.getValue().getPoint().copy(), player.getValue(), rotation));
                 projectile.setControlMode(ControlMode.BOTH); // Allow both server and client to control the projectile (Aka. Move + Delete it)
                 // Set velocity based on player's direction
                 String direction = player.getValue().getSprite().getCurrentState();

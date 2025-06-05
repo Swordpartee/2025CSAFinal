@@ -20,8 +20,9 @@ import com.engine.util.PointController;
 public class Projectile extends PointController implements GameObject {
 
     private final Collider collider;
-    private final Drawable drawable;
+    private Drawable drawable;
     private final Point velocity;
+    private double rotation;
 
     private boolean isSelf = true;
     public boolean isSelf() {
@@ -41,18 +42,26 @@ public class Projectile extends PointController implements GameObject {
      * @param width The width of the projectile.
      * @param height The height of the projectile.
      */
-    public Projectile(PointConfig position, Damageable ignore) {
+    public Projectile(PointConfig position, Damageable ignore, double rotation) {
         super(position);
         this.velocity = new Point(0, 0);
+        this.rotation = rotation;
 
         this.collider = new RectCollider(position.createOffset(Constants.WeaponConstants.WEAPON_WIDTH / 3, 0), Constants.WeaponConstants.WEAPON_WIDTH / 3, Constants.WeaponConstants.WEAPON_HEIGHT / 4);
         // Renderer.addDrawables(collider.getDebugDrawable()); // Debugging collider position and size
 
+        Image sprite1 = new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        Image sprite2 = new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        Image sprite3 = new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        sprite1.setRotation(rotation);
+        sprite2.setRotation(rotation);
+        sprite3.setRotation(rotation);
+
         this.drawable = new CycleAnimateable(position, 10,
-            new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
-            new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE));
+            sprite1,
+            sprite2,
+            sprite3,
+            sprite2);
 
         // this.drawable = new CycleAnimateable(position, 5,
         //     new Image("src/main/resources/fireball/fireball1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE),
@@ -70,7 +79,7 @@ public class Projectile extends PointController implements GameObject {
     }
 
     public Projectile() {
-        this(new PointConfig(0, 0), null);
+        this(new PointConfig(0, 0), null, 0);
         this.isSelf = false;
     }
 
@@ -112,6 +121,21 @@ public class Projectile extends PointController implements GameObject {
         this.setY(dataSegments.readInt());
         this.velocity.setX(dataSegments.readInt());
         this.velocity.setY(dataSegments.readInt());
+
+        this.rotation = (double) dataSegments.readInt();
+
+        Image sprite1 = new Image("src/main/resources/arrow1.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        Image sprite2 = new Image("src/main/resources/arrow2.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        Image sprite3 = new Image("src/main/resources/arrow3.spr", Constants.PlayerConstants.PLAYER_SPRITE_SCALE);
+        sprite1.setRotation(rotation);
+        sprite2.setRotation(rotation);
+        sprite3.setRotation(rotation);
+
+        this.drawable = new CycleAnimateable(getPoint(), 10,
+            sprite1,
+            sprite2,
+            sprite3,
+            sprite2);
     }
 
     @Override
@@ -120,6 +144,7 @@ public class Projectile extends PointController implements GameObject {
         dataSegments.writeInt((int) getY());
         dataSegments.writeInt((int) velocity.getX());
         dataSegments.writeInt((int) velocity.getY());
+        dataSegments.writeInt((int) rotation);
     }
 
     @Override

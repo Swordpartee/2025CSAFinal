@@ -3,6 +3,8 @@ package com.engine.game.objects;
 import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+
+import com.engine.Constants;
 import com.engine.game.collision.Collider;
 import com.engine.game.collision.Damageable;
 import com.engine.game.objects.WeaponController.SwingDirection;
@@ -25,7 +27,7 @@ public class Player extends PointController implements GameObject, Damageable {
         super(new PointConfig());
 
         controller = new PlayerController(getPoint());
-        healthDisplay = new HealthDisplay(getPoint().createOffset(0, -80), 5);
+        healthDisplay = new HealthDisplay(getPoint().createOffset(6, -Constants.PlayerConstants.PLAYER_PIXEL_SIZE * 2), 3);
         sprite = new PlayerRenderer(getPoint(), controller.getVelocity());
         weaponController = new WeaponController(getPoint(), this);
 

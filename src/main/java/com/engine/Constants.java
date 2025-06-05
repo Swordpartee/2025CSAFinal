@@ -6,8 +6,8 @@ import com.engine.util.PointConfig;
 
 public class Constants {
     public static class PlayerConstants {
-        public static final int PLAYER_PIXEL_SIZE = 1;
-        public static final int PLAYER_SPRITE_SCALE = 1;
+        public static final int PLAYER_PIXEL_SIZE = 16;
+        public static final int PLAYER_SPRITE_SCALE = 2;
         public static final int PLAYER_WIDTH = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         public static final int PLAYER_HEIGHT = PLAYER_SPRITE_SCALE * PLAYER_PIXEL_SIZE;
         
@@ -62,7 +62,7 @@ public class Constants {
 
     public static class WeaponConstants {
         public static final int WEAPON_PIXEL_SIZE = 16;
-        public static final int WEAPON_SPRITE_SCALE = 7;
+        public static final int WEAPON_SPRITE_SCALE = 2;
         public static final int WEAPON_WIDTH = WEAPON_SPRITE_SCALE * WEAPON_PIXEL_SIZE;
         public static final int WEAPON_HEIGHT = WEAPON_SPRITE_SCALE * WEAPON_PIXEL_SIZE;
 
@@ -89,7 +89,8 @@ public class Constants {
             return new Image("src/main/resources/rock.spr", PlayerConstants.PLAYER_SPRITE_SCALE);
         }
 
-        public static final int HEALTH_SPRITE_SCALE = 3;
+        public static final int HEALTH_PIXEL_SIZE = 16;
+        public static final int HEALTH_SPRITE_SCALE = 1;
 
         public static final Image HEART_SPRITE = new Image("src/main/resources/heart.spr",
                 HEALTH_SPRITE_SCALE);
